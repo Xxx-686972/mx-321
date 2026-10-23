@@ -1,0 +1,719 @@
+/* ============================================================
+   微博移动端页面复刻 —— 公共样式（5 个页面共用）
+   目录：
+     1. 变量与重置      2. 图标
+     3. 顶部导航        4. 底部导航
+     5. 帖子卡片        6. 搜索框与热搜
+     7. 消息列表        8. 个人主页
+     9. 单独页面微调
+   ============================================================ */
+
+/* ---------------- 1. 变量与重置 ---------------- */
+:root{
+    --brand:#ff8200;          /* 微博橙 */
+    --brand-light:#fff3e6;
+    --text:#1a1a1a;
+    --text-2:#666;
+    --muted:#999;
+    --line:#eee;
+    --bg:#f4f4f4;
+    --card:#fff;
+    --nav-h:58px;             /* 底部导航高度 */
+    --radius:12px;
+    --page-w:430px;           /* 手机端页面宽度 */
+}
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    /* 中文字体优先，兼容 Windows / macOS */
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Microsoft YaHei",sans-serif;
+    -webkit-tap-highlight-color:transparent;
+}
+body{
+    max-width:var(--page-w);
+    min-height:100vh;
+    margin:0 auto;
+    /* 给固定的底部导航让出位置 */
+    padding-bottom:calc(var(--nav-h) + 14px + env(safe-area-inset-bottom));
+    overflow-x:hidden;
+    color:var(--text);
+    background:var(--bg);
+    font-size:15px;
+    line-height:1.5;
+}
+img{
+    display:block;
+    max-width:100%;
+}
+a{
+    color:inherit;
+    text-decoration:none;
+}
+button{
+    font:inherit;
+    color:inherit;
+    background:none;
+    border:0;
+    cursor:pointer;
+}
+h1,h2,h3,h4{
+    font-size:inherit;
+    font-weight:normal;
+}
+ol,ul{
+    list-style:none;
+}
+
+/* ---------------- 2. 图标（SVG Symbol 引用） ---------------- */
+/* 实心图标：颜色跟随文字颜色，用 <svg class="icon"><use xlink:href="#icon-xxx"></use></svg> */
+.icon{
+    width:24px;
+    height:24px;
+    flex:0 0 auto;
+    fill:currentColor;
+}
+/* 线性图标：1.8 描边，用 <svg class="icon icon-o">…</svg> */
+.icon-o{
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.8;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+/* 只有图标的按钮 */
+.icon-btn{
+    display:flex;
+    width:30px;
+    height:30px;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    color:var(--text-2);
+    transition:background .15s,color .15s;
+}
+.icon-btn .icon{
+    width:23px;
+    height:23px;
+}
+.icon-btn:active{
+    color:var(--brand);
+    background:#f0f0f0;
+}
+
+/* ---------------- 3. 顶部导航 ---------------- */
+.top-nav{
+    position:sticky;
+    top:0;
+    z-index:99;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 14px;
+    background:#fff;
+    border-bottom:1px solid var(--line);
+}
+.top-tabs{
+    display:flex;
+    flex:1;
+    align-items:center;
+    justify-content:center;
+    gap:20px;
+    min-width:0;
+}
+.top-nav .tab-item{
+    position:relative;
+    padding-bottom:5px;
+    color:var(--muted);
+    font-size:17px;
+    white-space:nowrap;
+    cursor:pointer;
+    transition:color .15s;
+}
+.top-nav .tab-item.active{
+    color:var(--text);
+    font-weight:bold;
+}
+/* 选中时的小橙条 */
+.top-nav .tab-item.active::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    bottom:0;
+    width:100%;
+    height:3px;
+    border-radius:3px;
+    background:var(--brand);
+    transform:translateX(-50%);
+}
+.nav-icons{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    margin-left:auto;
+}
+/* 数字角标（顶部导航 / 消息列表） */
+.badge{
+    display:inline-block;
+    min-width:17px;
+    margin-left:5px;
+    padding:0 5px;
+    border-radius:9px;
+    color:#fff;
+    background:#ff4d4f;
+    font-size:11px;
+    font-weight:normal;
+    line-height:17px;
+    text-align:center;
+    vertical-align:1px;
+}
+
+/* ---------------- 4. 底部导航（5 个入口，所有页面共用） ---------------- */
+.bottom-nav{
+    position:fixed;
+    bottom:0;
+    left:50%;
+    z-index:99;
+    display:flex;
+    width:100%;
+    max-width:var(--page-w);
+    min-height:var(--nav-h);
+    padding-bottom:env(safe-area-inset-bottom);
+    align-items:center;
+    justify-content:space-around;
+    background:#fff;
+    border-top:1px solid var(--line);
+    transform:translateX(-50%);
+}
+.bottom-nav .tab-item{
+    position:relative;
+    display:flex;
+    flex:1;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+    color:#8a8a8a;
+    font-size:11px;
+    cursor:pointer;
+    transition:color .15s;
+}
+.bottom-nav .tab-item .icon{
+    width:23px;
+    height:23px;
+}
+.bottom-nav .tab-item.active{
+    color:var(--brand);
+}
+.bottom-nav .tab-item:active{
+    transform:scale(.94);
+}
+/* 小红点角标 */
+.budge-dot{
+    position:absolute;
+    top:1px;
+    left:50%;
+    width:7px;
+    height:7px;
+    margin-left:7px;
+    border-radius:50%;
+    background:#ff4d4f;
+}
+/* 数字角标 */
+.budge-num{
+    position:absolute;
+    top:0;
+    left:50%;
+    min-width:16px;
+    margin-left:6px;
+    padding:0 4px;
+    border-radius:8px;
+    color:#fff;
+    background:#ff4d4f;
+    font-size:10px;
+    line-height:16px;
+    text-align:center;
+}
+
+/* ---------------- 5. 帖子卡片 ---------------- */
+.feed{
+    padding-top:8px;
+}
+.card{
+    margin:8px;
+    padding:14px;
+    border-radius:var(--radius);
+    background:var(--card);
+}
+.card-header{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:10px;
+}
+.avatar{
+    border-radius:50%;
+    object-fit:cover;
+}
+.card-header img.avatar{
+    width:42px;
+    height:42px;
+}
+.card-user-info{
+    flex:1;
+    min-width:0;
+}
+.card-user-info .username{
+    overflow:hidden;
+    font-size:15px;
+    font-weight:bold;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+.card-user-info .time{
+    margin-top:2px;
+    overflow:hidden;
+    color:var(--muted);
+    font-size:12px;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+.card-text{
+    margin-bottom:10px;
+    font-size:15px;
+    line-height:1.65;
+    word-break:break-word;
+}
+/* 话题 #xxx# 的橙色 */
+.topic{
+    color:#eb7350;
+}
+.card-img{
+    width:100%;
+    border-radius:8px;
+}
+.card-footer{
+    display:flex;
+    justify-content:space-around;
+    margin-top:12px;
+    padding-top:10px;
+    border-top:1px solid #f5f5f5;
+    color:#8a8a8a;
+    font-size:13px;
+}
+.card-footer .action{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+}
+.card-footer .action .icon{
+    width:17px;
+    height:17px;
+}
+.card-footer .action:active{
+    color:var(--brand);
+}
+
+/* ---------------- 6. 搜索框与热搜 ---------------- */
+.search-box{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin:10px;
+    padding:9px 14px;
+    border-radius:22px;
+    background:#fff;
+}
+.search-box .search-icon{
+    width:19px;
+    height:19px;
+    color:var(--muted);
+}
+.search-box input{
+    flex:1;
+    min-width:0;
+    border:0;
+    outline:0;
+    color:var(--text);
+    background:transparent;
+    font-size:15px;
+}
+.search-box input::placeholder{
+    color:#bbb;
+}
+.search-btn{
+    padding-left:12px;
+    border-left:1px solid var(--line);
+    color:var(--brand);
+    font-size:15px;
+    font-weight:bold;
+}
+.panel{
+    margin:10px;
+    padding:14px;
+    border-radius:var(--radius);
+    background:#fff;
+}
+.panel-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-bottom:10px;
+    border-bottom:1px solid #f5f5f5;
+}
+.panel-title{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:16px;
+    font-weight:bold;
+}
+.panel-title .icon{
+    width:18px;
+    height:18px;
+}
+/* 「微博热搜」红字 */
+.panel-title.hot{
+    color:#ff3b30;
+}
+.panel-more{
+    color:var(--muted);
+    font-size:13px;
+}
+.hot-list{
+    padding-top:2px;
+}
+.hot-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:9px 0;
+    font-size:15px;
+}
+.hot-rank{
+    width:18px;
+    color:var(--muted);
+    font-size:14px;
+    font-weight:bold;
+    text-align:center;
+}
+.hot-rank.top{
+    color:var(--brand);
+}
+.hot-text{
+    flex:1;
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+/* 热搜后面的小标签 */
+.tag{
+    padding:1px 5px;
+    border-radius:4px;
+    color:#fff;
+    font-size:11px;
+}
+.tag-hot{
+    background:#ff8200;
+}
+.tag-new{
+    background:#ff5555;
+}
+.tag-ent{
+    background:#ff9944;
+}
+
+/* ---------------- 7. 消息列表 ---------------- */
+.msg-list{
+    padding-top:8px;
+}
+.msg-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 16px;
+    background:#fff;
+    border-bottom:1px solid #f1f1f1;
+}
+.msg-item img.avatar{
+    width:44px;
+    height:44px;
+    flex:0 0 44px;
+}
+/* 没有头像的入口用圆形图标底 */
+.msg-icon{
+    display:flex;
+    width:44px;
+    height:44px;
+    flex:0 0 44px;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    color:#5b6b7c;
+    background:#f2f4f6;
+}
+.msg-icon .icon{
+    width:22px;
+    height:22px;
+}
+.msg-text{
+    flex:1;
+    min-width:0;
+}
+.msg-text h4{
+    font-size:15px;
+}
+.msg-text p{
+    margin-top:3px;
+    overflow:hidden;
+    color:#888;
+    font-size:13px;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+.msg-arrow{
+    color:#c8c8c8;
+    font-size:22px;
+    line-height:1;
+}
+.msg-meta{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:6px;
+}
+.msg-time{
+    color:#aaa;
+    font-size:12px;
+}
+
+/* ---------------- 8. 个人主页 ---------------- */
+.profile-head{
+    padding:6px 16px 18px;
+    background:#fff;
+}
+.profile-top{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+.profile-top img.avatar{
+    width:72px;
+    height:72px;
+    flex:0 0 72px;
+}
+.profile-info{
+    flex:1;
+    min-width:0;
+}
+.profile-name{
+    font-size:20px;
+    font-weight:bold;
+}
+.profile-desc{
+    margin-top:5px;
+    color:#888;
+    font-size:13px;
+}
+.online{
+    display:inline-block;
+    margin-top:8px;
+    padding:2px 8px;
+    border-radius:8px;
+    color:#ff9500;
+    background:#fff2cc;
+    font-size:12px;
+}
+.vip-banner{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin:16px 0;
+    padding:12px 14px;
+    border-radius:10px;
+    background:#fef2cc;
+}
+.vip-text{
+    flex:1;
+    min-width:0;
+}
+.vip-title{
+    font-size:15px;
+    font-weight:bold;
+    color:#8a6d3b;
+}
+.vip-sub{
+    margin-top:4px;
+    color:#8a6d3b;
+    font-size:12px;
+    opacity:.8;
+}
+.vip-btn{
+    flex:0 0 auto;
+    padding:5px 12px;
+    border-radius:16px;
+    color:#fff;
+    background:var(--brand);
+    font-size:13px;
+}
+.vip-btn:active{
+    opacity:.85;
+}
+.stat-row{
+    display:flex;
+    justify-content:space-around;
+    padding-top:16px;
+    border-top:1px solid #f5f5f5;
+}
+.stat-item{
+    text-align:center;
+}
+.stat-item h3{
+    font-size:17px;
+    font-weight:bold;
+}
+.stat-item p{
+    margin-top:2px;
+    color:#777;
+    font-size:12px;
+}
+.func-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px 8px;
+    margin:10px;
+    padding:18px 8px;
+    border-radius:var(--radius);
+    background:#fff;
+}
+.func-item{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:7px;
+    color:#4a4a4a;
+    font-size:12px;
+}
+.func-icon{
+    display:flex;
+    width:42px;
+    height:42px;
+    align-items:center;
+    justify-content:center;
+    border-radius:14px;
+    color:#5b6b7c;
+    background:#f2f4f6;
+    transition:background .15s,color .15s;
+}
+.func-icon .icon{
+    width:22px;
+    height:22px;
+}
+.func-item:active .func-icon{
+    color:var(--brand);
+    background:var(--brand-light);
+}
+
+/* 视频卡片 */
+.video-cover{
+    position:relative;
+    margin:-14px -14px 12px;
+    overflow:hidden;
+    border-radius:var(--radius) var(--radius) 0 0;
+}
+.video-cover .card-img{
+    border-radius:0;
+}
+.play-badge{
+    position:absolute;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    text-shadow:0 1px 6px rgba(0,0,0,.45);
+}
+.play-badge .icon{
+    width:46px;
+    height:46px;
+    opacity:.92;
+}
+.duration{
+    position:absolute;
+    right:8px;
+    bottom:8px;
+    padding:1px 6px;
+    border-radius:4px;
+    color:#fff;
+    background:rgba(0,0,0,.55);
+    font-size:11px;
+}
+.follow-btn{
+    flex:0 0 auto;
+    margin-left:auto;
+    padding:4px 12px;
+    border-radius:14px;
+    color:var(--brand);
+    background:var(--brand-light);
+    font-size:13px;
+    font-weight:bold;
+}
+.follow-btn:active{
+    opacity:.8;
+}
+
+/* ---------------- 9. 单独页面微调 ---------------- */
+/* 首页：顶部标签是主标签，字号大一点 */
+.page-feed .top-nav .tab-item{
+    font-size:18px;
+}
+.page-feed .top-tabs{
+    gap:22px;
+}
+/* 发现页：搜索框吸顶 */
+.page-search .search-box{
+    position:sticky;
+    top:0;
+    z-index:99;
+    margin:0 0 10px;
+    border-radius:0;
+    box-shadow:0 1px 0 var(--line);
+}
+/* 视频 / 消息：顶部元素多，字号小一点 */
+.page-video .top-nav .tab-item,
+.page-message .top-nav .tab-item{
+    font-size:16px;
+}
+.page-video .top-tabs{
+    gap:16px;
+}
+.page-message .top-tabs{
+    gap:15px;
+}
+.page-message .top-nav{
+    padding-right:12px;
+}
+.page-mine .top-nav{
+    padding:8px 12px;
+}
+/* 窄屏（<=360px）再收一点间距，避免顶部标签换行 */
+@media (max-width:360px){
+    .top-tabs{
+        gap:12px;
+    }
+    .top-nav .tab-item{
+        font-size:15px;
+    }
+    .func-grid{
+        gap:14px 4px;
+    }
+}
+/* 尊重系统的「减少动态效果」设置 */
+@media (prefers-reduced-motion:reduce){
+    *{
+        transition:none !important;
+    }
+}

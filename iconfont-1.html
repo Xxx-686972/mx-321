@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Font Awesome · MX Icon Studies</title>
+
+<!-- Font Awesome 本地 CDN -->
+<link rel="stylesheet" href="cdn/fontawesome/css/all.min.css">
+<!-- 本地字体 -->
+<link rel="stylesheet" href="cdn/fonts/fonts.css">
+
+<style>
+  :root{
+    --mx-bg:#0E1116;
+    --mx-bg-panel:#1A1F27;
+    --mx-ink:#E8E4DD;
+    --mx-accent:#C9A84C;
+    --mx-muted:#7A8B9A;
+    --mx-line:rgba(201,168,76,.22);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{min-height:100%}
+  body{
+    background:var(--mx-bg);
+    color:var(--mx-ink);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    font-weight:400;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.6;
+  }
+
+  /* 顶部导航 */
+  .mx_nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:28px 48px;border-bottom:1px solid var(--mx-line);
+  }
+  .mx_nav-brand{
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:18px;letter-spacing:.04em;color:var(--mx-accent);
+  }
+  .mx_nav-links{display:flex;gap:32px}
+  .mx_nav-links a{
+    color:var(--mx-muted);text-decoration:none;font-size:13px;
+    letter-spacing:.1em;text-transform:uppercase;transition:color .2s;
+  }
+  .mx_nav-links a:hover{color:var(--mx-accent)}
+  .mx_nav-links a.mx_current{color:var(--mx-accent)}
+
+  /* Hero */
+  .mx_hero{
+    position:relative;padding:80px 48px 64px;overflow:hidden;
+  }
+  .mx_hero-mark{
+    position:absolute;top:40px;right:48px;
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:clamp(120px,22vw,320px);
+    font-weight:400;line-height:.8;letter-spacing:-.04em;
+    color:transparent;-webkit-text-stroke:1.2px rgba(201,168,76,.18);
+    pointer-events:none;user-select:none;z-index:0;
+  }
+  .mx_hero-content{position:relative;z-index:1;max-width:680px}
+  .mx_hero-eyebrow{
+    font-size:11px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--mx-accent);margin-bottom:28px;
+  }
+  .mx_hero-title{
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:clamp(44px,7vw,96px);font-weight:500;
+    line-height:1;letter-spacing:-.02em;margin-bottom:28px;
+  }
+  .mx_hero-desc{
+    color:var(--mx-muted);font-size:16px;line-height:1.8;max-width:540px;
+  }
+
+  /* 分组面板 */
+  .mx_sections{padding:0 48px 100px}
+  .mx_section{margin-bottom:96px}
+  .mx_section-header{
+    display:flex;align-items:baseline;gap:24px;margin-bottom:40px;
+    padding-bottom:16px;border-bottom:1px solid var(--mx-line);
+  }
+  .mx_section-index{
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:48px;color:rgba(201,168,76,.4);line-height:1;
+  }
+  .mx_section-title{
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:32px;font-weight:500;letter-spacing:-.01em;
+  }
+  .mx_section-meta{
+    font-size:12px;color:var(--mx-muted);letter-spacing:.1em;
+    text-transform:uppercase;margin-left:auto;
+  }
+
+  /* 图标网格 */
+  .mx_icon-grid{
+    display:grid;gap:1px;background:var(--mx-line);
+    grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  }
+  .mx_icon-cell{
+    background:var(--mx-bg-panel);
+    padding:28px 16px 24px;
+    display:flex;flex-direction:column;align-items:center;gap:14px;
+    cursor:pointer;transition:background .25s ease;
+  }
+  .mx_icon-cell:hover{background:#232934}
+  .mx_icon-cell i{
+    font-size:32px;color:var(--mx-ink);transition:color .25s ease,transform .25s ease;
+  }
+  .mx_icon-cell:hover i{color:var(--mx-accent);transform:translateY(-2px)}
+  .mx_icon-name{
+    font-family:'Inter',sans-serif;font-size:11px;color:var(--mx-muted);
+    letter-spacing:.04em;text-align:center;word-break:break-all;
+    max-width:100%;line-height:1.4;
+  }
+
+  /* 底部 */
+  .mx_footer{
+    padding:32px 48px;border-top:1px solid var(--mx-line);
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:12px;color:var(--mx-muted);letter-spacing:.08em;
+  }
+  .mx_footer a{color:var(--mx-muted);text-decoration:none;transition:color .2s}
+  .mx_footer a:hover{color:var(--mx-accent)}
+
+  /* 响应式 */
+  @media(max-width:640px){
+    .mx_nav,.mx_hero,.mx_sections,.mx_footer{padding-left:24px;padding-right:24px}
+    .mx_hero-mark{font-size:140px;top:20px;right:24px}
+    .mx_icon-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+  }
+</style>
+</head>
+<body>
+
+<nav class="mx_nav">
+  <div class="mx_nav-brand">MX Studio</div>
+  <div class="mx_nav-links">
+    <a href="index.html">Home</a>
+    <a class="mx_current" href="iconfont-1.html">FA</a>
+    <a href="inconfont-2.html">Lucide</a>
+  </div>
+</nav>
+
+<section class="mx_hero">
+  <div class="mx_hero-mark">FA</div>
+  <div class="mx_hero-content">
+    <div class="mx_hero-eyebrow">Case Study · 01</div>
+    <h1 class="mx_hero-title">Font Awesome</h1>
+    <p class="mx_hero-desc">Web font 方式的图标系统——以字体文件分发，通过 CSS 类名引用。一份 CSS，覆盖 solid、regular、brands 三个家族；矢量本质保证任意尺寸下的锐利。</p>
+  </div>
+</section>
+
+<main class="mx_sections">
+
+  <!-- Solid -->
+  <section class="mx_section">
+    <div class="mx_section-header">
+      <span class="mx_section-index">I</span>
+      <h2 class="mx_section-title">Solid</h2>
+      <span class="mx_section-meta">fa-solid · 900 weight</span>
+    </div>
+    <div class="mx_icon-grid">
+      <div class="mx_icon-cell"><i class="fa-solid fa-house"></i><span class="mx_icon-name">fa-house</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-user"></i><span class="mx_icon-name">fa-user</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-heart"></i><span class="mx_icon-name">fa-heart</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-star"></i><span class="mx_icon-name">fa-star</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-bell"></i><span class="mx_icon-name">fa-bell</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-search"></i><span class="mx_icon-name">fa-search</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-envelope"></i><span class="mx_icon-name">fa-envelope</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-calendar"></i><span class="mx_icon-name">fa-calendar</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-gear"></i><span class="mx_icon-name">fa-gear</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-music"></i><span class="mx_icon-name">fa-music</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-camera"></i><span class="mx_icon-name">fa-camera</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-video"></i><span class="mx_icon-name">fa-video</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-phone"></i><span class="mx_icon-name">fa-phone</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-location-dot"></i><span class="mx_icon-name">fa-location-dot</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-cart-shopping"></i><span class="mx_icon-name">fa-cart-shopping</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-tag"></i><span class="mx_icon-name">fa-tag</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-bookmark"></i><span class="mx_icon-name">fa-bookmark</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-comment"></i><span class="mx_icon-name">fa-comment</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-share-nodes"></i><span class="mx_icon-name">fa-share-nodes</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-link"></i><span class="mx_icon-name">fa-link</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-download"></i><span class="mx_icon-name">fa-download</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-upload"></i><span class="mx_icon-name">fa-upload</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-trash"></i><span class="mx_icon-name">fa-trash</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-pen"></i><span class="mx_icon-name">fa-pen</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-check"></i><span class="mx_icon-name">fa-check</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-xmark"></i><span class="mx_icon-name">fa-xmark</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-plus"></i><span class="mx_icon-name">fa-plus</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-minus"></i><span class="mx_icon-name">fa-minus</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-arrow-right"></i><span class="mx_icon-name">fa-arrow-right</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-arrow-left"></i><span class="mx_icon-name">fa-arrow-left</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-bars"></i><span class="mx_icon-name">fa-bars</span></div>
+      <div class="mx_icon-cell"><i class="fa-solid fa-circle-info"></i><span class="mx_icon-name">fa-circle-info</span></div>
+    </div>
+  </section>
+
+  <!-- Regular -->
+  <section class="mx_section">
+    <div class="mx_section-header">
+      <span class="mx_section-index">II</span>
+      <h2 class="mx_section-title">Regular</h2>
+      <span class="mx_section-meta">fa-regular · 400 weight</span>
+    </div>
+    <div class="mx_icon-grid">
+      <div class="mx_icon-cell"><i class="fa-regular fa-heart"></i><span class="mx_icon-name">fa-heart</span></div>
+      <div class="mx_icon-cell"><i class="fa-regular fa-star"></i><span class="mx_icon-name">fa-star</span></div>
+      <div class="mx_icon-cell"><i class="fa-regular fa-bookmark"></i><span class="mx_icon-name">fa-bookmark</span></div>
+      <div class="mx_icon-cell"><i class="fa-regular fa-envelope"></i><span class="mx_icon-name">fa-envelope</span></div>
+      <div class="mx_icon-cell"><i class="fa-regular fa-calendar"></i><span class="mx_icon-name">fa-calendar</span></div>
+      <div class="mx_icon-cell"><i class="fa-regular fa-comment"></i><span class="mx_icon-name">fa-comment</span></div>
+      <div class="mx_icon-cell"><i class="fa-regular fa-user"></i><span class="mx_icon-name">fa-user</span></div>
+      <div class="mx_icon-cell"><i class="fa-regular fa-circle"></i><span class="mx_icon-name">fa-circle</span></div>
+      <div class="mx_icon-cell"><i class="fa-regular fa-square"></i><span class="mx_icon-name">fa-square</span></div>
+      <div class="mx_icon-cell"><i class="fa-regular fa-newspaper"></i><span class="mx_icon-name">fa-newspaper</span></div>
+      <div class="mx_icon-cell"><i class="fa-regular fa-file"></i><span class="mx_icon-name">fa-file</span></div>
+      <div class="mx_icon-cell"><i class="fa-regular fa-folder"></i><span class="mx_icon-name">fa-folder</span></div>
+      <div class="mx_icon-cell"><i class="fa-regular fa-image"></i><span class="mx_icon-name">fa-image</span></div>
+      <div class="mx_icon-cell"><i class="fa-regular fa-face-smile"></i><span class="mx_icon-name">fa-face-smile</span></div>
+      <div class="mx_icon-cell"><i class="fa-regular fa-clock"></i><span class="mx_icon-name">fa-clock</span></div>
+      <div class="mx_icon-cell"><i class="fa-regular fa-copy"></i><span class="mx_icon-name">fa-copy</span></div>
+    </div>
+  </section>
+
+  <!-- Brands -->
+  <section class="mx_section">
+    <div class="mx_section-header">
+      <span class="mx_section-index">III</span>
+      <h2 class="mx_section-title">Brands</h2>
+      <span class="mx_section-meta">fa-brands · social & logos</span>
+    </div>
+    <div class="mx_icon-grid">
+      <div class="mx_icon-cell"><i class="fa-brands fa-github"></i><span class="mx_icon-name">fa-github</span></div>
+      <div class="mx_icon-cell"><i class="fa-brands fa-twitter"></i><span class="mx_icon-name">fa-twitter</span></div>
+      <div class="mx_icon-cell"><i class="fa-brands fa-instagram"></i><span class="mx_icon-name">fa-instagram</span></div>
+      <div class="mx_icon-cell"><i class="fa-brands fa-facebook"></i><span class="mx_icon-name">fa-facebook</span></div>
+      <div class="mx_icon-cell"><i class="fa-brands fa-linkedin"></i><span class="mx_icon-name">fa-linkedin</span></div>
+      <div class="mx_icon-cell"><i class="fa-brands fa-youtube"></i><span class="mx_icon-name">fa-youtube</span></div>
+      <div class="mx_icon-cell"><i class="fa-brands fa-dribbble"></i><span class="mx_icon-name">fa-dribbble</span></div>
+      <div class="mx_icon-cell"><i class="fa-brands fa-behance"></i><span class="mx_icon-name">fa-behance</span></div>
+      <div class="mx_icon-cell"><i class="fa-brands fa-spotify"></i><span class="mx_icon-name">fa-spotify</span></div>
+      <div class="mx_icon-cell"><i class="fa-brands fa-apple"></i><span class="mx_icon-name">fa-apple</span></div>
+      <div class="mx_icon-cell"><i class="fa-brands fa-google"></i><span class="mx_icon-name">fa-google</span></div>
+      <div class="mx_icon-cell"><i class="fa-brands fa-figma"></i><span class="mx_icon-name">fa-figma</span></div>
+      <div class="mx_icon-cell"><i class="fa-brands fa-sass"></i><span class="mx_icon-name">fa-sass</span></div>
+      <div class="mx_icon-cell"><i class="fa-brands fa-js"></i><span class="mx_icon-name">fa-js</span></div>
+      <div class="mx_icon-cell"><i class="fa-brands fa-python"></i><span class="mx_icon-name">fa-python</span></div>
+      <div class="mx_icon-cell"><i class="fa-brands fa-react"></i><span class="mx_icon-name">fa-react</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="mx_footer">
+  <span>MX Studio · Icon Studies</span>
+  <a href="index.html">← Back to Index</a>
+</footer>
+
+</body>
+</html>

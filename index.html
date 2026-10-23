@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MX Studio · Icons</title>
+<!-- 本地字体 -->
+<link rel="stylesheet" href="cdn/fonts/fonts.css">
+<style>
+  :root{
+    --mx-bg:#0E1116;
+    --mx-bg-panel:#1A1F27;
+    --mx-ink:#E8E4DD;
+    --mx-accent:#C9A84C;
+    --mx-muted:#7A8B9A;
+    --mx-line:rgba(201,168,76,.22);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    background:var(--mx-bg);
+    color:var(--mx-ink);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:48px 24px;
+    min-height:100vh;
+  }
+  @font-face{font-family:'Playfair Display';src:local('Playfair Display')}
+  .mx_hero-mark{
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:clamp(80px,18vw,240px);
+    font-weight:400;
+    line-height:.9;
+    letter-spacing:-.03em;
+    color:transparent;
+    -webkit-text-stroke:1.5px var(--mx-accent);
+    margin-bottom:24px;
+    user-select:none;
+  }
+  .mx_hero-title{
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:clamp(28px,4vw,52px);
+    font-weight:500;
+    letter-spacing:-.01em;
+    margin-bottom:12px;
+  }
+  .mx_hero-sub{
+    color:var(--mx-muted);
+    font-size:15px;
+    max-width:420px;
+    text-align:center;
+    line-height:1.7;
+    margin-bottom:56px;
+  }
+  .mx_links{
+    display:flex;gap:20px;flex-wrap:wrap;justify-content:center;
+  }
+  .mx_link-card{
+    display:block;
+    min-width:220px;
+    padding:28px 32px;
+    border:1px solid var(--mx-line);
+    background:var(--mx-bg-panel);
+    color:var(--mx-ink);
+    text-decoration:none;
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:22px;
+    font-weight:500;
+    letter-spacing:.02em;
+    transition:border-color .25s ease,background .25s ease,color .25s ease;
+    position:relative;
+    overflow:hidden;
+  }
+  .mx_link-card::before{
+    content:'';position:absolute;top:0;left:0;width:3px;height:100%;
+    background:var(--mx-accent);transform:scaleY(0);transform-origin:top;
+    transition:transform .3s ease;
+  }
+  .mx_link-card:hover{border-color:var(--mx-accent);color:var(--mx-accent)}
+  .mx_link-card:hover::before{transform:scaleY(1)}
+  .mx_link-card small{
+    display:block;
+    font-family:'Inter',sans-serif;
+    font-size:11px;
+    font-weight:400;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--mx-muted);
+    margin-top:8px;
+  }
+  .mx_footer{
+    margin-top:64px;
+    font-size:12px;color:var(--mx-muted);
+    letter-spacing:.08em;
+  }
+</style>
+</head>
+<body>
+  <div class="mx_hero-mark">MX</div>
+  <h1 class="mx_hero-title">Icon Studies</h1>
+  <p class="mx_hero-sub">两种截然不同的图标方案——一种来自字体与字体家族，一种来自可伸缩的矢量标记。两种选择，同一个展厅。</p>
+
+  <nav class="mx_links">
+    <a class="mx_link-card" href="iconfont-1.html">
+      Font Awesome
+      <small>字体图标 · Web Font</small>
+    </a>
+    <a class="mx_link-card" href="inconfont-2.html">
+      Lucide
+      <small>矢量图标 · Inline SVG</small>
+    </a>
+    <a class="mx_link-card" href="iconfont-3.html">
+      iconfont Nav
+      <small>字体图标 · 底导航</small>
+    </a>
+    <a class="mx_link-card" href="iconfont-4.html">
+      iconfont Nav
+      <small>Inline SVG · 底导航</small>
+    </a>
+  </nav>
+
+  <div class="mx_footer">MX STUDIO · 2026</div>
+</body>
+</html>

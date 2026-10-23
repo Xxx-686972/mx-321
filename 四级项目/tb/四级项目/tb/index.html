@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>微博-推荐</title>
+    <!-- iconfont symbol 图标库，替换成你自己项目的js地址 -->
+    <script src="//at.alicdn.com/t/c/font_xxxxxx.js"></script>
+    <link rel="stylesheet" href="./css/1.css">
+</head>
+<body>
+    <!--顶部标签栏-->
+    <div class="top-nav">
+        <div>
+            <span class="tab-item">超话</span>
+            <span class="tab-item active">推荐</span>
+            <span class="tab-item">关注</span>
+        </div>
+        <div style="display:flex;gap:18px;">
+            <img src="./icons/redbag.png" width="24">
+            <img src="./icons/add.png" width="24">
+        </div>
+    </div>
+
+    <!--帖子1-->
+    <div class="card">
+        <div class="card-header">
+            <img class="avatar" src="./images/avatar1.jpg">
+            <div class="card-user-info">
+                <div class="username">我瞌睡多iuk</div>
+                <div class="time">10-11 来自 微博视频号</div>
+            </div>
+        </div>
+        <div class="card-text">
+            #崔晋回应称家里没闹僵#<br>
+            定性家庭琐事：崔晋称家人中没有任何一人说过谁与谁关系闹僵，母女间不愉快的时刻只占相处中的20%，且是暂时的。<br>
+            李勒优同步回应：她接受媒体采访时表示和晋妈“关系挺好的”，其余私人细节不便多谈。
+        </div>
+        <img class="card-img" src="./images/post1.jpg">
+        <div class="card-footer">
+            <span>转发 4</span>
+            <span>评论 34</span>
+            <span>点赞 509</span>
+        </div>
+    </div>
+
+    <!--帖子2-->
+    <div class="card">
+        <div class="card-header">
+            <img class="avatar" src="./images/avatar2.jpg">
+            <div class="card-user-info">
+                <div class="username">温小逗_</div>
+                <div class="time">10-9 来自 OPPO K13x 5G 已编辑</div>
+            </div>
+        </div>
+        <div class="card-text">#崔晋李勒优聊天记录#</div>
+    </div>
+
+    <!-- ========== 你要的SVG底部导航 ========== -->
+
+            </svg>
+            <span>首页</span>
+            <div class="budge-dot" id="budge-home"></div>
+        </div>
+        <div class="tab-item" onclick="changeTab(this)">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-shouye"></use>
+            </svg>
+            <span>视频</span>
+            <div class="budge-num" id="budge-plan">6</div>
+        </div>
+        <div class="tab-item" onclick="changeTab(this)">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-faxian1"></use>
+            </svg>
+            <span>发现</span>
+            <div class="budge-dot" id="budge-home"></div>
+        </div>
+        <div class="tab-item" onclick="changeTab(this)">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-shouye"></use>
+            </svg>
+            </svg>
+            <span>消息</span>
+            <div class="budge-dot" id="budge-home"></div>
+        </div>
+        <div class="tab-item" onclick="changeTab(this)">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-xiaoxizhongxin"></use>
+            </svg>
+            </svg>
+            <span>我</span>
+            <div class="budge-dot" id="budge-home"></div>
+        </div>
+        <div class="tab-item" onclick="changeTab(this)">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-wode1"></use>
+            </svg>
+    </div>
+
+<script>
+// tab切换函数（你原来的changeTab）
+function changeTab(el){
+    const items = document.querySelectorAll('.bottom-nav .tab-item');
+    items.forEach(item=>item.classList.remove('active'))
+    el.classList.add('active');
+}
+</script>
+
+</body>
+</html>

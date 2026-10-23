@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Bottom Nav · inline SVG</title>
+
+<!-- 本地字体 -->
+<link rel="stylesheet" href="cdn/fonts/fonts.css">
+
+<style>
+  :root{
+    --mx-bg:#0E1116;
+    --mx-bg-panel:#1A1F27;
+    --mx-bg-phone:#111418;
+    --mx-ink:#E8E4DD;
+    --mx-muted:#7A8B9A;
+    --mx-accent:#C9A84C;
+    --mx-badge:#E53935;
+    --mx-line:rgba(201,168,76,.15);
+    --mx-nav-h:64px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{min-height:100%;background:#1a1d22;color:var(--mx-ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+
+  .mx_gallery{
+    max-width:480px;margin:0 auto;min-height:100vh;background:var(--mx-bg-phone);
+    position:relative;display:flex;flex-direction:column;
+    box-shadow:0 0 0 1px var(--mx-line);
+  }
+  @media(min-width:481px){
+    body{padding:40px 0;background:#05070a}
+    .mx_gallery{border-radius:20px;min-height:860px}
+  }
+
+  .mx_statusbar{
+    height:28px;display:flex;align-items:center;justify-content:space-between;
+    padding:0 20px;font-size:11px;color:var(--mx-muted);
+    letter-spacing:.04em;font-weight:500;
+  }
+
+  .mx_topbar{
+    padding:12px 20px 18px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .mx_topbar-title{
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:22px;font-weight:500;letter-spacing:-.01em;
+  }
+  .mx_topbar-title small{
+    display:block;font-family:'Inter',sans-serif;font-size:9px;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--mx-muted);
+    font-weight:400;margin-bottom:4px;
+  }
+
+  .mx_content{
+    flex:1;padding:8px 20px 80px;overflow-y:auto;
+  }
+  .mx_hero{
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:44px;font-weight:400;line-height:1;letter-spacing:-.03em;
+    margin-bottom:24px;
+  }
+  .mx_hero em{
+    font-style:normal;color:transparent;
+    -webkit-text-stroke:1px var(--mx-accent);
+  }
+  .mx_section-card{
+    background:var(--mx-bg-panel);border:1px solid var(--mx-line);
+    padding:20px;border-radius:2px;margin-bottom:14px;
+  }
+  .mx_section-card h3{
+    font-family:'Playfair Display',Georgia,serif;font-weight:500;
+    font-size:18px;margin-bottom:10px;letter-spacing:-.01em;
+  }
+  .mx_section-card p{
+    font-size:13px;color:var(--mx-muted);line-height:1.7;
+  }
+
+  /* ==== 底部固定导航 ==== */
+  .mx_nav{
+    position:fixed;left:50%;transform:translateX(-50%);
+    bottom:0;width:100%;max-width:480px;
+    background:rgba(14,17,22,.94);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border-top:1px solid var(--mx-line);
+    padding-bottom:env(safe-area-inset-bottom,0);
+    z-index:100;
+  }
+  .mx_nav-inner{display:flex;height:var(--mx-nav-h)}
+  .mx_nav-item{
+    flex:1;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    gap:3px;cursor:pointer;position:relative;
+    color:var(--mx-muted);transition:color .2s ease;
+    user-select:none;
+  }
+  .mx_nav-item:hover{color:var(--mx-ink)}
+  .mx_nav-item.mx_active{color:var(--mx-accent)}
+
+  /* SVG 图标容器 */
+  .mx_nav-icon{
+    width:22px;height:22px;line-height:1;position:relative;display:block;
+    transition:transform .25s ease;
+  }
+  .mx_nav-item.mx_active .mx_nav-icon{transform:translateY(-1px)}
+
+  .mx_nav-label{font-size:10px;letter-spacing:.04em;font-weight:500;line-height:1}
+
+  /* 徽章 */
+  .mx_badge{
+    position:absolute;top:-3px;left:calc(50% + 10px);
+    background:var(--mx-badge);color:#fff;border-radius:10px;
+    min-width:16px;height:16px;padding:0 4px;
+    font-size:10px;font-weight:600;line-height:16px;text-align:center;
+    letter-spacing:0;border:1.5px solid var(--mx-bg-phone);
+    box-sizing:content-box;
+  }
+  /* 红点 */
+  .mx_dot{
+    position:absolute;top:4px;left:calc(50% + 14px);
+    width:8px;height:8px;border-radius:50%;
+    background:var(--mx-badge);border:1.5px solid var(--mx-bg-phone);
+    box-sizing:content-box;
+  }
+
+  .mx_foot{
+    padding:10px 20px;display:flex;justify-content:space-between;
+    font-size:11px;color:var(--mx-muted);letter-spacing:.08em;
+  }
+  .mx_foot a{color:var(--mx-muted);text-decoration:none;transition:color .2s}
+  .mx_foot a:hover{color:var(--mx-accent)}
+
+  .mx_panel{display:none;animation:mx_fade .28s ease both}
+  .mx_panel.mx_active{display:block}
+  @keyframes mx_fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="mx_gallery">
+
+  <div class="mx_statusbar"><span>9:41</span><span>●●●●● 100%</span></div>
+
+  <div class="mx_topbar">
+    <div class="mx_topbar-title"><small>Bottom Nav · 02</small>Inline SVG</div>
+  </div>
+
+  <main class="mx_content">
+
+    <div class="mx_panel mx_active" id="mx_panel_home">
+      <div class="mx_hero">
+        Four ways<em>.</em><br>One studio<em>.</em>
+      </div>
+      <div class="mx_section-card">
+        <h3>设计说明</h3>
+        <p>Inline SVG 方式。4 个图标以完整 SVG 标记直接嵌入 DOM，path d 属性来自 iconfont 官方 symbol。优势是颜色通过 currentColor 继承，可单独调整 stroke / fill，也便于做 stroke-dashoffset 动画；限制是 DOM 体积比字体图标略大。</p>
+      </div>
+      <div class="mx_section-card">
+        <h3>底部导航特性</h3>
+        <p>固定 · 自适应手机宽度 · 四栏均分 · 徽章（消息 12）与红点（更多）· iOS 安全区适配 · 毛玻璃背景。点击导航切换不同面板。</p>
+      </div>
+    </div>
+
+    <div class="mx_panel" id="mx_panel_more">
+      <div class="mx_hero">Explore<em>.</em><br>Further<em>.</em></div>
+      <div class="mx_section-card"><h3>账号</h3><p>切换、退出登录、清理缓存</p></div>
+      <div class="mx_section-card"><h3>通用</h3><p>主题切换 · 字体大小 · 推送通知</p></div>
+      <div class="mx_section-card"><h3>关于</h3><p>版本 v1.0.0 · 开源许可 · 联系我们</p></div>
+    </div>
+
+    <div class="mx_panel" id="mx_panel_msg">
+      <div class="mx_hero">Messages<em>.</em><br>12 unread<em>.</em></div>
+      <div class="mx_section-card"><h3>系统通知</h3><p>您在 01:23 关注的作者发布了新内容 · 2h</p></div>
+      <div class="mx_section-card"><h3>评论回复</h3><p>@Alice 回复了你的评论：「同意」 · 5h</p></div>
+      <div class="mx_section-card"><h3>收藏更新</h3><p>你收藏的 3 个主题有新回复 · 1d</p></div>
+    </div>
+
+    <div class="mx_panel" id="mx_panel_mine">
+      <div class="mx_hero">Profile<em>.</em></div>
+      <div class="mx_section-card"><h3>Meng Xin</h3><p>前端学习者 · 活跃于 iconfont · 关注 28 · 粉丝 142</p></div>
+      <div class="mx_section-card"><h3>成就</h3><p>连续创作 7 天 · 发布组件 12 个 · 收到点赞 3.4k</p></div>
+    </div>
+
+  </main>
+
+  <!-- ===== 底部导航（inline SVG） ===== -->
+  <nav class="mx_nav" id="mx_nav">
+    <div class="mx_nav-inner">
+
+      <!-- 首页 -->
+      <div class="mx_nav-item mx_active" data-target="mx_panel_home">
+        <svg class="mx_nav-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-hidden="true">
+          <path d="M512 85.333333L42.666667 469.333333l85.333333 85.333334 384-341.333334 384 341.333334 85.333333-85.333334L512 85.333333z"/>
+          <path d="M213.333333 426.666667v426.666666a85.333333 85.333333 0 0 0 85.333334 85.333334h426.666666a85.333333 85.333333 0 0 0 85.333334-85.333334V426.666667h-85.333334v426.666666H298.666667V426.666667h-85.333334z"/>
+          <path d="M426.666667 938.666667V682.666667a42.666667 42.666667 0 0 1 42.666666-42.666667h85.333334a42.666667 42.666667 0 0 1 42.666666 42.666667v256h85.333334V682.666667a128 128 0 0 0-128-128h-85.333334a128 128 0 0 0-128 128v256h85.333334z"/>
+        </svg>
+        <span class="mx_nav-label">首页</span>
+      </div>
+
+      <!-- 更多（带红点） -->
+      <div class="mx_nav-item" data-target="mx_panel_more">
+        <svg class="mx_nav-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-hidden="true">
+          <path d="M213.333333 512m-85.333333 0a85.333333 85.333333 0 1 0 170.666667 0 85.333333 85.333333 0 1 0-170.666667 0Z"/>
+          <path d="M512 512m-85.333333 0a85.333333 85.333333 0 1 0 170.666666 0 85.333333 85.333333 0 1 0-170.666666 0Z"/>
+          <path d="M810.666667 512m-85.333334 0a85.333333 85.333333 0 1 0 170.666667 0 85.333333 85.333333 0 1 0-170.666667 0Z"/>
+        </svg>
+        <span class="mx_nav-label">更多</span>
+        <span class="mx_dot"></span>
+      </div>
+
+      <!-- 消息（带徽章） -->
+      <div class="mx_nav-item" data-target="mx_panel_msg">
+        <svg class="mx_nav-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-hidden="true">
+          <path d="M213.333333 170.666667a85.333333 85.333333 0 0 0-85.333333 85.333333v384a85.333333 85.333333 0 0 0 85.333333 85.333333h140.501334l128 128a42.666667 42.666667 0 0 0 60.330666 0l128-128H810.666667a85.333333 85.333333 0 0 0 85.333333-85.333333V256a85.333333 85.333333 0 0 0-85.333333-85.333333H213.333333z m0 85.333333h597.333334v384h-158.165334L512 780.501333 371.498667 640H213.333333V256z"/>
+          <path d="M362.666667 448m-32 0a32 32 0 1 0 64 0 32 32 0 1 0-64 0Z"/>
+          <path d="M512 448m-32 0a32 32 0 1 0 64 0 32 32 0 1 0-64 0Z"/>
+          <path d="M661.333333 448m-32 0a32 32 0 1 0 64 0 32 32 0 1 0-64 0Z"/>
+        </svg>
+        <span class="mx_nav-label">消息</span>
+        <span class="mx_badge">12</span>
+      </div>
+
+      <!-- 我的 -->
+      <div class="mx_nav-item" data-target="mx_panel_mine">
+        <svg class="mx_nav-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-hidden="true">
+          <path d="M512 149.333333a192 192 0 1 0 0 384 192 192 0 0 0 0-384z m-106.666667 192a106.666667 106.666667 0 1 1 213.333334 0 106.666667 106.666667 0 0 1-213.333334 0z"/>
+          <path d="M469.333333 512h85.333334c212.074667 0 384 171.925333 384 384v128h-85.333334v-128c0-164.949333-133.717333-298.666667-298.666666-298.666667h-85.333334c-164.949333 0-298.666667 133.717333-298.666666 298.666667v128H85.333333v-128c0-212.074667 171.925333-384 384-384z"/>
+        </svg>
+        <span class="mx_nav-label">我的</span>
+      </div>
+
+    </div>
+  </nav>
+
+  <div class="mx_foot">
+    <span>MX · 02</span>
+    <a href="index.html">← Home</a>
+  </div>
+
+</div>
+
+<script>
+  (function(){
+    var mx_items = document.querySelectorAll('#mx_nav .mx_nav-item');
+    var mx_panels = document.querySelectorAll('.mx_panel');
+    mx_items.forEach(function(item){
+      item.addEventListener('click', function(){
+        var mx_target = item.getAttribute('data-target');
+        mx_items.forEach(function(i){ i.classList.remove('mx_active'); });
+        item.classList.add('mx_active');
+        mx_panels.forEach(function(p){ p.classList.remove('mx_active'); });
+        var mx_panel = document.getElementById(mx_target);
+        if(mx_panel){ mx_panel.classList.add('mx_active'); }
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>

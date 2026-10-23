@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>孟欣的《高级网页设计》课堂实践</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --ink: #1d3038;
+            --muted: #64747a;
+            --line: #d6e0df;
+            --accent: #bd4c37;
+            --paper: #f5f7f3;
+            --mint: #e1ece5;
+            --sky: #dcebf0;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            color: var(--ink);
+            background-color: var(--paper);
+            background-image: repeating-linear-gradient(135deg, transparent 0 24px, rgba(29, 48, 56, 0.025) 24px 25px);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+
+        .page {
+            width: min(900px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 42px 0 48px;
+        }
+
+        .masthead {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--line);
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .masthead strong { color: var(--ink); }
+
+        .hero {
+            margin: 28px 0 40px;
+            padding: 36px clamp(22px, 5vw, 52px);
+            border-left: 5px solid var(--accent);
+            background: var(--sky);
+        }
+
+        .eyebrow {
+            margin: 0 0 12px;
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(30px, 6vw, 48px);
+            line-height: 1.25;
+        }
+
+        .hero p:last-child {
+            margin: 14px 0 0;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 14px;
+        }
+
+        h2 { margin: 0; font-size: 21px; }
+
+        .section-heading span {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .directory { margin-bottom: 34px; }
+
+        .project-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            border-top: 1px solid var(--line);
+        }
+
+        .project-list a {
+            display: grid;
+            grid-template-columns: 44px minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 14px;
+            min-height: 70px;
+            padding: 12px 14px 12px 4px;
+            border-bottom: 1px solid var(--line);
+            color: inherit;
+            text-decoration: none;
+            transition: background-color 150ms ease, padding 150ms ease;
+        }
+
+        .project-list a:hover,
+        .project-list a:focus-visible {
+            padding-left: 12px;
+            background: var(--mint);
+            outline: none;
+        }
+
+        .number {
+            color: var(--accent);
+            font-size: 13px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .project-name { font-weight: 700; }
+
+        .project-note {
+            display: block;
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 400;
+        }
+
+        .arrow { color: var(--muted); font-size: 19px; }
+
+        .future {
+            display: flex;
+            justify-content: space-between;
+            gap: 18px;
+            margin: 8px 0 28px;
+            padding: 17px 20px;
+            border: 1px dashed #a9bbb5;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .future strong { color: var(--ink); }
+        details { border-top: 1px solid var(--line); color: var(--muted); }
+
+        summary {
+            width: fit-content;
+            padding: 15px 0;
+            color: var(--ink);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        details p {
+            max-width: 800px;
+            margin: 0 0 18px;
+            padding: 14px 18px;
+            border-left: 3px solid var(--accent);
+            background: #fff;
+            font-size: 13px;
+            line-height: 1.9;
+            overflow-wrap: anywhere;
+        }
+
+        footer {
+            padding-top: 12px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        @media (max-width: 540px) {
+            .page {
+                width: min(100% - 28px, 900px);
+                padding-top: 26px;
+            }
+
+            .masthead { flex-direction: column; gap: 6px; }
+            .hero { margin-top: 22px; padding-top: 28px; padding-bottom: 28px; }
+
+            .project-list a {
+                grid-template-columns: 34px minmax(0, 1fr) auto;
+                gap: 9px;
+            }
+
+            .future { flex-direction: column; gap: 6px; }
+        }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <header class="masthead">
+            <strong>孟欣 · 课堂实践档案</strong>
+            <span>高级网页设计 / 第一周</span>
+        </header>
+
+        <section class="hero" aria-labelledby="page-title">
+            <p class="eyebrow">ADVANCED WEB DESIGN · CLASS PRACTICE</p>
+            <h1 id="page-title">孟欣的《高级网页设计》课堂实践</h1>
+            <p>从 Flex 布局复习到字体图标，记录每一次课堂练习。</p>
+        </section>
+
+        <section class="directory" aria-labelledby="practice-title">
+            <div class="section-heading">
+                <h2 id="practice-title">课堂目录 · Flex 与 JavaScript</h2>
+                <span>第一周课</span>
+            </div>
+            <ul class="project-list">
+                <li><a href="第一周课/1.html"><span class="number">01</span><span class="project-name">Flex 复习<span class="project-note">导航布局与三等分布局</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+                <li><a href="第一周课/2.html"><span class="number">02</span><span class="project-name">数据类型与运算符<span class="project-note">JavaScript 类型、运算与循环</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+                <li><a href="第一周课/3.html"><span class="number">03</span><span class="project-name">JavaScript 对象应用<span class="project-note">个人明信片与对象方法</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+                <li><a href="第一周课/4.html"><span class="number">04</span><span class="project-name">函数与猜数字游戏<span class="project-note">随机数、输入判断与函数</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+            </ul>
+        </section>
+
+        <section class="directory" aria-labelledby="icons-title">
+            <div class="section-heading">
+                <h2 id="icons-title">课堂目录 · 字体图标</h2>
+                <span>ICONFONT · SVG</span>
+            </div>
+            <ul class="project-list">
+                <li><a href="第一周课/font_/demo_index.html"><span class="number">05</span><span class="project-name">Iconfont 用法演示<span class="project-note">Unicode、Font class 与 Symbol</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+                <li><a href="第一周课/font_/svg.html"><span class="number">06</span><span class="project-name">SVG 图标导航<span class="project-note">SVG 图标与导航状态切换</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+            </ul>
+        </section>
+
+        <aside class="future" aria-label="后续课程模块">
+            <strong>其余模块，后续增加</strong>
+            <span>新课堂实践会继续整理到本目录。</span>
+        </aside>
+
+        <details>
+            <summary>查看本页面提示词</summary>
+            <p>创建一个新页面，包括第一周课目录下的所有网页的超链接，使用原生代码，不使用cdn，新页面名称为index1.html，主题为孟欣的《高级网页设计》课堂实践，美化页面，课堂目录中包含flex复习、字体图标、其余模块后续在增加。页面中包括本提示词。</p>
+        </details>
+        <footer>已收录第一周课目录中的全部 6 个网页。</footer>
+    </main>
+</body>
+</html>

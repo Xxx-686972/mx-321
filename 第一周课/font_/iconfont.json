@@ -1,0 +1,37 @@
+{
+  "id": "5232866",
+  "name": "tb",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "47567482",
+      "name": "个人中心",
+      "font_class": "gerenzhongxin",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "47567485",
+      "name": "消息",
+      "font_class": "xiaoxi",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "47567608",
+      "name": "首页",
+      "font_class": "shouye",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "47567626",
+      "name": "更多",
+      "font_class": "gengduo",
+      "unicode": "e609",
+      "unicode_decimal": 58889
+    }
+  ]
+}

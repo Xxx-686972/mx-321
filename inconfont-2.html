@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lucide · MX Icon Studies</title>
+
+<!-- 本地字体 -->
+<link rel="stylesheet" href="cdn/fonts/fonts.css">
+
+<style>
+  :root{
+    --mx-bg:#0E1116;
+    --mx-bg-panel:#1A1F27;
+    --mx-ink:#E8E4DD;
+    --mx-accent:#C9A84C;
+    --mx-muted:#7A8B9A;
+    --mx-line:rgba(201,168,76,.22);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{min-height:100%}
+  body{
+    background:var(--mx-bg);
+    color:var(--mx-ink);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    font-weight:400;-webkit-font-smoothing:antialiased;line-height:1.6;
+  }
+
+  /* 顶部导航 */
+  .mx_nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:28px 48px;border-bottom:1px solid var(--mx-line);
+  }
+  .mx_nav-brand{
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:18px;letter-spacing:.04em;color:var(--mx-accent);
+  }
+  .mx_nav-links{display:flex;gap:32px}
+  .mx_nav-links a{
+    color:var(--mx-muted);text-decoration:none;font-size:13px;
+    letter-spacing:.1em;text-transform:uppercase;transition:color .2s;
+  }
+  .mx_nav-links a:hover{color:var(--mx-accent)}
+  .mx_nav-links a.mx_current{color:var(--mx-accent)}
+
+  /* Hero */
+  .mx_hero{position:relative;padding:80px 48px 64px;overflow:hidden}
+  .mx_hero-mark{
+    position:absolute;top:40px;right:48px;
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:clamp(120px,22vw,320px);font-weight:400;
+    line-height:.8;letter-spacing:-.04em;
+    color:transparent;-webkit-text-stroke:1.2px rgba(201,168,76,.18);
+    pointer-events:none;user-select:none;z-index:0;
+  }
+  .mx_hero-content{position:relative;z-index:1;max-width:680px}
+  .mx_hero-eyebrow{
+    font-size:11px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--mx-accent);margin-bottom:28px;
+  }
+  .mx_hero-title{
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:clamp(44px,7vw,96px);font-weight:500;
+    line-height:1;letter-spacing:-.02em;margin-bottom:28px;
+  }
+  .mx_hero-desc{
+    color:var(--mx-muted);font-size:16px;line-height:1.8;max-width:540px;
+  }
+
+  /* 分组面板 */
+  .mx_sections{padding:0 48px 100px}
+  .mx_section{margin-bottom:96px}
+  .mx_section-header{
+    display:flex;align-items:baseline;gap:24px;margin-bottom:40px;
+    padding-bottom:16px;border-bottom:1px solid var(--mx-line);
+  }
+  .mx_section-index{
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:48px;color:rgba(201,168,76,.4);line-height:1;
+  }
+  .mx_section-title{
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:32px;font-weight:500;letter-spacing:-.01em;
+  }
+  .mx_section-meta{
+    font-size:12px;color:var(--mx-muted);letter-spacing:.1em;
+    text-transform:uppercase;margin-left:auto;
+  }
+
+  /* 图标网格 */
+  .mx_icon-grid{
+    display:grid;gap:1px;background:var(--mx-line);
+    grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  }
+  .mx_icon-cell{
+    background:var(--mx-bg-panel);
+    padding:28px 16px 24px;
+    display:flex;flex-direction:column;align-items:center;gap:14px;
+    cursor:pointer;transition:background .25s ease;
+  }
+  .mx_icon-cell:hover{background:#232934}
+  .mx_icon-cell svg{
+    width:32px;height:32px;stroke:var(--mx-ink);stroke-width:1.75;
+    fill:none;stroke-linecap:round;stroke-linejoin:round;
+    transition:stroke .25s ease,transform .25s ease;
+  }
+  .mx_icon-cell:hover svg{stroke:var(--mx-accent);transform:translateY(-2px)}
+  .mx_icon-name{
+    font-family:'Inter',sans-serif;font-size:11px;color:var(--mx-muted);
+    letter-spacing:.04em;text-align:center;word-break:break-all;
+    max-width:100%;line-height:1.4;
+  }
+
+  /* 底部 */
+  .mx_footer{
+    padding:32px 48px;border-top:1px solid var(--mx-line);
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:12px;color:var(--mx-muted);letter-spacing:.08em;
+  }
+  .mx_footer a{color:var(--mx-muted);text-decoration:none;transition:color .2s}
+  .mx_footer a:hover{color:var(--mx-accent)}
+
+  @media(max-width:640px){
+    .mx_nav,.mx_hero,.mx_sections,.mx_footer{padding-left:24px;padding-right:24px}
+    .mx_hero-mark{font-size:140px;top:20px;right:24px}
+    .mx_icon-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+  }
+</style>
+</head>
+<body>
+
+<nav class="mx_nav">
+  <div class="mx_nav-brand">MX Studio</div>
+  <div class="mx_nav-links">
+    <a href="index.html">Home</a>
+    <a href="iconfont-1.html">FA</a>
+    <a class="mx_current" href="inconfont-2.html">Lucide</a>
+  </div>
+</nav>
+
+<section class="mx_hero">
+  <div class="mx_hero-mark">LU</div>
+  <div class="mx_hero-content">
+    <div class="mx_hero-eyebrow">Case Study · 02</div>
+    <h1 class="mx_hero-title">Lucide</h1>
+    <p class="mx_hero-desc">Inline SVG 方式的图标系统——以矢量标记直接嵌入 DOM，通过 data-lucide 属性声明。不依赖字体文件，stroke-width 可调，体积可控，打包进构建产物也毫无违和。</p>
+  </div>
+</section>
+
+<main class="mx_sections">
+
+  <!-- 基础操作 -->
+  <section class="mx_section">
+    <div class="mx_section-header">
+      <span class="mx_section-index">I</span>
+      <h2 class="mx_section-title">Interface</h2>
+      <span class="mx_section-meta">UI primitives</span>
+    </div>
+    <div class="mx_icon-grid">
+      <div class="mx_icon-cell"><i data-lucide="home"></i><span class="mx_icon-name">home</span></div>
+      <div class="mx_icon-cell"><i data-lucide="user"></i><span class="mx_icon-name">user</span></div>
+      <div class="mx_icon-cell"><i data-lucide="heart"></i><span class="mx_icon-name">heart</span></div>
+      <div class="mx_icon-cell"><i data-lucide="star"></i><span class="mx_icon-name">star</span></div>
+      <div class="mx_icon-cell"><i data-lucide="bell"></i><span class="mx_icon-name">bell</span></div>
+      <div class="mx_icon-cell"><i data-lucide="search"></i><span class="mx_icon-name">search</span></div>
+      <div class="mx_icon-cell"><i data-lucide="mail"></i><span class="mx_icon-name">mail</span></div>
+      <div class="mx_icon-cell"><i data-lucide="calendar"></i><span class="mx_icon-name">calendar</span></div>
+      <div class="mx_icon-cell"><i data-lucide="settings"></i><span class="mx_icon-name">settings</span></div>
+      <div class="mx_icon-cell"><i data-lucide="music"></i><span class="mx_icon-name">music</span></div>
+      <div class="mx_icon-cell"><i data-lucide="camera"></i><span class="mx_icon-name">camera</span></div>
+      <div class="mx_icon-cell"><i data-lucide="video"></i><span class="mx_icon-name">video</span></div>
+      <div class="mx_icon-cell"><i data-lucide="phone"></i><span class="mx_icon-name">phone</span></div>
+      <div class="mx_icon-cell"><i data-lucide="map-pin"></i><span class="mx_icon-name">map-pin</span></div>
+      <div class="mx_icon-cell"><i data-lucide="shopping-cart"></i><span class="mx_icon-name">shopping-cart</span></div>
+      <div class="mx_icon-cell"><i data-lucide="tag"></i><span class="mx_icon-name">tag</span></div>
+      <div class="mx_icon-cell"><i data-lucide="bookmark"></i><span class="mx_icon-name">bookmark</span></div>
+      <div class="mx_icon-cell"><i data-lucide="message-circle"></i><span class="mx_icon-name">message-circle</span></div>
+      <div class="mx_icon-cell"><i data-lucide="share-2"></i><span class="mx_icon-name">share-2</span></div>
+      <div class="mx_icon-cell"><i data-lucide="link"></i><span class="mx_icon-name">link</span></div>
+      <div class="mx_icon-cell"><i data-lucide="download"></i><span class="mx_icon-name">download</span></div>
+      <div class="mx_icon-cell"><i data-lucide="upload"></i><span class="mx_icon-name">upload</span></div>
+      <div class="mx_icon-cell"><i data-lucide="trash-2"></i><span class="mx_icon-name">trash-2</span></div>
+      <div class="mx_icon-cell"><i data-lucide="pencil"></i><span class="mx_icon-name">pencil</span></div>
+      <div class="mx_icon-cell"><i data-lucide="check"></i><span class="mx_icon-name">check</span></div>
+      <div class="mx_icon-cell"><i data-lucide="x"></i><span class="mx_icon-name">x</span></div>
+      <div class="mx_icon-cell"><i data-lucide="plus"></i><span class="mx_icon-name">plus</span></div>
+      <div class="mx_icon-cell"><i data-lucide="minus"></i><span class="mx_icon-name">minus</span></div>
+      <div class="mx_icon-cell"><i data-lucide="arrow-right"></i><span class="mx_icon-name">arrow-right</span></div>
+      <div class="mx_icon-cell"><i data-lucide="arrow-left"></i><span class="mx_icon-name">arrow-left</span></div>
+      <div class="mx_icon-cell"><i data-lucide="menu"></i><span class="mx_icon-name">menu</span></div>
+      <div class="mx_icon-cell"><i data-lucide="info"></i><span class="mx_icon-name">info</span></div>
+    </div>
+  </section>
+
+  <!-- 文件 & 内容 -->
+  <section class="mx_section">
+    <div class="mx_section-header">
+      <span class="mx_section-index">II</span>
+      <h2 class="mx_section-title">Content</h2>
+      <span class="mx_section-meta">files · media · text</span>
+    </div>
+    <div class="mx_icon-grid">
+      <div class="mx_icon-cell"><i data-lucide="file"></i><span class="mx_icon-name">file</span></div>
+      <div class="mx_icon-cell"><i data-lucide="file-text"></i><span class="mx_icon-name">file-text</span></div>
+      <div class="mx_icon-cell"><i data-lucide="folder"></i><span class="mx_icon-name">folder</span></div>
+      <div class="mx_icon-cell"><i data-lucide="folder-open"></i><span class="mx_icon-name">folder-open</span></div>
+      <div class="mx_icon-cell"><i data-lucide="image"></i><span class="mx_icon-name">image</span></div>
+      <div class="mx_icon-cell"><i data-lucide="file-image"></i><span class="mx_icon-name">file-image</span></div>
+      <div class="mx_icon-cell"><i data-lucide="file-video"></i><span class="mx_icon-name">file-video</span></div>
+      <div class="mx_icon-cell"><i data-lucide="file-audio"></i><span class="mx_icon-name">file-audio</span></div>
+      <div class="mx_icon-cell"><i data-lucide="file-code"></i><span class="mx_icon-name">file-code</span></div>
+      <div class="mx_icon-cell"><i data-lucide="file-archive"></i><span class="mx_icon-name">file-archive</span></div>
+      <div class="mx_icon-cell"><i data-lucide="copy"></i><span class="mx_icon-name">copy</span></div>
+      <div class="mx_icon-cell"><i data-lucide="scissors"></i><span class="mx_icon-name">scissors</span></div>
+      <div class="mx_icon-cell"><i data-lucide="clipboard"></i><span class="mx_icon-name">clipboard</span></div>
+      <div class="mx_icon-cell"><i data-lucide="book-open"></i><span class="mx_icon-name">book-open</span></div>
+      <div class="mx_icon-cell"><i data-lucide="newspaper"></i><span class="mx_icon-name">newspaper</span></div>
+      <div class="mx_icon-cell"><i data-lucide="type"></i><span class="mx_icon-name">type</span></div>
+    </div>
+  </section>
+
+  <!-- 状态 & 反馈 -->
+  <section class="mx_section">
+    <div class="mx_section-header">
+      <span class="mx_section-index">III</span>
+      <h2 class="mx_section-title">Status</h2>
+      <span class="mx_section-meta">feedback · connectivity</span>
+    </div>
+    <div class="mx_icon-grid">
+      <div class="mx_icon-cell"><i data-lucide="smile"></i><span class="mx_icon-name">smile</span></div>
+      <div class="mx_icon-cell"><i data-lucide="frown"></i><span class="mx_icon-name">frown</span></div>
+      <div class="mx_icon-cell"><i data-lucide="meh"></i><span class="mx_icon-name">meh</span></div>
+      <div class="mx_icon-cell"><i data-lucide="thumbs-up"></i><span class="mx_icon-name">thumbs-up</span></div>
+      <div class="mx_icon-cell"><i data-lucide="thumbs-down"></i><span class="mx_icon-name">thumbs-down</span></div>
+      <div class="mx_icon-cell"><i data-lucide="loader"></i><span class="mx_icon-name">loader</span></div>
+      <div class="mx_icon-cell"><i data-lucide="refresh-cw"></i><span class="mx_icon-name">refresh-cw</span></div>
+      <div class="mx_icon-cell"><i data-lucide="wifi"></i><span class="mx_icon-name">wifi</span></div>
+      <div class="mx_icon-cell"><i data-lucide="signal"></i><span class="mx_icon-name">signal</span></div>
+      <div class="mx_icon-cell"><i data-lucide="battery"></i><span class="mx_icon-name">battery</span></div>
+      <div class="mx_icon-cell"><i data-lucide="cloud"></i><span class="mx_icon-name">cloud</span></div>
+      <div class="mx_icon-cell"><i data-lucide="cloud-download"></i><span class="mx_icon-name">cloud-download</span></div>
+      <div class="mx_icon-cell"><i data-lucide="lock"></i><span class="mx_icon-name">lock</span></div>
+      <div class="mx_icon-cell"><i data-lucide="unlock"></i><span class="mx_icon-name">unlock</span></div>
+      <div class="mx_icon-cell"><i data-lucide="shield"></i><span class="mx_icon-name">shield</span></div>
+      <div class="mx_icon-cell"><i data-lucide="key"></i><span class="mx_icon-name">key</span></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="mx_footer">
+  <span>MX Studio · Icon Studies</span>
+  <a href="index.html">← Back to Index</a>
+</footer>
+
+<!-- Lucide 本地 CDN + 初始化 -->
+<script src="cdn/lucide/lucide.min.js"></script>
+<script>
+  (function(){
+    var mx_initCount = 0;
+    var mx_maxAttempts = 10;
+    var mx_timer = setInterval(function(){
+      if(typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function'){
+        lucide.createIcons({
+          attrs:{class:''}
+        });
+        clearInterval(mx_timer);
+      } else if(++mx_initCount >= mx_maxAttempts){
+        clearInterval(mx_timer);
+      }
+    }, 100);
+  })();
+</script>
+
+</body>
+</html>
