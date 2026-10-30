@@ -44,6 +44,24 @@ git add -A
 git commit -m "<中文一句话说明本轮改动>"   # 无变更时跳过，不要提交空 commit
 ```
 
+### 3.1 中文用户名环境（Windows）必读
+
+若用户主目录含中文（如 `C:\Users\孟欣`），git 调起的 ssh 会把 HOME 解析成乱码路径，报：
+
+```
+Could not create directory '/c/Users/<乱码>/.ssh'
+git@xxx: Permission denied (publickey)
+```
+
+修复：不给 git 依赖 HOME，显式指定私钥与主机校验策略（PowerShell 中用单引号包裹整条命令）：
+
+```
+git config core.sshCommand 'ssh -i "C:/Users/<用户名>/.ssh/id_ed25519" -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
+```
+
+配置只写入仓库本地 `.git/config`，不含任何令牌。一次性可用 `-c` 前缀临时生效。
+
+
 ### 4. 推送
 
 ```
