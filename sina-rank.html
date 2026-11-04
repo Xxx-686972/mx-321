@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<!--
+  mx_文件：sina-rank.html
+  mx_作者：孟欣
+  mx_建立时间：2026-11-04
+  mx_使用大模型：DeepSeek-V4.1-Flash
+  mx_功能名称：新浪「排行榜」新闻选项卡区块一比一还原
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>排行榜 · 新浪页面还原</title>
+<style>
+  /* mx_ 全局重置与页面底色 */
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:#fff;
+    color:#333;
+    font-family:"Microsoft YaHei","微软雅黑","PingFang SC",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* mx_ 卡片容器：宽度与截图一致 534px */
+  .mx_card{
+    width:534px;
+    background:#fff;
+    padding:0 20px 14px;
+  }
+
+  /* mx_ 头部：左侧标题 + 右侧选项卡 */
+  .mx_head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-top:16px;
+  }
+
+  /* mx_ 标题「排行榜」 */
+  .mx_title{
+    font-size:26px;
+    font-weight:700;
+    color:#2b5da9;
+    letter-spacing:1px;
+    line-height:1;
+    white-space:nowrap;
+  }
+
+  /* mx_ 选项卡组 */
+  .mx_tabs{
+    display:flex;
+    align-items:stretch;
+    height:46px;
+  }
+
+  /* mx_ 单个选项卡 */
+  .mx_tab{
+    display:flex;
+    align-items:center;
+    padding:0 15px;
+    font-size:19px;
+    color:#333;
+    text-decoration:none;
+    border-left:1px solid #e6e6e6;
+    white-space:nowrap;
+  }
+  .mx_tab:last-child{border-right:1px solid #e6e6e6}
+
+  /* mx_ 选中的选项卡：蓝色文字 + 顶部蓝色横线 */
+  .mx_tab--active{
+    color:#2b5da9;
+    border-top:2px solid #2b5da9;
+    font-weight:400;
+  }
+
+  /* mx_ 新闻列表 */
+  .mx_list{
+    list-style:none;
+    margin-top:22px;
+  }
+
+  /* mx_ 列表行：固定行高，文字超出后硬裁切（与截图一致，不显示省略号） */
+  .mx_item{
+    display:flex;
+    align-items:center;
+    height:40px;
+  }
+
+  /* mx_ 序号方块 */
+  .mx_num{
+    flex:0 0 auto;
+    width:22px;
+    height:22px;
+    margin-right:12px;
+    border-radius:2px;
+    background:#ececec;
+    color:#999;
+    font-size:14px;
+    line-height:22px;
+    text-align:center;
+  }
+
+  /* mx_ 前三条序号：红底白字 */
+  .mx_num--top{
+    background:#e01b22;
+    color:#fff;
+    font-weight:700;
+  }
+
+  /* mx_ 新闻标题链接 */
+  .mx_link{
+    display:block;
+    flex:1 1 auto;
+    min-width:0;
+    font-size:19px;
+    line-height:26px;
+    color:#333;
+    text-decoration:none;
+    white-space:nowrap;
+    overflow:hidden;
+  }
+
+  /* mx_ 前三条标题加粗 */
+  .mx_link--bold{font-weight:700;color:#222}
+
+  /* mx_ 悬停反馈（新浪原站行为） */
+  .mx_link:hover{color:#c00;text-decoration:underline}
+</style>
+</head>
+<body>
+
+<!-- mx_ 排行榜卡片 -->
+<section class="mx_card" aria-label="排行榜">
+
+  <!-- mx_ 头部区域 -->
+  <header class="mx_head">
+    <h1 class="mx_title">排行榜</h1>
+
+    <!-- mx_ 选项卡：新闻 / 证券 / 理财 / 博客 -->
+    <nav class="mx_tabs" aria-label="排行榜分类">
+      <a class="mx_tab mx_tab--active" id="mx_tab_news" href="#" aria-current="page">新闻</a>
+      <a class="mx_tab" id="mx_tab_stock" href="#">证券</a>
+      <a class="mx_tab" id="mx_tab_finance" href="#">理财</a>
+      <a class="mx_tab" id="mx_tab_blog" href="#">博客</a>
+    </nav>
+  </header>
+
+  <!-- mx_ 新闻排行榜列表 -->
+  <ul class="mx_list">
+    <li class="mx_item">
+      <span class="mx_num mx_num--top">1</span>
+      <a class="mx_link mx_link--bold" href="#">构建“股市+债市”稳市机制！央行新工具来了</a>
+    </li>
+    <li class="mx_item">
+      <span class="mx_num mx_num--top">2</span>
+      <a class="mx_link mx_link--bold" href="#">美媒：美军已准备好再打击伊朗 特朗普或中期选举后</a>
+    </li>
+    <li class="mx_item">
+      <span class="mx_num mx_num--top">3</span>
+      <a class="mx_link mx_link--bold" href="#">姆巴佩发表涉中国不当言论，多家品牌终止合作，媒</a>
+    </li>
+    <li class="mx_item">
+      <span class="mx_num">4</span>
+      <a class="mx_link" href="#">东鹏饮料集团：零容忍伤害民族感情行为，终止与姆</a>
+    </li>
+    <li class="mx_item">
+      <span class="mx_num">5</span>
+      <a class="mx_link" href="#">300672，业绩暴增超5600%！10股业绩大增（附股）</a>
+    </li>
+    <li class="mx_item">
+      <span class="mx_num">6</span>
+      <a class="mx_link" href="#">史上最大IPO要来了！7位创始人身家均超130亿美元</a>
+    </li>
+    <li class="mx_item">
+      <span class="mx_num">7</span>
+      <a class="mx_link" href="#">外交部：对英国警方任意、过度执法行为表示强烈不</a>
+    </li>
+    <li class="mx_item">
+      <span class="mx_num">8</span>
+      <a class="mx_link" href="#">1000000美元！特朗普重金悬赏</a>
+    </li>
+    <li class="mx_item">
+      <span class="mx_num">9</span>
+      <a class="mx_link" href="#">张一鸣以6700亿元刷新新中国首富财富纪录！《2026胡</a>
+    </li>
+    <li class="mx_item">
+      <span class="mx_num">10</span>
+      <a class="mx_link" href="#">Gucci卖不动了 开云今年将关掉至少125家门店</a>
+    </li>
+  </ul>
+
+</section>
+
+</body>
+</html>
