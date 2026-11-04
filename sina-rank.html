@@ -4,7 +4,7 @@
   mx_作者：孟欣
   mx_建立时间：2026-11-04
   mx_使用大模型：DeepSeek-V4.1-Flash
-  mx_功能名称：新浪「排行榜」新闻选项卡区块一比一还原
+  mx_功能名称：新浪「排行榜」选项卡区块一比一还原（含选项卡切换效果）
 -->
 <html lang="zh-CN">
 <head>
@@ -125,6 +125,14 @@
 
   /* mx_ 悬停反馈（新浪原站行为） */
   .mx_link:hover{color:#c00;text-decoration:underline}
+
+  /* mx_ 选项卡面板：默认隐藏，选中后淡入上移 */
+  .mx_panel{display:none}
+  .mx_panel--active{display:block;animation:mx_fade .28s ease}
+  @keyframes mx_fade{
+    from{opacity:0;transform:translateY(6px)}
+    to{opacity:1;transform:translateY(0)}
+  }
 </style>
 </head>
 <body>
@@ -136,17 +144,20 @@
   <header class="mx_head">
     <h1 class="mx_title">排行榜</h1>
 
-    <!-- mx_ 选项卡：新闻 / 证券 / 理财 / 博客 -->
-    <nav class="mx_tabs" aria-label="排行榜分类">
-      <a class="mx_tab mx_tab--active" id="mx_tab_news" href="#" aria-current="page">新闻</a>
-      <a class="mx_tab" id="mx_tab_stock" href="#">证券</a>
-      <a class="mx_tab" id="mx_tab_finance" href="#">理财</a>
-      <a class="mx_tab" id="mx_tab_blog" href="#">博客</a>
+    <!-- mx_ 选项卡：新闻 / 证券 / 理财 / 博客（点击切换对应面板） -->
+    <nav class="mx_tabs" role="tablist" aria-label="排行榜分类">
+      <a class="mx_tab mx_tab--active" id="mx_tab_news" data-mx-tab="news" role="tab" aria-selected="true" aria-controls="mx_panel_news" href="#">新闻</a>
+      <a class="mx_tab" id="mx_tab_stock" data-mx-tab="stock" role="tab" aria-selected="false" aria-controls="mx_panel_stock" href="#">证券</a>
+      <a class="mx_tab" id="mx_tab_finance" data-mx-tab="finance" role="tab" aria-selected="false" aria-controls="mx_panel_finance" href="#">理财</a>
+      <a class="mx_tab" id="mx_tab_blog" data-mx-tab="blog" role="tab" aria-selected="false" aria-controls="mx_panel_blog" href="#">博客</a>
     </nav>
   </header>
 
-  <!-- mx_ 新闻排行榜列表 -->
-  <ul class="mx_list">
+  <!-- mx_ 面板容器：四个分类各自一份列表（内容允许重复） -->
+  <div class="mx_panels">
+
+  <!-- mx_ 新闻面板（默认选中） -->
+  <ul class="mx_list mx_panel mx_panel--active" id="mx_panel_news" data-mx-panel="news" role="tabpanel" aria-labelledby="mx_tab_news">
     <li class="mx_item">
       <span class="mx_num mx_num--top">1</span>
       <a class="mx_link mx_link--bold" href="#">构建“股市+债市”稳市机制！央行新工具来了</a>
@@ -189,7 +200,67 @@
     </li>
   </ul>
 
+  <!-- mx_ 证券面板：内容由脚本复用新闻列表填充 -->
+  <ul class="mx_list mx_panel" id="mx_panel_stock" data-mx-panel="stock" role="tabpanel" aria-labelledby="mx_tab_stock"></ul>
+
+  <!-- mx_ 理财面板：内容由脚本复用新闻列表填充 -->
+  <ul class="mx_list mx_panel" id="mx_panel_finance" data-mx-panel="finance" role="tabpanel" aria-labelledby="mx_tab_finance"></ul>
+
+  <!-- mx_ 博客面板：内容由脚本复用新闻列表填充 -->
+  <ul class="mx_list mx_panel" id="mx_panel_blog" data-mx-panel="blog" role="tabpanel" aria-labelledby="mx_tab_blog"></ul>
+
+  </div>
+
 </section>
+
+<script>
+/* mx_ 选项卡切换：先清除全部选中状态，再设置当前项 */
+(function mx_initTabs(){
+  var mx_tabs = document.querySelectorAll('.mx_tab');
+  var mx_panels = document.querySelectorAll('.mx_panel');
+  var mx_newsPanel = document.querySelector('.mx_panel[data-mx-panel="news"]');
+
+  /* mx_ 主要功能：用新闻面板内容填满其余空面板，实现内容复用 */
+  function mx_fillPanels(){
+    mx_panels.forEach(function(mx_panel){
+      if (mx_panel !== mx_newsPanel && mx_panel.children.length === 0){
+        mx_panel.innerHTML = mx_newsPanel.innerHTML;
+      }
+    });
+  }
+
+  /* mx_ 主要功能：清除所有选项卡与面板的选中状态 */
+  function mx_clearActive(){
+    mx_tabs.forEach(function(mx_tab){
+      mx_tab.classList.remove('mx_tab--active');
+      mx_tab.setAttribute('aria-selected','false');
+    });
+    mx_panels.forEach(function(mx_panel){
+      mx_panel.classList.remove('mx_panel--active');
+    });
+  }
+
+  /* mx_ 主要功能：先清除状态，再把当前选项卡及其对应面板设为选中 */
+  function mx_activate(mx_tab){
+    var mx_key = mx_tab.getAttribute('data-mx-tab');
+    var mx_target = document.querySelector('.mx_panel[data-mx-panel="' + mx_key + '"]');
+    mx_clearActive();
+    mx_tab.classList.add('mx_tab--active');
+    mx_tab.setAttribute('aria-selected','true');
+    if (mx_target){ mx_target.classList.add('mx_panel--active'); }
+  }
+
+  /* mx_ 主要功能：为每个选项卡绑定点击监听，阻止跳转并切换面板 */
+  mx_tabs.forEach(function(mx_tab){
+    mx_tab.addEventListener('click', function(mx_event){
+      mx_event.preventDefault();
+      mx_activate(mx_tab);
+    });
+  });
+
+  mx_fillPanels();
+})();
+</script>
 
 </body>
 </html>
