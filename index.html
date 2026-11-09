@@ -3,73 +3,417 @@
   mx_ 作者：孟欣
   mx_ 建立时间：2026-11-09
   mx_ 使用大模型：DeepSeek-V4.1-Flash
-  mx_ 功能名称：作业展厅首页（新浪排行榜还原 + Swiper 课堂任务入口）
+  mx_ 功能名称：孟欣《高级网页设计》课堂实践作品集首页（浅蓝主题 · 课堂目录导航）
 -->
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MX Studio · 作业展厅</title>
+<title>孟欣 · 高级网页设计 · 课堂实践</title>
+<meta name="description" content="孟欣的高级网页设计课堂实践作品集，收录 flex 布局、JavaScript、图标、组件与轮播等练习。">
+<!-- mx_ 本地字体（不依赖任何 CDN） -->
+<link rel="stylesheet" href="cdn/fonts/fonts.css">
 <style>
   :root{
-    --mx_bg:#0E1116;
-    --mx_ink:#E8E4DD;
-    --mx_accent:#C9A84C;
-    --mx_muted:#7A8B9A;
-    --mx_line:rgba(201,168,76,.22);
+    --mx_bg:#f5faff;
+    --mx_bg_soft:#e9f3fd;
+    --mx_card:#ffffff;
+    --mx_ink:#0f2c44;
+    --mx_ink_soft:#3d6079;
+    --mx_muted:#6b8aa3;
+    --mx_accent:#3b8fd4;
+    --mx_accent_deep:#1f6aab;
+    --mx_accent_light:#8fcaf0;
+    --mx_line:#d9e9f8;
+    --mx_shadow:0 14px 34px rgba(59,143,212,.12);
   }
   *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
   body{
-    background:var(--mx_bg);color:var(--mx_ink);
-    font-family:system-ui,-apple-system,"Microsoft YaHei",sans-serif;
+    background:
+      radial-gradient(1200px 600px at 82% -8%, #d8ecfd 0%, rgba(216,236,253,0) 60%),
+      radial-gradient(900px 520px at 8% 4%, #e6f4ff 0%, rgba(230,244,255,0) 58%),
+      linear-gradient(180deg,#f8fcff 0%,#eef6fe 52%,#f8fcff 100%);
+    color:var(--mx_ink);
+    font-family:'Inter',system-ui,-apple-system,"Microsoft YaHei",sans-serif;
     -webkit-font-smoothing:antialiased;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    padding:48px 24px;min-height:100vh;
+    line-height:1.65;
+    min-height:100vh;
   }
-  .mx_hero-mark{
-    font-family:Georgia,"Playfair Display",serif;
-    font-size:clamp(80px,18vw,200px);font-weight:400;line-height:.9;
-    letter-spacing:-.03em;color:transparent;
-    -webkit-text-stroke:1.5px var(--mx_accent);
-    margin-bottom:24px;user-select:none;
+  .mx_shell{max-width:1120px;margin:0 auto;padding:0 26px}
+
+  /* mx_ 顶部导航 */
+  .mx_nav{
+    position:sticky;top:0;z-index:20;
+    backdrop-filter:blur(14px);
+    background:rgba(250,253,255,.82);
+    border-bottom:1px solid rgba(217,233,248,.9);
   }
-  .mx_hero-title{
-    font-family:Georgia,"Playfair Display",serif;
-    font-size:clamp(28px,4vw,48px);font-weight:500;
-    letter-spacing:-.01em;margin-bottom:12px;
+  .mx_nav-inner{
+    max-width:1120px;margin:0 auto;padding:16px 26px;
+    display:flex;align-items:center;justify-content:space-between;gap:18px;
   }
-  .mx_hero-sub{
-    color:var(--mx_muted);font-size:15px;max-width:440px;
-    text-align:center;line-height:1.7;margin-bottom:52px;
+  .mx_brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--mx_ink)}
+  .mx_brand-dot{
+    width:34px;height:34px;border-radius:11px;
+    background:linear-gradient(135deg,#5cb2ea,#2f7fc4);
+    color:#fff;font-size:14px;font-weight:700;letter-spacing:.04em;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 6px 16px rgba(59,143,212,.34);
   }
-  .mx_links{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;width:100%;max-width:680px}
-  .mx_link-card{
-    display:block;text-decoration:none;color:var(--mx_ink);
-    background:rgba(26,31,39,.72);border:1px solid var(--mx_line);
-    border-radius:14px;padding:26px 24px;
-    transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease;
+  .mx_brand-name{font-size:15px;font-weight:600;letter-spacing:.02em}
+  .mx_brand-name small{display:block;font-size:11px;font-weight:400;color:var(--mx_muted);letter-spacing:.16em;text-transform:uppercase}
+  .mx_nav-links{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+  .mx_nav-links a{
+    text-decoration:none;color:var(--mx_ink_soft);font-size:14px;
+    padding-bottom:2px;border-bottom:1.5px solid transparent;transition:color .2s,border-color .2s;
   }
-  .mx_link-card:hover{transform:translateY(-4px);border-color:var(--mx_accent);box-shadow:0 14px 34px rgba(0,0,0,.42)}
-  .mx_link-card small{display:block;margin-top:8px;color:var(--mx_muted);font-size:13px;letter-spacing:.04em}
-  .mx_footer{margin-top:56px;color:var(--mx_muted);font-size:12px;letter-spacing:.24em;text-transform:uppercase}
+  .mx_nav-links a:hover{color:var(--mx_accent_deep);border-color:var(--mx_accent_light)}
+
+  /* mx_ 首屏 */
+  .mx_hero{padding:78px 0 54px}
+  .mx_eyebrow{
+    display:inline-block;font-size:11.5px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--mx_accent_deep);background:#e7f3fd;border:1px solid #cfe6fa;
+    border-radius:999px;padding:7px 16px;margin-bottom:26px;
+  }
+  .mx_hero h1{
+    font-family:'Playfair Display',Georgia,"Songti SC",serif;
+    font-size:clamp(40px,7vw,78px);font-weight:500;line-height:1.06;
+    letter-spacing:-.02em;margin-bottom:22px;
+  }
+  .mx_hero h1 em{font-style:normal;color:var(--mx_accent);display:inline-block}
+  .mx_hero-sub{max-width:600px;color:var(--mx_ink_soft);font-size:16px;line-height:1.9;margin-bottom:34px}
+  .mx_hero-sub b{color:var(--mx_accent_deep);font-weight:600}
+  .mx_cta{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+  .mx_btn{
+    display:inline-flex;align-items:center;gap:8px;
+    text-decoration:none;font-size:14.5px;font-weight:500;
+    padding:13px 26px;border-radius:999px;transition:transform .22s,box-shadow .22s,background .22s,color .22s;
+  }
+  .mx_btn--primary{
+    background:linear-gradient(135deg,#59aee8,#2c7fc2);color:#fff;
+    box-shadow:0 12px 26px rgba(47,127,196,.28);
+  }
+  .mx_btn--primary:hover{transform:translateY(-2px);box-shadow:0 16px 32px rgba(47,127,196,.36)}
+  .mx_btn--ghost{background:rgba(255,255,255,.8);color:var(--mx_accent_deep);border:1px solid #cfe5f9}
+  .mx_btn--ghost:hover{transform:translateY(-2px);background:#fff;box-shadow:var(--mx_shadow)}
+
+  /* mx_ 数据条 */
+  .mx_stats{
+    display:flex;flex-wrap:wrap;gap:0;
+    background:rgba(255,255,255,.72);border:1px solid var(--mx_line);
+    border-radius:18px;padding:22px 8px;margin-bottom:8px;
+    box-shadow:0 10px 30px rgba(59,143,212,.07);
+  }
+  .mx_stat{flex:1 1 200px;padding:6px 24px;border-right:1px solid var(--mx_line)}
+  .mx_stat:last-child{border-right:none}
+  .mx_stat-num{font-family:'Playfair Display',Georgia,serif;font-size:26px;color:var(--mx_accent_deep);line-height:1.2}
+  .mx_stat-label{font-size:12.5px;color:var(--mx_muted);letter-spacing:.08em;margin-top:4px}
+
+  /* mx_ 目录区 */
+  .mx_section{padding:66px 0 20px}
+  .mx_section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:30px}
+  .mx_section-tag{font-size:11.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--mx_accent);margin-bottom:10px}
+  .mx_section-title{font-family:'Playfair Display',Georgia,"Songti SC",serif;font-size:clamp(26px,3.4vw,38px);font-weight:500;letter-spacing:-.01em}
+  .mx_section-note{font-size:13.5px;color:var(--mx_muted)}
+  .mx_section-note b{color:var(--mx_accent_deep);font-weight:600}
+
+  .mx_grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:20px}
+  .mx_card{
+    display:flex;flex-direction:column;
+    background:var(--mx_card);border:1px solid var(--mx_line);border-radius:18px;
+    padding:26px 24px 22px;
+    transition:transform .26s cubic-bezier(.2,.7,.3,1),box-shadow .26s,border-color .26s;
+    position:relative;overflow:hidden;
+  }
+  .mx_card::after{
+    content:"";position:absolute;inset:auto -40% -60% auto;width:180px;height:180px;border-radius:50%;
+    background:radial-gradient(circle,rgba(143,202,240,.28),rgba(143,202,240,0) 70%);
+    transition:transform .4s;pointer-events:none;
+  }
+  .mx_card:hover{transform:translateY(-5px);border-color:#b9dcf7;box-shadow:0 20px 40px rgba(47,127,196,.16)}
+  .mx_card:hover::after{transform:translate(-10px,-10px)}
+  .mx_card-no{
+    font-size:12px;font-weight:700;letter-spacing:.22em;
+    color:var(--mx_accent_light);margin-bottom:14px;
+  }
+  .mx_card h3{font-size:18px;font-weight:600;letter-spacing:.01em;margin-bottom:9px;color:var(--mx_ink)}
+  .mx_card p{font-size:13.5px;color:var(--mx_muted);line-height:1.8;flex:1}
+  .mx_card-link{
+    display:inline-flex;align-items:center;gap:6px;
+    margin-top:18px;font-size:13.5px;font-weight:500;
+    color:var(--mx_accent_deep);text-decoration:none;
+  }
+  .mx_card-link span{transition:transform .22s}
+  .mx_card-link:hover span{transform:translateX(4px)}
+
+  /* mx_ 待添加卡片 */
+  .mx_card--empty{
+    background:rgba(255,255,255,.5);
+    border:1.5px dashed #c4dff5;
+    justify-content:center;
+  }
+  .mx_card--empty h3{color:var(--mx_ink_soft)}
+  .mx_card--empty .mx_card-link{color:var(--mx_muted)}
+
+  /* mx_ 提示词存档 */
+  .mx_prompt-wrap{padding:64px 0 40px}
+  .mx_prompt{
+    background:linear-gradient(135deg,#eaf5fe,#dcecfb);
+    border:1px solid #cbe3f7;border-radius:20px;padding:30px 32px;
+  }
+  .mx_prompt h3{font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:var(--mx_accent_deep);margin-bottom:14px}
+  .mx_prompt pre{
+    font-family:"SFMono-Regular",Consolas,Menlo,monospace;
+    font-size:12.8px;line-height:1.95;color:#23506f;
+    white-space:pre-wrap;word-break:break-word;
+  }
+
+  /* mx_ 页脚 */
+  .mx_footer{
+    border-top:1px solid var(--mx_line);
+    padding:30px 0 46px;margin-top:20px;
+    display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;
+    font-size:12.5px;color:var(--mx_muted);
+  }
+  .mx_footer b{color:var(--mx_ink_soft);font-weight:600}
+
+  @media (max-width:640px){
+    .mx_hero{padding:52px 0 40px}
+    .mx_nav-links{gap:14px}
+    .mx_nav-links a{font-size:13px}
+    .mx_stats{padding:16px 4px}
+    .mx_stat{flex:1 1 100%;border-right:none;border-bottom:1px solid var(--mx_line);padding:12px 20px}
+    .mx_stat:last-child{border-bottom:none}
+  }
 </style>
 </head>
 <body>
-  <div class="mx_hero-mark">MX</div>
-  <h1 class="mx_hero-title">Assignments</h1>
-  <p class="mx_hero-sub">高级网页设计 · 课堂作业展厅。两个页面，一份还原练习，一份组件实践。</p>
 
-  <nav class="mx_links">
-    <a class="mx_link-card" href="sina-rank.html">
-      Sina Rank
-      <small>新浪排行榜 · 一比一还原 · 选项卡切换</small>
+<!-- mx_ 顶部导航 -->
+<header class="mx_nav">
+  <div class="mx_nav-inner">
+    <a class="mx_brand" href="index.html">
+      <span class="mx_brand-dot">MX</span>
+      <span class="mx_brand-name">孟欣 · 作品集<small>Advanced Web Design</small></span>
     </a>
-    <a class="mx_link-card" href="swiper-task.html">
-      Swiper Task
-      <small>大国重器光影展 · 轮播任务 1-4 + 超纲能力</small>
-    </a>
-  </nav>
+    <nav class="mx_nav-links">
+      <a href="#mx_lessons">课堂目录</a>
+      <a href="swiper-task.html">轮播光影展</a>
+      <a href="sina-rank.html">排行榜还原</a>
+      <a href="#mx_prompt">本次提示词</a>
+    </nav>
+  </div>
+</header>
 
-  <div class="mx_footer">MX STUDIO · 2026</div>
+<main class="mx_shell">
+
+  <!-- mx_ 首屏介绍 -->
+  <section class="mx_hero">
+    <span class="mx_eyebrow">Advanced Web Design / Class Practice</span>
+    <h1>高级网页<em>设计</em></h1>
+    <p class="mx_hero-sub">
+      这里收录我在这门课上完成的每一次练习——从 <b>Flex 布局</b> 到 <b>JavaScript 逻辑</b>，
+      从 <b>字体图标与 SVG</b> 到 <b>可复用组件与轮播</b>。
+      每个页面都能直接打开，代码全部原生手写，资源本地化，断网也能正常浏览。
+    </p>
+    <div class="mx_cta">
+      <a class="mx_btn mx_btn--primary" href="#mx_lessons">浏览课堂目录 <span>↓</span></a>
+      <a class="mx_btn mx_btn--ghost" href="swiper-task.html">进入轮播光影展 ↗</a>
+    </div>
+  </section>
+
+  <!-- mx_ 数据统计 -->
+  <section class="mx_stats">
+    <div class="mx_stat">
+      <div class="mx_stat-num">17</div>
+      <div class="mx_stat-label">已完成模块</div>
+    </div>
+    <div class="mx_stat">
+      <div class="mx_stat-num">100%</div>
+      <div class="mx_stat-label">原生 HTML / CSS / JS</div>
+    </div>
+    <div class="mx_stat">
+      <div class="mx_stat-num">0</div>
+      <div class="mx_stat-label">外部 CDN 依赖</div>
+    </div>
+  </section>
+
+  <!-- mx_ 课堂目录 -->
+  <section class="mx_section" id="mx_lessons">
+    <div class="mx_section-head">
+      <div>
+        <div class="mx_section-tag">Lesson Index</div>
+        <h2 class="mx_section-title">课堂目录</h2>
+      </div>
+      <div class="mx_section-note">已完成模块 <b>17</b> · 后续内容持续增加</div>
+    </div>
+
+    <div class="mx_grid">
+
+      <!-- mx_ 01 Flex 布局 -->
+      <article class="mx_card">
+        <div class="mx_card-no">01</div>
+        <h3>Flex 布局复习</h3>
+        <p>导航布局、三等分布局与响应式卡片的练习，理解主轴与交叉轴的对齐控制。</p>
+        <a class="mx_card-link" href="课堂练习/1.html">查看练习 <span>→</span></a>
+      </article>
+
+      <!-- mx_ 02 数据类型 -->
+      <article class="mx_card">
+        <div class="mx_card-no">02</div>
+        <h3>数据类型与运算符</h3>
+        <p>字符串、数字、布尔与类型转换，配合算术与比较运算符完成基础运算练习。</p>
+        <a class="mx_card-link" href="课堂练习/2.html">查看练习 <span>→</span></a>
+      </article>
+
+      <!-- mx_ 03 JS 对象应用 -->
+      <article class="mx_card">
+        <div class="mx_card-no">03</div>
+        <h3>JS 对象的应用</h3>
+        <p>用对象组织数据，通过属性访问与方法调用渲染页面内容，体会数据与视图的关系。</p>
+        <a class="mx_card-link" href="课堂练习/3.html">查看练习 <span>→</span></a>
+      </article>
+
+      <!-- mx_ 04 JS 函数 -->
+      <article class="mx_card">
+        <div class="mx_card-no">04</div>
+        <h3>JS 函数</h3>
+        <p>函数定义、参数、返回值与调用方式，用封装替代重复代码。</p>
+        <a class="mx_card-link" href="课堂练习/4.html">查看练习 <span>→</span></a>
+      </article>
+
+      <!-- mx_ 05 JS 内部对象 -->
+      <article class="mx_card">
+        <div class="mx_card-no">05</div>
+        <h3>JS 内部对象</h3>
+        <p>Math、Date、String 等内置对象的常用方法，解决数值与日期的实际处理问题。</p>
+        <a class="mx_card-link" href="课堂练习/5.html">查看练习 <span>→</span></a>
+      </article>
+
+      <!-- mx_ 06 事件冒泡 -->
+      <article class="mx_card">
+        <div class="mx_card-no">06</div>
+        <h3>事件的冒泡与捕获</h3>
+        <p>观察事件在 DOM 树上的传播顺序，用 stopPropagation 控制事件的触发范围。</p>
+        <a class="mx_card-link" href="课堂练习/6.html">查看练习 <span>→</span></a>
+      </article>
+
+      <!-- mx_ 07 抓小球游戏 -->
+      <article class="mx_card">
+        <div class="mx_card-no">07</div>
+        <h3>抓小球游戏</h3>
+        <p>点击小球得分、点击空白处扣分，练习事件绑定、函数调用与冒泡阻断。</p>
+        <a class="mx_card-link" href="课堂练习/7.html">查看小游戏 <span>→</span></a>
+      </article>
+
+      <!-- mx_ 08 字体图标 -->
+      <article class="mx_card">
+        <div class="mx_card-no">08</div>
+        <h3>字体图标 iconfont</h3>
+        <p>浏览本地 iconfont 资源，了解 Unicode 引用与 Font class 两种使用方式。</p>
+        <a class="mx_card-link" href="课堂练习/font_/demo_index.html">查看字体图标 <span>→</span></a>
+      </article>
+
+      <!-- mx_ 09 SVG 图标 -->
+      <article class="mx_card">
+        <div class="mx_card-no">09</div>
+        <h3>SVG 图标</h3>
+        <p>使用本地 SVG symbol 配合原生 JavaScript 完成图标标签切换，矢量缩放不失真。</p>
+        <a class="mx_card-link" href="课堂练习/font_/svg.html">查看 SVG 练习 <span>→</span></a>
+      </article>
+
+      <!-- mx_ 10 Font Awesome -->
+      <article class="mx_card">
+        <div class="mx_card-no">10</div>
+        <h3>图标工坊 · Font Awesome</h3>
+        <p>以字体图标方式展示 60 余个 Font Awesome 图标，深墨与金铜配色的艺术展厅风格。</p>
+        <a class="mx_card-link" href="iconfont-1.html">查看图标页 <span>→</span></a>
+      </article>
+
+      <!-- mx_ 11 Lucide -->
+      <article class="mx_card">
+        <div class="mx_card-no">11</div>
+        <h3>图标工坊 · Lucide</h3>
+        <p>以原生 SVG 方式展示 Lucide 图标，路径清晰、可自由上色与添加动画。</p>
+        <a class="mx_card-link" href="inconfont-2.html">查看图标页 <span>→</span></a>
+      </article>
+
+      <!-- mx_ 12 底导航字体图标 -->
+      <article class="mx_card">
+        <div class="mx_card-no">12</div>
+        <h3>移动端下导航 · 字体图标</h3>
+        <p>固定底部四栏导航，含数字徽章与红点提示，点击可切换对应内容面板。</p>
+        <a class="mx_card-link" href="iconfont-3.html">查看移动端页 <span>→</span></a>
+      </article>
+
+      <!-- mx_ 13 底导航 SVG -->
+      <article class="mx_card">
+        <div class="mx_card-no">13</div>
+        <h3>移动端下导航 · SVG</h3>
+        <p>同样的四栏底部导航改用内联 SVG 绘制，结构更轻，可对单条路径做动画。</p>
+        <a class="mx_card-link" href="iconfont-4.html">查看移动端页 <span>→</span></a>
+      </article>
+
+      <!-- mx_ 14 新闻选项卡 -->
+      <article class="mx_card">
+        <div class="mx_card-no">14</div>
+        <h3>新闻 Tab 切换</h3>
+        <p>国内 / 省内 / 国际 / 最热四栏选项卡，默认国内新闻，切换逻辑封装为可复用组件。</p>
+        <a class="mx_card-link" href="news-tabs.html">查看选项卡 <span>→</span></a>
+      </article>
+
+      <!-- mx_ 15 新浪排行榜 -->
+      <article class="mx_card">
+        <div class="mx_card-no">15</div>
+        <h3>新浪排行榜还原</h3>
+        <p>一比一还原新浪「排行榜」区块，新闻 / 证券 / 理财 / 博客四栏可点击切换。</p>
+        <a class="mx_card-link" href="sina-rank.html">查看还原页 <span>→</span></a>
+      </article>
+
+      <!-- mx_ 16 Swiper 轮播 -->
+      <article class="mx_card">
+        <div class="mx_card-no">16</div>
+        <h3>Swiper 轮播光影展</h3>
+        <p>大国重器六件展品，四组轮播演示拖动、圆点箭头、自动播放与七种切换效果。</p>
+        <a class="mx_card-link" href="swiper-task.html">查看轮播页 <span>→</span></a>
+      </article>
+
+      <!-- mx_ 17 微博四级项目 -->
+      <article class="mx_card">
+        <div class="mx_card-no">17</div>
+        <h3>微博界面 · 四级项目</h3>
+        <p>推荐、视频、消息、发现、我五个页面组成完整的移动端仿微博界面。</p>
+        <a class="mx_card-link" href="四级项目/tb/index.html">查看项目 <span>→</span></a>
+      </article>
+
+      <!-- mx_ 18 占位 -->
+      <article class="mx_card mx_card--empty">
+        <div class="mx_card-no">18</div>
+        <h3>待添加模块</h3>
+        <p>新的课堂实践会继续归档在这里，保持目录清晰，也保留探索的空间。</p>
+        <a class="mx_card-link" href="#mx_prompt">持续更新 <span>↑</span></a>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- mx_ 本次提示词存档 -->
+  <section class="mx_prompt-wrap" id="mx_prompt">
+    <div class="mx_prompt">
+      <h3>本次页面提示词</h3>
+      <pre>按照 jovial-fudge-366636.netlify.app 的格式，生成一个孟欣的高级网页设计页面，内容是 web前端 文件夹里我自己的内容；颜色为浅蓝色，美观一点；将生成的网页放到 index.html 里面。</pre>
+    </div>
+  </section>
+
+  <!-- mx_ 页脚 -->
+  <footer class="mx_footer">
+    <div><b>孟欣</b> · 高级网页设计 · 课堂实践作品集</div>
+    <div>MX STUDIO · 2026-2027-1</div>
+  </footer>
+
+</main>
+
 </body>
 </html>
