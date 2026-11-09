@@ -1,13 +1,75 @@
 <!DOCTYPE html>
-<!-- mx_ 入口：自动跳转到新浪排行榜还原页 -->
+<!--
+  mx_ 作者：孟欣
+  mx_ 建立时间：2026-11-09
+  mx_ 使用大模型：DeepSeek-V4.1-Flash
+  mx_ 功能名称：作业展厅首页（新浪排行榜还原 + Swiper 课堂任务入口）
+-->
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="refresh" content="0; url=sina-rank.html">
-<title>排行榜 · 新浪页面还原</title>
+<title>MX Studio · 作业展厅</title>
+<style>
+  :root{
+    --mx_bg:#0E1116;
+    --mx_ink:#E8E4DD;
+    --mx_accent:#C9A84C;
+    --mx_muted:#7A8B9A;
+    --mx_line:rgba(201,168,76,.22);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:var(--mx_bg);color:var(--mx_ink);
+    font-family:system-ui,-apple-system,"Microsoft YaHei",sans-serif;
+    -webkit-font-smoothing:antialiased;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:48px 24px;min-height:100vh;
+  }
+  .mx_hero-mark{
+    font-family:Georgia,"Playfair Display",serif;
+    font-size:clamp(80px,18vw,200px);font-weight:400;line-height:.9;
+    letter-spacing:-.03em;color:transparent;
+    -webkit-text-stroke:1.5px var(--mx_accent);
+    margin-bottom:24px;user-select:none;
+  }
+  .mx_hero-title{
+    font-family:Georgia,"Playfair Display",serif;
+    font-size:clamp(28px,4vw,48px);font-weight:500;
+    letter-spacing:-.01em;margin-bottom:12px;
+  }
+  .mx_hero-sub{
+    color:var(--mx_muted);font-size:15px;max-width:440px;
+    text-align:center;line-height:1.7;margin-bottom:52px;
+  }
+  .mx_links{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;width:100%;max-width:680px}
+  .mx_link-card{
+    display:block;text-decoration:none;color:var(--mx_ink);
+    background:rgba(26,31,39,.72);border:1px solid var(--mx_line);
+    border-radius:14px;padding:26px 24px;
+    transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease;
+  }
+  .mx_link-card:hover{transform:translateY(-4px);border-color:var(--mx_accent);box-shadow:0 14px 34px rgba(0,0,0,.42)}
+  .mx_link-card small{display:block;margin-top:8px;color:var(--mx_muted);font-size:13px;letter-spacing:.04em}
+  .mx_footer{margin-top:56px;color:var(--mx_muted);font-size:12px;letter-spacing:.24em;text-transform:uppercase}
+</style>
 </head>
 <body>
-<a href="sina-rank.html">进入排行榜还原页</a>
+  <div class="mx_hero-mark">MX</div>
+  <h1 class="mx_hero-title">Assignments</h1>
+  <p class="mx_hero-sub">高级网页设计 · 课堂作业展厅。两个页面，一份还原练习，一份组件实践。</p>
+
+  <nav class="mx_links">
+    <a class="mx_link-card" href="sina-rank.html">
+      Sina Rank
+      <small>新浪排行榜 · 一比一还原 · 选项卡切换</small>
+    </a>
+    <a class="mx_link-card" href="swiper-task.html">
+      Swiper Task
+      <small>大国重器光影展 · 轮播任务 1-4 + 超纲能力</small>
+    </a>
+  </nav>
+
+  <div class="mx_footer">MX STUDIO · 2026</div>
 </body>
 </html>
