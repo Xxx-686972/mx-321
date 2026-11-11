@@ -82,6 +82,44 @@
   .wy-fx button:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(29,91,191,.18)}
   .wy-fx button.wy-on{background:linear-gradient(135deg,#0f2b5b,#1d5bbf);color:#fff;border-color:transparent}
 
+  /* mx_ 任务四源代码展示区 */
+  .mx_src-show{
+    margin-top:16px;padding:18px 20px;
+    border:1px solid #e2e9fb;border-radius:12px;background:#f8faff;
+  }
+  .mx_src-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  .mx_src-tag{
+    display:inline-block;font-size:12.5px;font-weight:bold;
+    color:#1d5bbf;background:#e8f0ff;border:1px solid #c7d8f8;
+    padding:4px 12px;border-radius:999px;
+  }
+  .mx_src-tip{font-size:12.5px;color:#9aa3af}
+  .mx_src{
+    border:1px solid #e2e5ec;border-radius:10px;margin-bottom:12px;
+    background:#fff;overflow:hidden;
+  }
+  .mx_src summary{
+    cursor:pointer;padding:12px 16px;font-size:13.5px;color:#0f2b5b;
+    background:#eef3ff;border-bottom:1px solid #e2e5ec;list-style:none;outline:none;
+  }
+  .mx_src summary::-webkit-details-marker{display:none}
+  .mx_src summary::before{content:"▸ ";color:#1d5bbf}
+  .mx_src[open] summary::before{content:"▾ "}
+  .mx_code-block{
+    background:#1e293b;color:#e2e8f0;
+    padding:16px 18px;margin:0;font-family:Consolas,Menlo,monospace;
+    font-size:12.2px;line-height:1.85;white-space:pre-wrap;word-break:break-word;
+    overflow-x:auto;
+  }
+  .mx_code-block b{color:#fbbf24;font-weight:bold}
+  .mx_code-block .mx_code-kw{color:#c084fc}         /* 紫色：关键字 */
+  .mx_code-block .mx_code-fn{color:#60a5fa}         /* 蓝色：函数名 */
+  .mx_code-block .mx_code-key{color:#7dd3fc}        /* 浅蓝：对象 key */
+  .mx_code-block .mx_code-str{color:#86efac}        /* 绿色：字符串 */
+  .mx_code-block .mx_code-val{color:#fda4af}        /* 红色：值/bool/null */
+  .mx_code-block .mx_code-cmt{color:#64748b}        /* 灰色：注释 */
+  .mx_code-block .mx_code-arg{color:#f9a8d4}        /* 粉色：函数参数 */
+
   .wy-back{text-align:center;margin-top:28px}
   .wy-back a{display:inline-block;text-decoration:none;color:#0f2b5b;font-size:14.5px;font-weight:bold;background:#fff;border:1px solid #dbe4ff;border-radius:999px;padding:10px 26px;transition:transform .2s,box-shadow .2s}
   .wy-back a:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(15,43,91,.15)}
@@ -191,17 +229,6 @@
   .mx_verify{margin-top:26px;padding-top:22px;border-top:1px dashed #e2e5ec}
   .mx_verify-head{font-size:17px;font-weight:bold;color:#111827;margin-bottom:6px}
   .mx_verify-tip{font-size:13px;color:#6b7280;line-height:2;margin-bottom:16px}
-
-  /* mx_ 答辩抽问 */
-  .mx_defend{margin-top:26px;padding:20px 22px;background:#fffbea;border:1px solid #fde68a;border-radius:12px}
-  .mx_defend-head{font-size:16px;font-weight:bold;color:#b45309;margin-bottom:12px}
-  .mx_defend-list{display:flex;flex-direction:column;gap:14px}
-  .mx_defend-item b{display:block;font-size:13.5px;color:#0f2b5b;margin-bottom:4px}
-  .mx_defend-item p{font-size:13px;color:#5b6472;line-height:1.9;margin:0}
-  .mx_defend-item code{
-    background:#fff;color:#92400e;border-radius:4px;padding:1px 6px;
-    font-family:Consolas,Menlo,monospace;font-size:12.5px;
-  }
 
   /* mx_ AI 提示词入口：底部主入口 */
   .mx_prompt-cta-wrap{text-align:center;margin-top:14px}
@@ -374,6 +401,106 @@
     </div>
   </div>
 
+  <!-- mx_ 任务四源代码展示 -->
+  <div class="mx_src-show">
+    <div class="mx_src-head">
+      <span class="mx_src-tag">📋 演示四源代码</span>
+      <span class="mx_src-tip">点击展开 · 对照复制到你自己的项目里</span>
+    </div>
+
+    <!-- mx_ 效果实验台 HTML 结构 -->
+    <details class="mx_src" open>
+      <summary><b>① 效果实验台 HTML（按钮 + 轮播容器）</b></summary>
+<pre class="mx_code-block"><code>&lt;!-- 效果按钮组：每个按钮用 data-fx 标记目标效果 --&gt;
+&lt;div class="wy-fx"&gt;
+  &lt;button class="wy-on" data-fx="slide"&gt;slide 平推（默认·稳重）&lt;/button&gt;
+  &lt;button data-fx="fade"&gt;fade 淡入淡出（优雅）&lt;/button&gt;
+  &lt;button data-fx="cube"&gt;cube 3D 立方体（炫酷）&lt;/button&gt;
+  &lt;button data-fx="coverflow"&gt;coverflow 画廊堆叠（沉浸）&lt;/button&gt;
+  &lt;button data-fx="flip"&gt;flip 翻页（复古）&lt;/button&gt;
+  &lt;button data-fx="cards"&gt;cards 卡片（俏皮）&lt;/button&gt;
+  &lt;button data-fx="creative"&gt;creative 电影墙（自定义）&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- 轮播容器：一个实例通过 destroy + new 反复重建来切换 effect --&gt;
+&lt;div class="swiper" id="wySw4"&gt;
+  &lt;div class="swiper-wrapper"&gt;
+    &lt;div class="swiper-slide"&gt;&lt;img src="swiper-imgs/tiangong_1.jpg"&gt;...&lt;/div&gt;
+    &lt;div class="swiper-slide"&gt;&lt;img src="swiper-imgs/fuxing_1.jpg"&gt;...&lt;/div&gt;
+    &lt;div class="swiper-slide"&gt;&lt;img src="swiper-imgs/c919_1.jpg"&gt;...&lt;/div&gt;
+    &lt;div class="swiper-slide"&gt;&lt;img src="swiper-imgs/fendouzhe_1.jpg"&gt;...&lt;/div&gt;
+    &lt;div class="swiper-slide"&gt;&lt;img src="swiper-imgs/fast_1.jpg"&gt;...&lt;/div&gt;
+    &lt;div class="swiper-slide"&gt;&lt;img src="swiper-imgs/aida_modu.jpg"&gt;...&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="swiper-pagination" id="wyPag4"&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+    </details>
+
+    <!-- mx_ 效果实验台 JS + creative 电影墙 + 按钮切换 -->
+    <details class="mx_src" open>
+      <summary><b>② JS：mx_buildSwiper4 + creative 电影墙 + 按钮切换</b></summary>
+<pre class="mx_code-block"><code>// 保存全局实例，供切换时销毁重建
+var <span class="mx_code-kw">mx_swiper4</span> = <span class="mx_code-val">null</span>;
+
+// <b>核心函数</b>：销毁旧实例 → 按新 effect 重建
+function <span class="mx_code-kw">mx_buildSwiper4</span>(<span class="mx_code-arg">mx_fx</span>) {
+  <span class="mx_code-cmt">// 关键：换 effect 必须先 destroy，否则新配置不生效</span>
+  <span class="mx_code-kw">if</span> (mx_swiper4) {
+    mx_swiper4.<span class="mx_code-fn">destroy</span>(<span class="mx_code-val">true</span>, <span class="mx_code-val">true</span>);
+  }
+
+  var <span class="mx_code-kw">mx_opts</span> = {
+    <span class="mx_code-key">loop</span>: <span class="mx_code-val">true</span>,
+    <span class="mx_code-key">effect</span>: <span class="mx_code-arg">mx_fx</span>,          <span class="mx_code-cmt">// ← 这里切换效果！</span>
+    <span class="mx_code-key">speed</span>: <span class="mx_code-val">800</span>,
+    <span class="mx_code-key">autoplay</span>: { <span class="mx_code-key">delay</span>: <span class="mx_code-val">3200</span>, <span class="mx_code-key">disableOnInteraction</span>: <span class="mx_code-val">false</span> },
+    <span class="mx_code-key">pagination</span>: { <span class="mx_code-key">el</span>: <span class="mx_code-str">'#wyPag4'</span>, <span class="mx_code-key">clickable</span>: <span class="mx_code-val">true</span> },
+    <span class="mx_code-key">keyboard</span>: { <span class="mx_code-key">enabled</span>: <span class="mx_code-val">true</span> }  <span class="mx_code-cmt">// 超纲：方向键翻页</span>
+  };
+
+  <span class="mx_code-cmt">// ===== creative 电影墙自定义参数 =====</span>
+  <span class="mx_code-kw">if</span> (mx_fx === <span class="mx_code-str">'creative'</span>) {
+    mx_opts.<span class="mx_code-key">creativeEffect</span> = {
+      <span class="mx_code-key">limitProgress</span>: <span class="mx_code-val">3</span>,
+      <span class="mx_code-cmt">// prev：上一张 → 缩到 0.7 + 左移 -60% + 旋转 -18° + 压进深 -400</span>
+      <span class="mx_code-key">prev</span>: {
+        <span class="mx_code-key">shadow</span>: <span class="mx_code-val">true</span>,
+        <span class="mx_code-key">translate</span>: [<span class="mx_code-str">'-60%'</span>, <span class="mx_code-val">0</span>, <span class="mx_code-val">-400</span>],
+        <span class="mx_code-key">rotate</span>: [<span class="mx_code-val">0</span>, <span class="mx_code-val">0</span>, <span class="mx_code-val">-18</span>],
+        <span class="mx_code-key">scale</span>: <span class="mx_code-val">0.7</span>
+      },
+      <span class="mx_code-cmt">// next：下一张 → 放大 1.15 + 右移 60% + 旋转 18°</span>
+      <span class="mx_code-key">next</span>: {
+        <span class="mx_code-key">shadow</span>: <span class="mx_code-val">true</span>,
+        <span class="mx_code-key">translate</span>: [<span class="mx_code-str">'60%'</span>, <span class="mx_code-val">0</span>, <span class="mx_code-val">-400</span>],
+        <span class="mx_code-key">rotate</span>: [<span class="mx_code-val">0</span>, <span class="mx_code-val">0</span>, <span class="mx_code-val">18</span>],
+        <span class="mx_code-key">scale</span>: <span class="mx_code-val">1.15</span>
+      }
+    };
+  }
+
+  mx_swiper4 = <span class="mx_code-kw">new</span> <span class="mx_code-fn">Swiper</span>(<span class="mx_code-str">'#wySw4'</span>, mx_opts);
+}
+
+// <b>初始化</b>：默认 slide 平推
+<span class="mx_code-fn">mx_buildSwiper4</span>(<span class="mx_code-str">'slide'</span>);
+
+// <b>按钮点击切换</b>：遍历所有 .wy-fx button
+document.<span class="mx_code-fn">querySelectorAll</span>(<span class="mx_code-str">'.wy-fx button'</span>).<span class="mx_code-fn">forEach</span>(function(btn) {
+  btn.<span class="mx_code-fn">addEventListener</span>(<span class="mx_code-str">'click'</span>, function() {
+    <span class="mx_code-cmt">// 1. 高亮当前按钮（加 wy-on，其余移除）</span>
+    document.<span class="mx_code-fn">querySelectorAll</span>(<span class="mx_code-str">'.wy-fx button'</span>).<span class="mx_code-fn">forEach</span>(function(mx_btn) {
+      mx_btn.<span class="mx_code-fn">classList</span>.<span class="mx_code-fn">remove</span>(<span class="mx_code-str">'wy-on'</span>);
+    });
+    btn.<span class="mx_code-fn">classList</span>.<span class="mx_code-fn">add</span>(<span class="mx_code-str">'wy-on'</span>);
+
+    <span class="mx_code-cmt">// 2. 销毁 + 重建（data-fx 存的就是目标效果名）</span>
+    <span class="mx_code-fn">mx_buildSwiper4</span>(btn.<span class="mx_code-fn">dataset</span>.<span class="mx_code-fn">fx</span>);
+  });
+});</code></pre>
+    </details>
+  </div>
+
   <div class="wy-back"><a href="index.html">← 返回课堂实践中心</a></div>
 
   <!-- mx_ AI 提示词记录 · 任务一 真实对话复盘 -->
@@ -491,25 +618,6 @@ autoplay: {
           </div>
           <div class="mx_prompt-dots swiper-pagination" id="mxPagGood"></div>
           <p class="mx_readout" id="mxReadGood">点第 3 个圆点 → 当前索引 <b>1</b> · 等待点击</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- mx_ 答辩准备 -->
-    <div class="mx_defend">
-      <div class="mx_defend-head">答辩抽问准备</div>
-      <div class="mx_defend-list">
-        <div class="mx_defend-item">
-          <b>Q1：第一轮你的提示词哪里有遗漏？</b>
-          <p>我只说"补全任务 1-4"，没说清楚"圆点必须能点击跳转"、"拖动后自动播放不能停"这两个<b>行为需求</b>，AI 给了最小可用配置但两个关键点都漏了。</p>
-        </div>
-        <div class="mx_defend-item">
-          <b>Q2：第二轮你怎么说清楚的？</b>
-          <p>我先亲自跑了一遍发现两个具体问题，然后把问题拆成两条：① 点圆点没反应 → 确认缺 <code>clickable: true</code>；② 拖动后停了不恢复 → 确认缺 <code>disableOnInteraction: false</code>，逼着 AI 一项项补。</p>
-        </div>
-        <div class="mx_defend-item">
-          <b>Q3：你的结论是什么？</b>
-          <p>AI 对<b>模糊需求</b>会给"最小可用"答案，漏掉隐含行为；提示词工程师的职责是把<b>行为说具体</b>，最好附验证步骤和预期结果。</p>
         </div>
       </div>
     </div>

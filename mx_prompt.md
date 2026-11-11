@@ -677,3 +677,29 @@ ai提示词页面按照这个样子修改
 ```
 
 ---
+
+---
+
+## [2026-11-11 14:55:00]
+
+**模型**: DeepSeek-V4.1-Flash
+
+**提示词内容**:
+``
+在这页加入演示四 · 效果实验台（点按钮切换 effect）的原代码 和creative电影墙的源代码
+``
+
+（需求：在 swiper-task.html 任务四演示台下方新增源代码展示区块，包含 HTML 结构（效果按钮组 + wySw4 轮播容器）和 JS 源码（mx_buildSwiper4 核心函数 + creativeEffect 电影墙自定义参数 + 按钮点击切换逻辑），深色代码块带语法高亮标签，默认展开。验收 PASS：控制台无报错、两个 details 折叠块存在、creativeEffect 参数完整、效果实验台本身仍正常切换 effect）
+
+---
+
+## [2026-11-11 14:56:00]
+
+**模型**: DeepSeek-V4.1-Flash
+
+**提示词内容**:
+``
+答辩抽问准备模块删掉
+``
+
+（需求：删除 swiper-task.html 中 #mx_prompt 区块末尾的「答辩抽问准备」模块，含 HTML（Q1/Q2/Q3 三条问答）和配套 CSS（.mx_defend / .mx_defend-head / .mx_defend-list / .mx_defend-item）。已完整删除，无残留引用）
