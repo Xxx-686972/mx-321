@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="微博移动端页面复刻——发现页">
+    <title>微博 · 发现</title>
+    <script src="./iconfont.js"></script>
+    <script src="./js/iconfont-extra.js"></script>
+    <link rel="stylesheet" href="./css/1.css">
+</head>
+<body class="page-search">
+
+    <!-- 搜索框 -->
+    <div class="search-box">
+        <svg class="icon icon-o search-icon" aria-hidden="true"><use xlink:href="#icon-search-o"></use></svg>
+        <input type="search" placeholder="猜你想搜：崔晋">
+        <button class="search-btn" type="button">搜索</button>
+    </div>
+
+    <!-- 微博热搜 -->
+    <section class="panel">
+        <div class="panel-head">
+            <h2 class="panel-title hot">
+                <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-hot-o"></use></svg>微博热搜
+            </h2>
+            <span class="panel-more">热搜简报 &rsaquo;</span>
+        </div>
+        <ol class="hot-list">
+            <li class="hot-item">
+                <span class="hot-rank top">1</span>
+                <span class="hot-text">曝胡先煦李宛妲买房</span>
+                <span class="tag tag-hot">热</span>
+            </li>
+            <li class="hot-item">
+                <span class="hot-rank top">2</span>
+                <span class="hot-text">比亚迪大汉23.59万...</span>
+            </li>
+            <li class="hot-item">
+                <span class="hot-rank top">3</span>
+                <span class="hot-text">肖战演唱会退票规则</span>
+                <span class="tag tag-new">新</span>
+            </li>
+            <li class="hot-item">
+                <span class="hot-rank">4</span>
+                <span class="hot-text">王楚然的泳衣竟然被...</span>
+            </li>
+            <li class="hot-item">
+                <span class="hot-rank">5</span>
+                <span class="hot-text">向太说张家齐妈妈谎...</span>
+            </li>
+            <li class="hot-item">
+                <span class="hot-rank">6</span>
+                <span class="hot-text">胡先煦李宛妲时间线</span>
+                <span class="tag tag-ent">娱</span>
+            </li>
+        </ol>
+    </section>
+
+    <!-- 搜索结果卡片 -->
+    <article class="card">
+        <div class="card-header">
+            <img class="avatar" src="./images/avatar4.jpg" alt="娱乐第一线_的头像">
+            <div class="card-user-info">
+                <div class="username">娱乐第一线_</div>
+                <div class="time">10-12 电视剧博主</div>
+            </div>
+        </div>
+        <div class="card-text">
+            难怪李勒优和崔晋一家看着格格不入！这期动物园视频，崔晋一家三口一身大牌质感拉满，李勒优穿的却是平价普通衣服，走在路上一眼就能看出差别
+        </div>
+        <img class="card-img" src="./images/hotpost.jpg" alt="热搜配图">
+    </article>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="tab-item">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-shouye"></use></svg>
+            <span>首页</span>
+        </a>
+        <a href="video.html" class="tab-item">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-video"></use></svg>
+            <span>视频</span>
+            <span class="budge-num">6</span>
+        </a>
+        <a href="search.html" class="tab-item active">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-faxian1"></use></svg>
+            <span>发现</span>
+        </a>
+        <a href="message.html" class="tab-item">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-xiaoxi1"></use></svg>
+            <span>消息</span>
+            <span class="budge-dot"></span>
+        </a>
+        <a href="mine.html" class="tab-item">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-wode1"></use></svg>
+            <span>我</span>
+        </a>
+    </nav>
+
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="微博移动端页面复刻——消息页">
+    <title>微博 · 消息</title>
+    <script src="./iconfont.js"></script>
+    <script src="./js/iconfont-extra.js"></script>
+    <link rel="stylesheet" href="./css/1.css">
+</head>
+<body class="page-message">
+
+    <!-- 顶部标签栏 -->
+    <header class="top-nav">
+        <nav class="top-tabs">
+            <span class="tab-item" onclick="changeTab(this)">发现群</span>
+            <span class="tab-item" onclick="changeTab(this)">动态</span>
+            <span class="tab-item active" onclick="changeTab(this)">消息<span class="badge">25</span></span>
+        </nav>
+        <div class="nav-icons">
+            <button class="icon-btn" type="button" title="清空消息">
+                <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-clean-o"></use></svg>
+            </button>
+            <button class="icon-btn" type="button" title="设置">
+                <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-settings-o"></use></svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="msg-list">
+        <!-- 消息分类入口 -->
+        <div class="msg-item">
+            <span class="msg-icon">
+                <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-at-o"></use></svg>
+            </span>
+            <div class="msg-text">
+                <h4>@我的</h4>
+            </div>
+            <span class="msg-arrow">&rsaquo;</span>
+        </div>
+        <div class="msg-item">
+            <span class="msg-icon">
+                <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-comment-o"></use></svg>
+            </span>
+            <div class="msg-text">
+                <h4>评论</h4>
+            </div>
+            <span class="msg-arrow">&rsaquo;</span>
+        </div>
+        <div class="msg-item">
+            <span class="msg-icon">
+                <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-like-o"></use></svg>
+            </span>
+            <div class="msg-text">
+                <h4>赞</h4>
+            </div>
+            <span class="msg-arrow">&rsaquo;</span>
+        </div>
+
+        <!-- 会话列表 -->
+        <div class="msg-item">
+            <img class="avatar" src="./images/sinanews.png" alt="新浪新闻的头像">
+            <div class="msg-text">
+                <h4>新浪新闻</h4>
+                <p>2027国考今起报名，注意事项一文速览</p>
+            </div>
+            <div class="msg-meta">
+                <span class="msg-time">09:19</span>
+                <span class="badge">13</span>
+            </div>
+        </div>
+        <div class="msg-item">
+            <span class="msg-icon">
+                <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-hot-o"></use></svg>
+            </span>
+            <div class="msg-text">
+                <h4>热搜简报</h4>
+                <p>微博热搜: 红果短剧千万别下载</p>
+            </div>
+            <div class="msg-meta">
+                <span class="msg-time">08:52</span>
+                <span class="badge">5</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="tab-item">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-shouye"></use></svg>
+            <span>首页</span>
+        </a>
+        <a href="video.html" class="tab-item">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-video"></use></svg>
+            <span>视频</span>
+            <span class="budge-num">6</span>
+        </a>
+        <a href="search.html" class="tab-item">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-faxian1"></use></svg>
+            <span>发现</span>
+        </a>
+        <a href="message.html" class="tab-item active">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-xiaoxi1"></use></svg>
+            <span>消息</span>
+        </a>
+        <a href="mine.html" class="tab-item">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-wode1"></use></svg>
+            <span>我</span>
+        </a>
+    </nav>
+
+    <script>
+        // 顶部标签切换（发现群 / 动态 / 消息）
+        function changeTab(el) {
+            var tabs = el.parentNode.querySelectorAll('.tab-item');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            el.classList.add('active');
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<!--
+  作者：孟欣
+  建立时间：2026-11-04
+  使用大模型：DeepSeek-V4.1-Flash
+  功能名称：新闻 Tab 选项卡（国内/省内/国际/最热，默认国内）
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>News Tabs · MX Studio</title>
+<link rel="stylesheet" href="cdn/fonts/fonts.css">
+<style>
+  :root{
+    --mx-bg:#0E1116;
+    --mx-panel-bg:#151A21;
+    --mx-ink:#E8E4DD;
+    --mx-accent:#C9A84C;
+    --mx-muted:#7A8B9A;
+    --mx-line:rgba(201,168,76,.22);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:var(--mx-bg);
+    color:var(--mx-ink);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    padding:64px 24px;
+    display:flex;
+    justify-content:center;
+  }
+  .mx_page{width:100%;max-width:880px}
+
+  /* 页头 */
+  .mx_masthead{margin-bottom:44px}
+  .mx_masthead-kicker{
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--mx-accent);margin-bottom:14px;
+  }
+  .mx_masthead-title{
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:clamp(34px,5vw,56px);font-weight:400;line-height:1.05;
+    letter-spacing:-.01em;margin-bottom:14px;
+  }
+  .mx_masthead-desc{
+    color:var(--mx-muted);font-size:14px;line-height:1.8;max-width:560px;
+  }
+  .mx_masthead-desc code{
+    font-family:'SFMono-Regular',Consolas,monospace;
+    font-size:12px;color:var(--mx-accent);
+  }
+
+  /* 选项卡按钮 */
+  .mx_tab-list{
+    display:flex;gap:4px;flex-wrap:wrap;
+    border-bottom:1px solid var(--mx-line);
+    margin-bottom:28px;
+  }
+  .mx_tab{
+    position:relative;
+    appearance:none;border:0;background:none;cursor:pointer;
+    padding:14px 20px;
+    font-family:inherit;font-size:14px;font-weight:500;
+    letter-spacing:.06em;color:var(--mx-muted);
+    transition:color .22s ease;
+  }
+  .mx_tab:hover{color:var(--mx-ink)}
+  .mx_tab:focus-visible{outline:1px dashed var(--mx-accent);outline-offset:-4px}
+  .mx_tab::after{
+    content:'';position:absolute;left:20px;right:20px;bottom:-1px;height:2px;
+    background:var(--mx-accent);transform:scaleX(0);transform-origin:left;
+    transition:transform .26s ease;
+  }
+  .mx_tab-active{color:var(--mx-accent)}
+  .mx_tab-active::after{transform:scaleX(1)}
+  .mx_tab-count{
+    font-size:10px;font-weight:400;letter-spacing:.04em;
+    color:var(--mx-muted);margin-left:6px;vertical-align:super;
+  }
+
+  /* 面板 */
+  .mx_tab-panel{display:block;animation:mx_fade .3s ease both}
+  .mx_tab-panel[hidden]{display:none}
+  @keyframes mx_fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .mx_tab-panel-lead{
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:20px;line-height:1.5;
+    padding-bottom:22px;margin-bottom:22px;
+    border-bottom:1px solid var(--mx-line);
+    color:var(--mx-ink);
+  }
+
+  /* 新闻条目 */
+  .mx_news{
+    display:grid;grid-template-columns:56px 1fr;gap:20px;
+    padding:20px 24px;margin-bottom:12px;
+    background:var(--mx-panel-bg);
+    border-left:2px solid transparent;
+    transition:border-color .24s ease,background .24s ease;
+  }
+  .mx_news:hover{border-left-color:var(--mx-accent);background:#1A1F27}
+  .mx_news-index{
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:22px;color:var(--mx-accent);line-height:1;
+    padding-top:4px;
+  }
+  .mx_news-title{
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:19px;font-weight:500;line-height:1.45;
+    letter-spacing:.01em;margin-bottom:8px;
+  }
+  .mx_news-meta{
+    font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--mx-muted);
+  }
+
+  /* 页脚 */
+  .mx_footer{
+    margin-top:48px;display:flex;justify-content:space-between;align-items:center;
+    font-size:12px;color:var(--mx-muted);letter-spacing:.08em;
+    border-top:1px solid var(--mx-line);padding-top:20px;
+  }
+  .mx_footer a{color:var(--mx-muted);text-decoration:none;transition:color .2s}
+  .mx_footer a:hover{color:var(--mx-accent)}
+
+  @media (max-width:560px){
+    body{padding:40px 16px}
+    .mx_tab{padding:12px 12px;font-size:13px}
+    .mx_news{grid-template-columns:40px 1fr;gap:14px;padding:18px}
+    .mx_news-title{font-size:17px}
+  }
+</style>
+</head>
+<body>
+
+<main class="mx_page">
+
+  <header class="mx_masthead">
+    <div class="mx_masthead-kicker">MX Studio · Component 05</div>
+    <h1 class="mx_masthead-title">Newsroom</h1>
+    <p class="mx_masthead-desc">
+      四组新闻分类。交互逻辑全部来自 <code>js/mx_tabs.js</code>：任一页面只要按约定加
+      <code>data-mx-tabs</code>、<code>data-mx-tab</code>、<code>data-mx-panel</code> 属性即可复用。
+    </p>
+  </header>
+
+  <!-- ===== 选项卡组 ===== -->
+  <section class="mx_tabs" data-mx-tabs>
+
+    <div class="mx_tab-list" role="tablist" aria-label="新闻分类">
+      <button class="mx_tab mx_tab-active" type="button" role="tab"
+              id="mx_tab_domestic" data-mx-tab="domestic"
+              aria-selected="true" aria-controls="mx_panel_domestic">
+        国内新闻<span class="mx_tab-count">01</span>
+      </button>
+      <button class="mx_tab" type="button" role="tab"
+              id="mx_tab_province" data-mx-tab="province"
+              aria-selected="false" aria-controls="mx_panel_province" tabindex="-1">
+        省内新闻<span class="mx_tab-count">02</span>
+      </button>
+      <button class="mx_tab" type="button" role="tab"
+              id="mx_tab_world" data-mx-tab="world"
+              aria-selected="false" aria-controls="mx_panel_world" tabindex="-1">
+        国际新闻<span class="mx_tab-count">03</span>
+      </button>
+      <button class="mx_tab" type="button" role="tab"
+              id="mx_tab_hot" data-mx-tab="hot"
+              aria-selected="false" aria-controls="mx_panel_hot" tabindex="-1">
+        最热新闻<span class="mx_tab-count">04</span>
+      </button>
+    </div>
+
+    <div class="mx_tab-panels">
+
+      <!-- 国内新闻（默认选中） -->
+      <div class="mx_tab-panel mx_tab-panel-active" role="tabpanel"
+           id="mx_panel_domestic" data-mx-panel="domestic"
+           aria-labelledby="mx_tab_domestic">
+        <p class="mx_tab-panel-lead">国内要闻 · 今日精选三条</p>
+
+        <article class="mx_news">
+          <div class="mx_news-index">01</div>
+          <div>
+            <h2 class="mx_news-title">全国多城启动冬季公共交通延时运营</h2>
+            <div class="mx_news-meta">2026-11-04 · 民生</div>
+          </div>
+        </article>
+
+        <article class="mx_news">
+          <div class="mx_news-index">02</div>
+          <div>
+            <h2 class="mx_news-title">新版城市绿地建设标准发布，强调步行可达性</h2>
+            <div class="mx_news-meta">2026-11-04 · 城建</div>
+          </div>
+        </article>
+
+        <article class="mx_news">
+          <div class="mx_news-index">03</div>
+          <div>
+            <h2 class="mx_news-title">高校秋季招聘会开启，数字岗位需求继续增长</h2>
+            <div class="mx_news-meta">2026-11-04 · 教育</div>
+          </div>
+        </article>
+      </div>
+
+      <!-- 省内新闻 -->
+      <div class="mx_tab-panel" role="tabpanel"
+           id="mx_panel_province" data-mx-panel="province"
+           aria-labelledby="mx_tab_province" hidden>
+        <p class="mx_tab-panel-lead">省内动态 · 本地视角三条</p>
+
+        <article class="mx_news">
+          <div class="mx_news-index">01</div>
+          <div>
+            <h2 class="mx_news-title">省内高速完成新一轮夜间照明改造</h2>
+            <div class="mx_news-meta">2026-11-04 · 交通</div>
+          </div>
+        </article>
+
+        <article class="mx_news">
+          <div class="mx_news-index">02</div>
+          <div>
+            <h2 class="mx_news-title">省图书馆延长周末开放时间至晚九点</h2>
+            <div class="mx_news-meta">2026-11-04 · 文化</div>
+          </div>
+        </article>
+
+        <article class="mx_news">
+          <div class="mx_news-index">03</div>
+          <div>
+            <h2 class="mx_news-title">本地农产品冷链集配中心投入试运行</h2>
+            <div class="mx_news-meta">2026-11-04 · 农业</div>
+          </div>
+        </article>
+      </div>
+
+      <!-- 国际新闻 -->
+      <div class="mx_tab-panel" role="tabpanel"
+           id="mx_panel_world" data-mx-panel="world"
+           aria-labelledby="mx_tab_world" hidden>
+        <p class="mx_tab-panel-lead">国际观察 · 全球视角三条</p>
+
+        <article class="mx_news">
+          <div class="mx_news-index">01</div>
+          <div>
+            <h2 class="mx_news-title">多国联合发布海洋塑料治理路线图</h2>
+            <div class="mx_news-meta">2026-11-04 · 环境</div>
+          </div>
+        </article>
+
+        <article class="mx_news">
+          <div class="mx_news-index">02</div>
+          <div>
+            <h2 class="mx_news-title">国际航运价格指数连续三周回落</h2>
+            <div class="mx_news-meta">2026-11-04 · 经贸</div>
+          </div>
+        </article>
+
+        <article class="mx_news">
+          <div class="mx_news-index">03</div>
+          <div>
+            <h2 class="mx_news-title">跨国科研团队完成深海生态样本采集</h2>
+            <div class="mx_news-meta">2026-11-04 · 科技</div>
+          </div>
+        </article>
+      </div>
+
+      <!-- 最热新闻 -->
+      <div class="mx_tab-panel" role="tabpanel"
+           id="mx_panel_hot" data-mx-panel="hot"
+           aria-labelledby="mx_tab_hot" hidden>
+        <p class="mx_tab-panel-lead">热度排行 · 全站阅读量前三</p>
+
+        <article class="mx_news">
+          <div class="mx_news-index">01</div>
+          <div>
+            <h2 class="mx_news-title">冷空气过程本周过境，多地昼夜温差超十度</h2>
+            <div class="mx_news-meta">阅读 128k · 天气</div>
+          </div>
+        </article>
+
+        <article class="mx_news">
+          <div class="mx_news-index">02</div>
+          <div>
+            <h2 class="mx_news-title">年度国产动画电影票房创同期新高</h2>
+            <div class="mx_news-meta">阅读 96k · 文娱</div>
+          </div>
+        </article>
+
+        <article class="mx_news">
+          <div class="mx_news-index">03</div>
+          <div>
+            <h2 class="mx_news-title">家庭储能设备销量同比增长四成</h2>
+            <div class="mx_news-meta">阅读 74k · 消费</div>
+          </div>
+        </article>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="mx_footer">
+    <span>MX STUDIO · 2026</span>
+    <a href="index.html">← Home</a>
+  </footer>
+
+</main>
+
+<!-- 选项卡逻辑：外部引用，可复用 -->
+<script src="js/mx_tabs.js"></script>
+
+</body>
+</html>

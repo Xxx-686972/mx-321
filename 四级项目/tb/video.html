@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="微博移动端页面复刻——视频页">
+    <title>微博 · 视频</title>
+    <script src="./iconfont.js"></script>
+    <script src="./js/iconfont-extra.js"></script>
+    <link rel="stylesheet" href="./css/1.css">
+</head>
+<body class="page-video">
+
+    <!-- 顶部标签栏 -->
+    <header class="top-nav">
+        <button class="icon-btn" type="button" title="返回">
+            <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-back-o"></use></svg>
+        </button>
+        <nav class="top-tabs">
+            <span class="tab-item" onclick="changeTab(this)">播客</span>
+            <span class="tab-item" onclick="changeTab(this)">短剧</span>
+            <span class="tab-item active" onclick="changeTab(this)">推荐</span>
+        </nav>
+        <div class="nav-icons">
+            <button class="icon-btn" type="button" title="搜索">
+                <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-search-o"></use></svg>
+            </button>
+            <button class="icon-btn" type="button" title="我的">
+                <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-user-o"></use></svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="feed">
+
+        <!-- 视频卡片 -->
+        <article class="card">
+            <div class="video-cover">
+                <img class="card-img" src="./images/video-post.jpg" alt="视频封面">
+                <span class="play-badge">
+                    <svg class="icon" aria-hidden="true"><use xlink:href="#icon-video"></use></svg>
+                </span>
+                <span class="duration">03:12</span>
+            </div>
+            <div class="card-header">
+                <img class="avatar" src="./images/avatar3.jpg" alt="糯鱼元的头像">
+                <div class="card-user-info">
+                    <div class="username">糯鱼元</div>
+                    <div class="time">1.5万粉丝</div>
+                </div>
+                <button class="follow-btn" type="button">+ 关注</button>
+            </div>
+            <div class="card-text">木兰小猪差点重回颜值巅峰期陈泽|黑白|刘军</div>
+            <div class="card-footer">
+                <span class="action">
+                    <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-video"></use></svg>播放 64万
+                </span>
+                <span class="action">
+                    <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-comment-o"></use></svg>评论 25
+                </span>
+                <span class="action">
+                    <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-like-o"></use></svg>点赞 7731
+                </span>
+            </div>
+        </article>
+
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="tab-item">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-shouye"></use></svg>
+            <span>首页</span>
+        </a>
+        <a href="video.html" class="tab-item active">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-video"></use></svg>
+            <span>视频</span>
+        </a>
+        <a href="search.html" class="tab-item">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-faxian1"></use></svg>
+            <span>发现</span>
+        </a>
+        <a href="message.html" class="tab-item">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-xiaoxi1"></use></svg>
+            <span>消息</span>
+            <span class="budge-dot"></span>
+        </a>
+        <a href="mine.html" class="tab-item">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-wode1"></use></svg>
+            <span>我</span>
+        </a>
+    </nav>
+
+    <script>
+        // 顶部标签切换（播客 / 短剧 / 推荐）
+        function changeTab(el) {
+            var tabs = el.parentNode.querySelectorAll('.tab-item');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            el.classList.add('active');
+        }
+    </script>
+
+</body>
+</html>

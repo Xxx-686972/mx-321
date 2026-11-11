@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="微博移动端页面复刻——个人主页">
+    <title>微博 · 我</title>
+    <script src="./iconfont.js"></script>
+    <script src="./js/iconfont-extra.js"></script>
+    <link rel="stylesheet" href="./css/1.css">
+</head>
+<body class="page-mine">
+
+    <!-- 顶部操作栏 -->
+    <header class="top-nav">
+        <div class="nav-icons">
+            <button class="icon-btn" type="button" title="加好友">
+                <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-addfriend-o"></use></svg>
+            </button>
+            <button class="icon-btn" type="button" title="扫一扫">
+                <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-scan-o"></use></svg>
+            </button>
+            <button class="icon-btn" type="button" title="设置">
+                <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-settings-o"></use></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- 个人资料 -->
+    <section class="profile-head">
+        <div class="profile-top">
+            <img class="avatar" src="./images/myavatar.jpg" alt="煎biiinguo子的头像">
+            <div class="profile-info">
+                <h2 class="profile-name">煎biiinguo子</h2>
+                <p class="profile-desc">简介：暂无简介</p>
+                <span class="online">在线 &rsaquo;</span>
+            </div>
+        </div>
+
+        <!-- 会员推广条 -->
+        <div class="vip-banner">
+            <div class="vip-text">
+                <p class="vip-title">续费有大奖</p>
+                <p class="vip-sub">会员登录获额外成长 &rsaquo;</p>
+            </div>
+            <button class="vip-btn" type="button">快来抢 &rsaquo;</button>
+        </div>
+
+        <!-- 数据统计 -->
+        <div class="stat-row">
+            <div class="stat-item">
+                <h3>4</h3>
+                <p>微博</p>
+            </div>
+            <div class="stat-item">
+                <h3>4</h3>
+                <p>关注</p>
+            </div>
+            <div class="stat-item">
+                <h3>1</h3>
+                <p>粉丝</p>
+            </div>
+            <div class="stat-item">
+                <h3>0</h3>
+                <p>访客</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 功能宫格 -->
+    <section class="func-grid">
+        <a class="func-item" href="#">
+            <span class="func-icon">
+                <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-photo-o"></use></svg>
+            </span>
+            <p>我的相册</p>
+        </a>
+        <a class="func-item" href="#">
+            <span class="func-icon">
+                <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-star-o"></use></svg>
+            </span>
+            <p>赞/收藏</p>
+        </a>
+        <a class="func-item" href="#">
+            <span class="func-icon">
+                <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-clock-o"></use></svg>
+            </span>
+            <p>浏览记录</p>
+        </a>
+        <a class="func-item" href="#">
+            <span class="func-icon">
+                <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-note-o"></use></svg>
+            </span>
+            <p>草稿箱</p>
+        </a>
+        <a class="func-item" href="#">
+            <span class="func-icon">
+                <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-wallet-o"></use></svg>
+            </span>
+            <p>我的钱包</p>
+        </a>
+        <a class="func-item" href="#">
+            <span class="func-icon">
+                <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-shop-o"></use></svg>
+            </span>
+            <p>微博购订单</p>
+        </a>
+        <a class="func-item" href="#">
+            <span class="func-icon">
+                <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-light-o"></use></svg>
+            </span>
+            <p>创作中心</p>
+        </a>
+        <a class="func-item" href="#">
+            <span class="func-icon">
+                <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-clothes-o"></use></svg>
+            </span>
+            <p>个性皮肤</p>
+        </a>
+    </section>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="tab-item">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-shouye"></use></svg>
+            <span>首页</span>
+        </a>
+        <a href="video.html" class="tab-item">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-video"></use></svg>
+            <span>视频</span>
+            <span class="budge-num">6</span>
+        </a>
+        <a href="search.html" class="tab-item">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-faxian1"></use></svg>
+            <span>发现</span>
+        </a>
+        <a href="message.html" class="tab-item">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-xiaoxi1"></use></svg>
+            <span>消息</span>
+            <span class="budge-dot"></span>
+        </a>
+        <a href="mine.html" class="tab-item active">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-wode1"></use></svg>
+            <span>我</span>
+        </a>
+    </nav>
+
+</body>
+</html>

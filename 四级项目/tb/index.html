@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="微博移动端页面复刻——推荐页">
+    <title>微博 · 推荐</title>
+    <!-- iconfont 图标库（Symbol 引用方式），项目「四级项目图标」 -->
+    <script src="./iconfont.js"></script>
+    <!-- iconfont 项目里没有的补充图标 -->
+    <script src="./js/iconfont-extra.js"></script>
+    <link rel="stylesheet" href="./css/1.css">
+</head>
+<body class="page-feed">
+
+    <!-- 顶部标签栏 -->
+    <header class="top-nav">
+        <nav class="top-tabs">
+            <span class="tab-item" onclick="changeTab(this)">超话</span>
+            <span class="tab-item active" onclick="changeTab(this)">推荐</span>
+            <span class="tab-item" onclick="changeTab(this)">关注</span>
+        </nav>
+        <div class="nav-icons">
+            <button class="icon-btn" type="button" title="红包">
+                <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-redbag-o"></use></svg>
+            </button>
+            <button class="icon-btn" type="button" title="发微博">
+                <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-plus-o"></use></svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="feed">
+
+        <!-- 帖子1 -->
+        <article class="card">
+            <div class="card-header">
+                <img class="avatar" src="./images/avatar1.jpg" alt="我瞌睡多iuk的头像">
+                <div class="card-user-info">
+                    <div class="username">我瞌睡多iuk</div>
+                    <div class="time">10-11 来自 微博视频号</div>
+                </div>
+            </div>
+            <div class="card-text">
+                <span class="topic">#崔晋回应称家里没闹僵#</span><br>
+                定性家庭琐事：崔晋称家人中没有任何一人说过谁与谁关系闹僵，母女间不愉快的时刻只占相处中的20%，且是暂时的。<br>
+                李勒优同步回应：她接受媒体采访时表示和晋妈“关系挺好的”，其余私人细节不便多谈。
+            </div>
+            <img class="card-img" src="./images/post1.jpg" alt="帖子配图">
+            <div class="card-footer">
+                <span class="action">
+                    <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-repeat-o"></use></svg>转发 4
+                </span>
+                <span class="action">
+                    <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-comment-o"></use></svg>评论 34
+                </span>
+                <span class="action">
+                    <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-like-o"></use></svg>点赞 509
+                </span>
+            </div>
+        </article>
+
+        <!-- 帖子2 -->
+        <article class="card">
+            <div class="card-header">
+                <img class="avatar" src="./images/avatar2.jpg" alt="温小逗_的头像">
+                <div class="card-user-info">
+                    <div class="username">温小逗_</div>
+                    <div class="time">10-9 来自 OPPO K13x 5G 已编辑</div>
+                </div>
+            </div>
+            <div class="card-text">
+                <span class="topic">#崔晋李勒优聊天记录#</span>
+            </div>
+            <div class="card-footer">
+                <span class="action">
+                    <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-repeat-o"></use></svg>转发
+                </span>
+                <span class="action">
+                    <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-comment-o"></use></svg>评论
+                </span>
+                <span class="action">
+                    <svg class="icon icon-o" aria-hidden="true"><use xlink:href="#icon-like-o"></use></svg>点赞
+                </span>
+            </div>
+        </article>
+
+    </main>
+
+    <!-- 底部导航（5 个入口，所有页面共用） -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="tab-item active">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-shouye"></use></svg>
+            <span>首页</span>
+        </a>
+        <a href="video.html" class="tab-item">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-video"></use></svg>
+            <span>视频</span>
+            <span class="budge-num">6</span>
+        </a>
+        <a href="search.html" class="tab-item">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-faxian1"></use></svg>
+            <span>发现</span>
+        </a>
+        <a href="message.html" class="tab-item">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-xiaoxi1"></use></svg>
+            <span>消息</span>
+            <span class="budge-dot"></span>
+        </a>
+        <a href="mine.html" class="tab-item">
+            <svg class="icon" aria-hidden="true"><use xlink:href="#icon-wode1"></use></svg>
+            <span>我</span>
+        </a>
+    </nav>
+
+    <script>
+        // 顶部标签切换（超话 / 推荐 / 关注）
+        function changeTab(el) {
+            var tabs = el.parentNode.querySelectorAll('.tab-item');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            el.classList.add('active');
+        }
+    </script>
+
+</body>
+</html>
