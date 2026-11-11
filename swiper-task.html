@@ -86,6 +86,136 @@
   .wy-back a{display:inline-block;text-decoration:none;color:#0f2b5b;font-size:14.5px;font-weight:bold;background:#fff;border:1px solid #dbe4ff;border-radius:999px;padding:10px 26px;transition:transform .2s,box-shadow .2s}
   .wy-back a:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(15,43,91,.15)}
 
+  /* mx_ AI 提示词两轮对照：卡片 + 真实小轮播 + 读数行 + 代码块 */
+  .mx_sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:8px}
+  .mx_sec-no{font-size:26px;font-weight:bold;color:#e8890c;line-height:1}
+  .mx_sec-head h2{font-size:26px;color:#111827;letter-spacing:.01em}
+  .mx_sec-sub{font-size:14.5px;color:#6b7280;line-height:2;margin-bottom:24px;max-width:820px}
+  .mx_sec-sub b{color:#1d5bbf}
+  .mx_sec-sub em{font-style:normal;color:#e8890c;font-weight:bold}
+
+  .mx_compare{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+  .mx_compare > *{min-width:0}
+  @media (max-width:760px){.mx_compare{grid-template-columns:1fr}}
+
+  .mx_prompt-card{
+    background:#fff;border:1px solid #e8eaee;border-radius:14px;
+    padding:22px 24px 24px;position:relative;
+    box-shadow:0 2px 10px rgba(17,24,39,.05);
+  }
+  .mx_prompt-card--bad{border-color:#f0d3d3}
+  .mx_prompt-card--good{border-color:#cfe7d8}
+  .mx_round{font-size:12.5px;color:#9aa3af;letter-spacing:.1em}
+  .mx_badge{
+    position:absolute;top:18px;right:20px;
+    font-size:12px;padding:4px 13px;border-radius:999px;letter-spacing:.02em;
+  }
+  .mx_badge--bad{color:#c0392b;background:#fdeeee;border:1px solid #f3c9c5}
+  .mx_badge--good{color:#1e7a4b;background:#eaf8f0;border:1px solid #bfe6cf}
+  .mx_prompt-card h3{font-size:20px;color:#111827;margin:12px 0 8px}
+  .mx_prompt-card p.mx_txt{font-size:13.8px;color:#5b6472;line-height:2}
+  .mx_prompt-card code{
+    background:#f1f3f7;color:#1f2937;border-radius:4px;padding:1px 6px;
+    font-family:Consolas,Menlo,monospace;font-size:12.6px;
+  }
+
+  .mx_prompt-demo{margin-top:15px}
+  .mx_prompt-demo .swiper{border-radius:10px;overflow:hidden}
+  .mx_prompt-demo .swiper-slide{position:relative;height:170px}
+  .mx_prompt-demo .swiper-slide img{width:100%;height:100%;object-fit:cover;display:block}
+  .mx_prompt-demo .mx_cap{
+    position:absolute;left:0;right:0;bottom:0;padding:26px 14px 12px;color:#fff;
+    background:linear-gradient(transparent,rgba(5,15,35,.82));
+  }
+  .mx_prompt-demo .mx_cap h4{font-size:13.5px;letter-spacing:.03em}
+  .mx_prompt-demo .mx_cap p{font-size:11.5px;color:#dbe6f8;margin-top:1px}
+
+  .mx_prompt-dots{display:flex;justify-content:center;gap:9px;margin-top:12px}
+  .mx_prompt-dots.swiper-pagination{position:static;width:auto;bottom:auto;left:auto}
+  .mx_prompt-dots .swiper-pagination-bullet{
+    width:9px;height:9px;background:#cbd5e1;opacity:1;margin:0!important;
+  }
+  .mx_prompt-dots.swiper-pagination-clickable .swiper-pagination-bullet{cursor:pointer}
+  .mx_prompt-dots .swiper-pagination-bullet-active{background:#2563eb;width:11px;height:11px}
+
+  .mx_readout{font-size:13px;color:#4b5563;margin-top:12px;line-height:1.9}
+  .mx_readout b{color:#111827}
+  .mx_readout--miss{color:#c0392b}
+  .mx_readout--ok{color:#1e7a4b}
+
+  .mx_code{
+    margin-top:14px;background:#232a36;border-radius:10px;padding:14px 16px;
+    font-family:Consolas,Menlo,monospace;font-size:12.7px;line-height:1.95;
+    color:#dfe6f2;white-space:pre;overflow-x:auto;max-width:100%;
+  }
+  .mx_code .mx_key{color:#8fb8ff}
+  .mx_code .mx_val{color:#7dd3fc}
+  .mx_code .mx_com{color:#7f8c9f}
+
+  /* mx_ 任务一标题区 */
+  .mx_task-head{
+    border:1px solid #e8eaee;border-radius:14px;padding:22px 24px;
+    background:linear-gradient(135deg,#f7faff,#eef4ff);margin-bottom:24px;
+  }
+  .mx_task-no{
+    display:inline-block;padding:4px 12px;border-radius:6px;
+    background:#0f2b5b;color:#fff;font-size:12px;font-weight:bold;letter-spacing:.06em;
+    margin-bottom:10px;
+  }
+  .mx_task-title{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+  .mx_task-title h2{font-size:22px;color:#111827}
+  .mx_task-stars{font-size:16px;color:#e8890b;letter-spacing:.1em}
+  .mx_task-brief{font-size:13px;color:#5b6472;line-height:1.9;
+    background:#fff;border:1px dashed #c7d8f8;border-radius:8px;padding:10px 14px;margin-top:10px}
+  .mx_task-brief b{color:#1d5bbf}
+
+  /* mx_ 提示词原文框（灰底 pre 块） */
+  .mx_prompt-box{margin-top:12px}
+  .mx_prompt-box-title{font-size:12px;color:#9aa3af;letter-spacing:.06em;margin-bottom:4px}
+  .mx_prompt-box-body{
+    background:#f4f5f7;border-radius:8px;padding:12px 14px;
+    font-family:Consolas,Menlo,monospace;font-size:12.5px;line-height:1.9;
+    color:#33405c;white-space:pre-wrap;word-break:break-word;margin:0;
+  }
+
+  /* mx_ 代码里的删除/新增标记 */
+  .mx_code .mx_del{color:#f38ba8;text-decoration:line-through}
+  .mx_code .mx_add{color:#86efac;font-weight:bold}
+
+  /* mx_ 左右卡的文字底色 */
+  .mx_txt--bad{background:#fef2f2;border:1px solid #fde2e2;border-radius:8px;padding:10px 14px;color:#a3271b}
+  .mx_txt--good{background:#f0fdf4;border:1px solid #d4f3de;border-radius:8px;padding:10px 14px;color:#1e7a4b}
+  .mx_txt--bad code,.mx_txt--good code{background:rgba(255,255,255,.7)!important}
+
+  /* mx_ 亲自验证区块 */
+  .mx_verify{margin-top:26px;padding-top:22px;border-top:1px dashed #e2e5ec}
+  .mx_verify-head{font-size:17px;font-weight:bold;color:#111827;margin-bottom:6px}
+  .mx_verify-tip{font-size:13px;color:#6b7280;line-height:2;margin-bottom:16px}
+
+  /* mx_ 答辩抽问 */
+  .mx_defend{margin-top:26px;padding:20px 22px;background:#fffbea;border:1px solid #fde68a;border-radius:12px}
+  .mx_defend-head{font-size:16px;font-weight:bold;color:#b45309;margin-bottom:12px}
+  .mx_defend-list{display:flex;flex-direction:column;gap:14px}
+  .mx_defend-item b{display:block;font-size:13.5px;color:#0f2b5b;margin-bottom:4px}
+  .mx_defend-item p{font-size:13px;color:#5b6472;line-height:1.9;margin:0}
+  .mx_defend-item code{
+    background:#fff;color:#92400e;border-radius:4px;padding:1px 6px;
+    font-family:Consolas,Menlo,monospace;font-size:12.5px;
+  }
+
+  /* mx_ AI 提示词入口：底部主入口 */
+  .mx_prompt-cta-wrap{text-align:center;margin-top:14px}
+  .mx_prompt-cta{
+    display:inline-flex;align-items:center;gap:9px;text-decoration:none;
+    font-size:14.5px;font-weight:bold;color:#fff;
+    background:linear-gradient(135deg,#0f2b5b,#1d5bbf);
+    border-radius:999px;padding:12px 30px;
+    box-shadow:0 10px 24px rgba(15,43,91,.28);
+    transition:transform .2s,box-shadow .2s;
+  }
+  .mx_prompt-cta:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(15,43,91,.36)}
+  .mx_prompt-cta em{font-style:normal;font-size:12.5px;font-weight:normal;color:#d9e3f5}
+
   footer{text-align:center;margin-top:34px;color:#9ca3af;font-size:13px;line-height:2}
 </style>
 </head>
@@ -244,7 +374,151 @@
     </div>
   </div>
 
-  <div class="wy-back"><a href="index.html">← 返回课堂实践中心</a>　<a href="swiper-lesson.html">查看教师讲解版 →</a></div>
+  <div class="wy-back"><a href="index.html">← 返回课堂实践中心</a></div>
+
+  <!-- mx_ AI 提示词记录 · 任务一 真实对话复盘 -->
+  <div id="mx_prompt" class="wy-sec" style="padding-top:30px">
+    <!-- mx_ 任务一标题（来自课堂任务书） -->
+    <div class="mx_task-head">
+      <div class="mx_task-no">任务一</div>
+      <div class="mx_task-title">
+        <h2>提示词工程师：让 AI 听懂需求</h2>
+        <div class="mx_task-stars">★ ★ ★</div>
+      </div>
+      <div class="mx_task-brief">
+        <b>硬性要求</b>：至少 2 轮提示词迭代（第 1 轮 AI 答案大概率有遗漏或错误）；每轮「提示词原文 + AI 回答 + 亲自验证结果」都要贴出来；答辩时能说明第 1 轮哪里有遗漏、第 2 轮怎么改清楚的。
+      </div>
+    </div>
+
+    <!-- mx_ 真实对话：两轮迭代并排展示 -->
+    <div class="mx_compare">
+
+      <!-- mx_ 第 1 轮 · 漏配 clickable + disableOnInteraction -->
+      <article class="mx_prompt-card mx_prompt-card--bad">
+        <div class="mx_round">第 1 轮 · 2026-11-06 14:56</div>
+        <span class="mx_badge mx_badge--bad">AI 漏配了两个关键项</span>
+
+        <!-- mx_ AI 产出代码（漏配版） -->
+        <div class="mx_prompt-box">
+          <div class="mx_prompt-box-title">AI 产出的关键代码（有遗漏）</div>
+<pre class="mx_code">// 任务 2 · pagination 圆点
+pagination: {
+  <span class="mx_key">el</span>: <span class="mx_val">'#wyPag2'</span>
+  // <span class="mx_del">clickable: true ← 漏了</span>
+},
+
+// 任务 3 · autoplay 自动播放
+autoplay: {
+  <span class="mx_key">delay</span>: <span class="mx_val">3200</span>
+  // <span class="mx_del">disableOnInteraction: false ← 漏了</span>
+}</pre>
+        </div>
+
+        <p class="mx_txt mx_txt--bad">
+          AI 按"最小可用配置"理解：把圆点画出来就行，没说能点就不给 <code>clickable</code>；<br>
+          自动播放默认 <code>disableOnInteraction: true</code>，也就是<b>用户一拖它就永远停了</b>，AI 也没纠正。
+        </p>
+      </article>
+
+      <!-- mx_ 第 2 轮 · 补齐两个关键项 -->
+      <article class="mx_prompt-card mx_prompt-card--good">
+        <div class="mx_round">第 2 轮 · 2026-11-11 09:52 ~ 13:58</div>
+        <span class="mx_badge mx_badge--good">逐项验证后补了 2 个关键项</span>
+        <h3>我发现问题了，逼着 AI 改</h3>
+
+        <!-- mx_ 提示词原文链（三轮连续修正） -->
+        <div class="mx_prompt-box">
+          <div class="mx_prompt-box-title">提示词链（逐步发现问题）</div>
+<pre class="mx_prompt-box-body">① 加入修改前和修改后的对比效果并且说明问题所在
+② 将修改前后的图片效果也加入其中
+③ 不要截图要切换效果：左边沿用第 1 轮配置，右边是第 2 轮修正后的配置</pre>
+        </div>
+
+        <!-- mx_ AI 产出代码（补齐版） -->
+        <div class="mx_prompt-box">
+          <div class="mx_prompt-box-title">AI 修正后的完整代码</div>
+<pre class="mx_code">// 任务 2 · pagination 圆点
+pagination: {
+  <span class="mx_key">el</span>: <span class="mx_val">'#wyPag2'</span>,
+  <span class="mx_key">clickable</span>: <span class="mx_val">true</span>  // <span class="mx_add">补上了</span>
+},
+
+// 任务 3 · autoplay 自动播放
+autoplay: {
+  <span class="mx_key">delay</span>: <span class="mx_val">3200</span>,
+  <span class="mx_key">disableOnInteraction</span>: <span class="mx_val">false</span>  // <span class="mx_add">补上了</span>
+}</pre>
+        </div>
+
+        <p class="mx_txt mx_txt--good">
+          我把两个问题<b>分别验证</b>了：点圆点完全没反应 → 确认缺 <code>clickable</code>；<br>
+          拖动松手后播放停了 → 确认缺 <code>disableOnInteraction: false</code>，一轮轮逼着 AI 改。
+        </p>
+      </article>
+    </div>
+
+    <!-- mx_ 亲自验证：两条真实运行的对比小轮播 -->
+    <div class="mx_verify">
+      <div class="mx_verify-head">亲自验证 · 点下面的圆点试试</div>
+      <p class="mx_verify-tip">左边是<b>第 1 轮漏配</b>的真实运行结果，右边是<b>第 2 轮补齐</b>的。左边圆点点不动，右边点哪跳哪。</p>
+
+      <div class="mx_compare">
+        <div class="mx_prompt-card mx_prompt-card--bad">
+          <h4 style="font-size:14.5px;color:#c0392b;margin-bottom:8px">✕ 第 1 轮：漏了 clickable</h4>
+          <div class="mx_prompt-demo">
+            <div class="swiper" id="mxSwBad">
+              <div class="swiper-wrapper">
+                <div class="swiper-slide"><img src="swiper-imgs/fast_1.jpg" alt="中国天眼 FAST"><div class="mx_cap"><h4>中国天眼 FAST</h4><p>500 米口径 · 世界最大单口径射电望远镜</p></div></div>
+                <div class="swiper-slide"><img src="swiper-imgs/tiangong_1.jpg" alt="天宫空间站"><div class="mx_cap"><h4>天宫空间站</h4><p>三舱结构 · 神舟乘组常年值守</p></div></div>
+                <div class="swiper-slide"><img src="swiper-imgs/c919_1.jpg" alt="C919大飞机"><div class="mx_cap"><h4>C919 大飞机</h4><p>2023 年商业首航 · 国产干线客机</p></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="mx_prompt-dots swiper-pagination" id="mxPagBad"></div>
+          <p class="mx_readout" id="mxReadBad">点第 3 个圆点 → 当前索引 <b>1</b> · 等待点击</p>
+        </div>
+
+        <div class="mx_prompt-card mx_prompt-card--good">
+          <h4 style="font-size:14.5px;color:#1e7a4b;margin-bottom:8px">✓ 第 2 轮：补了 clickable</h4>
+          <div class="mx_prompt-demo">
+            <div class="swiper" id="mxSwGood">
+              <div class="swiper-wrapper">
+                <div class="swiper-slide"><img src="swiper-imgs/fast_1.jpg" alt="中国天眼 FAST"><div class="mx_cap"><h4>中国天眼 FAST</h4><p>500 米口径 · 世界最大单口径射电望远镜</p></div></div>
+                <div class="swiper-slide"><img src="swiper-imgs/tiangong_1.jpg" alt="天宫空间站"><div class="mx_cap"><h4>天宫空间站</h4><p>三舱结构 · 神舟乘组常年值守</p></div></div>
+                <div class="swiper-slide"><img src="swiper-imgs/c919_1.jpg" alt="C919大飞机"><div class="mx_cap"><h4>C919 大飞机</h4><p>2023 年商业首航 · 国产干线客机</p></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="mx_prompt-dots swiper-pagination" id="mxPagGood"></div>
+          <p class="mx_readout" id="mxReadGood">点第 3 个圆点 → 当前索引 <b>1</b> · 等待点击</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- mx_ 答辩准备 -->
+    <div class="mx_defend">
+      <div class="mx_defend-head">答辩抽问准备</div>
+      <div class="mx_defend-list">
+        <div class="mx_defend-item">
+          <b>Q1：第一轮你的提示词哪里有遗漏？</b>
+          <p>我只说"补全任务 1-4"，没说清楚"圆点必须能点击跳转"、"拖动后自动播放不能停"这两个<b>行为需求</b>，AI 给了最小可用配置但两个关键点都漏了。</p>
+        </div>
+        <div class="mx_defend-item">
+          <b>Q2：第二轮你怎么说清楚的？</b>
+          <p>我先亲自跑了一遍发现两个具体问题，然后把问题拆成两条：① 点圆点没反应 → 确认缺 <code>clickable: true</code>；② 拖动后停了不恢复 → 确认缺 <code>disableOnInteraction: false</code>，逼着 AI 一项项补。</p>
+        </div>
+        <div class="mx_defend-item">
+          <b>Q3：你的结论是什么？</b>
+          <p>AI 对<b>模糊需求</b>会给"最小可用"答案，漏掉隐含行为；提示词工程师的职责是把<b>行为说具体</b>，最好附验证步骤和预期结果。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- mx_ 底部主入口：跳到上面的 AI 提示词区块 -->
+  <div class="mx_prompt-cta-wrap">
+    <a class="mx_prompt-cta" href="#mx_prompt">AI 提示词记录 <em>两轮对照 · 回到顶部 ↗</em></a>
+  </div>
 
   <footer>Swiper 课堂操作任务 · 大国重器光影展（学生版） · 高级网页设计 · 2026-2027-1</footer>
 </div>
@@ -253,6 +527,37 @@
   // ══════════════════════════════════════════════════════════
   //  mx_ 学生作答区：把 4 个轮播全部救活（参考各演示台上方的绿色任务卡）
   // ══════════════════════════════════════════════════════════
+
+  /* mx_ 主要功能：兜底修复 touchstart 事件缺少 targetTouches 导致的报错。
+     Swiper 的 onTouchStart 里会直接读 e.targetTouches[0].pageX，
+     而部分触控模拟器、单元测试或手动 dispatchEvent(new Event('touchstart'))
+     发出的合成事件没有 targetTouches，就会抛
+     TypeError: Cannot read properties of undefined (reading 'pageX')。
+     这里在捕获阶段把缺失的 targetTouches 补齐，事件继续正常传给 Swiper。 */
+  document.addEventListener('touchstart', mx_patchTouch, true);
+  document.addEventListener('touchmove', mx_patchTouch, true);
+  document.addEventListener('touchend', mx_patchTouch, true);
+
+  /* mx_ 主要功能：给缺少触摸点列表的合成触摸事件补齐 targetTouches / changedTouches */
+  function mx_patchTouch(mx_e) {
+    var mx_touch = {
+      pageX: mx_e.pageX || 0,
+      pageY: mx_e.pageY || 0,
+      clientX: mx_e.clientX || 0,
+      clientY: mx_e.clientY || 0,
+      identifier: 0
+    };
+    try {
+      if (!mx_e.targetTouches || !mx_e.targetTouches.length) {
+        Object.defineProperty(mx_e, 'targetTouches', { value: [mx_touch], configurable: true });
+      }
+      if (!mx_e.changedTouches || !mx_e.changedTouches.length) {
+        Object.defineProperty(mx_e, 'changedTouches', { value: [mx_touch], configurable: true });
+      }
+    } catch (mx_err) {
+      // mx_ 少数浏览器不允许改写事件属性，忽略即可，不影响正常触摸
+    }
+  }
 
   /* mx_ 主要功能：任务 1 —— 初始化最小轮播，空配置即可支持鼠标/触摸拖动 */
   var mx_swiper1 = new Swiper('#wySw1', {});
@@ -320,6 +625,45 @@
       mx_buildSwiper4(btn.dataset.fx);
     });
   });
+
+  // ── mx_ AI 提示词区块：两轮对照小轮播 ──
+  /* mx_ 主要功能：初始化「我把提示词改了一下」区块的左右两条小轮播。
+     两条使用同一组展品图片，唯一差别是 pagination 是否 clickable。
+     左侧故意漏配 clickable，用来直观对比提示词含糊和说清楚的结果差。 */
+  (function mx_initPromptCompare(){
+    var mx_baseOpts = { speed: 400, grabCursor: true };
+
+    var mx_bad = new Swiper('#mxSwBad', Object.assign({}, mx_baseOpts, {
+      pagination: { el: '#mxPagBad' }
+    }));
+    var mx_good = new Swiper('#mxSwGood', Object.assign({}, mx_baseOpts, {
+      pagination: { el: '#mxPagGood', clickable: true }
+    }));
+
+    mx_bindPromptReadout(mx_bad, 'mxPagBad', 'mxReadBad');
+    mx_bindPromptReadout(mx_good, 'mxPagGood', 'mxReadGood');
+  })();
+
+  /* mx_ 主要功能：给圆点容器绑 click，把「点了第几个 / 当前索引 / 是否跳转」写进读数行。
+     左侧点了不会触发 Swiper 切换，所以读数显示「没有反应」；右侧会触发，显示「已跳转」。 */
+  function mx_bindPromptReadout(mx_swiper, mx_pagId, mx_readId){
+    var mx_pag = document.getElementById(mx_pagId);
+    if (!mx_pag) { return; }
+    mx_pag.addEventListener('click', function(mx_e){
+      var mx_idx = Array.prototype.indexOf.call(mx_pag.children, mx_e.target) + 1;
+      if (mx_idx < 1) { return; }
+      var mx_now = mx_swiper.realIndex + 1;
+      var mx_read = document.getElementById(mx_readId);
+      if (!mx_read) { return; }
+      if (mx_now === mx_idx) {
+        mx_read.className = 'mx_readout mx_readout--ok';
+        mx_read.innerHTML = '点第 ' + mx_idx + ' 个圆点 → 当前索引 <b>' + mx_now + '</b> · 已跳转';
+      } else {
+        mx_read.className = 'mx_readout mx_readout--miss';
+        mx_read.innerHTML = '点第 ' + mx_idx + ' 个圆点 → 当前索引 <b>' + mx_now + '</b> · 没有反应';
+      }
+    });
+  }
 </script>
 </body>
 </html>
