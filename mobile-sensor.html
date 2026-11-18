@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<!--
+  mx_ 作者：孟欣
+  mx_ 学号：24002120321
+  mx_ 建立时间：2026-11-18
+  mx_ 使用大模型：GLM-5.3-FlashX
+  mx_ 功能名称：摇一摇抽今日菜谱（全机型适配：加速度+旋转速率双通道检测、翻转实时峰值仪表、iOS 授权、三层降级）
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>摇一摇抽今日菜谱 · 孟欣 24002120321</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    background:linear-gradient(180deg,#f8fcff 0%,#eaf4fe 60%,#f6fbff 100%);
+    background-attachment:fixed;color:#17324a;min-height:100vh;-webkit-font-smoothing:antialiased;
+  }
+  .mx_page{max-width:480px;margin:0 auto;padding:26px 16px 56px}
+
+  /* mx_ 页头 */
+  .mx_head{text-align:center;margin-bottom:18px}
+  .mx_head h1{font-size:20px;letter-spacing:2px;font-weight:600;color:#17324a}
+  .mx_head p{font-size:12.5px;color:#6b8aa3;margin-top:7px}
+
+  /* mx_ 手机图标 */
+  .mx_sensor{text-align:center}
+  .mx_phone{
+    width:64px;height:110px;margin:2px auto 8px;border-radius:13px;
+    border:3px solid #9cc4e8;position:relative;background:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:25px;
+    box-shadow:0 10px 22px rgba(31,106,171,.14);
+  }
+  .mx_phone::after{
+    content:"";position:absolute;bottom:5px;left:50%;transform:translateX(-50%);
+    width:22px;height:3px;border-radius:2px;background:#c3d8ec;
+  }
+  .mx_phone.mx_phone--shake{animation:mx_shake .5s ease-in-out}
+  @keyframes mx_shake{
+    0%,100%{transform:rotate(0) translateX(0)}
+    20%{transform:rotate(-12deg) translateX(-8px)}
+    45%{transform:rotate(10deg) translateX(8px)}
+    70%{transform:rotate(-6deg) translateX(-4px)}
+  }
+  .mx_state{font-size:12.8px;color:#6b8aa3;min-height:21px;margin-bottom:4px}
+  .mx_state.mx_state--warn{color:#c25b1e}
+
+  /* mx_ 实时仪表盘：翻转/摇动时峰值实时刷新 */
+  .mx_meter{
+    margin:12px auto 16px;background:#fff;border:1px solid #d9e9f8;border-radius:14px;
+    padding:14px 16px 15px;box-shadow:0 6px 16px rgba(59,143,212,.08);
+    font-variant-numeric:tabular-nums;text-align:left;
+  }
+  .mx_meter-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
+  .mx_meter-label{font-size:11.5px;color:#6b8aa3;letter-spacing:1px}
+  .mx_meter-peak{font-size:11.5px;color:#b26205;font-weight:600}
+  .mx_meter-val{font-size:23px;font-weight:700;color:#1f6aab;line-height:1.15}
+  .mx_meter-val small{font-size:11px;font-weight:400;color:#9ab4ca;margin-left:3px}
+  .mx_bar-track{
+    position:relative;height:9px;border-radius:5px;background:#e4eef9;overflow:hidden;margin:4px 0 11px;
+  }
+  .mx_bar-fill{
+    height:100%;width:0%;border-radius:5px;
+    background:linear-gradient(90deg,#5cb2ea,#2c7fc2);
+    transition:width .12s linear;
+  }
+  .mx_bar-fill.mx_bar-fill--rot{background:linear-gradient(90deg,#f6b352,#e8890c)}
+  .mx_bar-th{
+    position:absolute;top:-2px;bottom:-2px;width:2px;background:#c25b1e;border-radius:1px;
+  }
+  .mx_meter-foot{display:flex;justify-content:space-between;align-items:center;margin-top:2px}
+  .mx_meter-tip{font-size:10.5px;color:#9ab4ca}
+  .mx_peak-clear{
+    border:none;background:none;font-family:inherit;font-size:11px;color:#1f6aab;
+    text-decoration:underline;cursor:pointer;padding:2px 4px;
+  }
+
+  /* mx_ 结果卡 */
+  .mx_result{
+    border-radius:18px;padding:22px 18px;min-height:170px;
+    display:flex;flex-direction:column;justify-content:center;align-items:center;
+    background:#fff;border:1px solid #d9e9f8;
+    box-shadow:0 10px 24px rgba(31,106,171,.1);
+    opacity:0;transform:scale(.92);
+    transition:opacity .35s ease,transform .35s cubic-bezier(.2,1.3,.4,1);
+  }
+  .mx_result.mx_result--on{opacity:1;transform:scale(1)}
+  .mx_result-icon{font-size:40px;margin-bottom:9px}
+  .mx_result-name{font-size:22px;font-weight:700;letter-spacing:2px;color:#17324a}
+  .mx_result-tag{
+    margin-top:9px;font-size:11.5px;letter-spacing:1px;color:#b26205;
+    padding:5px 13px;border-radius:999px;
+    background:#fdf3e3;border:1px solid #f2ddb8;
+  }
+  .mx_result-desc{font-size:12.8px;color:#5b7a95;line-height:1.95;margin-top:11px}
+  .mx_fallback{
+    display:none;margin:18px auto 0;border:none;cursor:pointer;
+    padding:13px 30px;border-radius:999px;font-family:inherit;font-size:14.5px;font-weight:600;
+    color:#fff;background:linear-gradient(135deg,#3b8fd4,#1f6aab);
+    box-shadow:0 10px 22px rgba(31,106,171,.28);
+  }
+  .mx_fallback.mx_fallback--show{display:inline-block}
+  .mx_fallback:active{opacity:.85}
+
+  /* mx_ 说明区 */
+  .mx_note{
+    margin-top:20px;background:#fff;border:1px solid #d9e9f8;border-radius:14px;
+    padding:15px 17px;font-size:12.6px;color:#31506b;line-height:2.05;
+    box-shadow:0 6px 16px rgba(59,143,212,.08);text-align:left;
+  }
+  .mx_note b{color:#1f6aab}
+  .mx_note code{background:#eaf3fd;color:#1f6aab;border-radius:4px;padding:1px 6px;font-family:Consolas,monospace;font-size:11.8px}
+</style>
+</head>
+<body>
+  <div class="mx_page">
+    <div class="mx_head">
+      <h1>摇一摇手机，抽今日菜谱</h1>
+      <p>孟欣 24002120321 · 摇动或翻转手机随机抽一道菜</p>
+    </div>
+
+    <div class="mx_sensor">
+      <div class="mx_phone" id="mx_sPhone">🍽️</div>
+      <div class="mx_state" id="mx_sState">正在检测设备传感器…</div>
+
+      <!-- mx_ 实时仪表盘：加速度 + 旋转速率双通道，翻转时峰值实时刷新 -->
+      <div class="mx_meter" id="mx_sMeter">
+        <div class="mx_meter-row">
+          <span class="mx_meter-label">加速度</span>
+          <span class="mx_meter-val" id="mx_sAccVal">--<small>m/s²</small></span>
+        </div>
+        <div class="mx_bar-track">
+          <div class="mx_bar-fill" id="mx_sAccBar"></div>
+          <div class="mx_bar-th" id="mx_sAccTh"></div>
+        </div>
+        <div class="mx_meter-row">
+          <span class="mx_meter-label">翻转角速度</span>
+          <span class="mx_meter-val" id="mx_sRotVal">--<small>°/s</small></span>
+        </div>
+        <div class="mx_bar-track">
+          <div class="mx_bar-fill mx_bar-fill--rot" id="mx_sRotBar"></div>
+          <div class="mx_bar-th" id="mx_sRotTh"></div>
+        </div>
+        <div class="mx_meter-foot">
+          <span class="mx_meter-tip" id="mx_sPeakTip">峰值：加速度 -- · 角速度 --</span>
+          <button class="mx_peak-clear" id="mx_sPeakClear" type="button">峰值清零</button>
+        </div>
+      </div>
+
+      <div class="mx_result" id="mx_sResult">
+        <div class="mx_result-icon" id="mx_sIcon">🎲</div>
+        <div class="mx_result-name" id="mx_sName">还没有结果</div>
+        <div class="mx_result-tag" id="mx_sTag">摇一摇试试</div>
+        <div class="mx_result-desc" id="mx_sDesc">摇动或快速翻转手机即出结果。</div>
+      </div>
+
+      <button class="mx_fallback" id="mx_sFallback" type="button">点我抽一次</button>
+    </div>
+
+    <div class="mx_note">
+      <b>全机型适配说明：</b>加速度与翻转角速度<b>双通道</b>检测——<code>accelerationIncludingGravity</code> 合成值 &gt; 18 或 <code>rotationRate</code> 合成值 &gt; 300°/s，任一通道达标即判定摇动，部分只有角速度数据的安卓机也能触发。iOS 13+ 由按钮触发 <code>requestPermission()</code> 授权；2 秒无有效数据判定不支持并显示手动按钮；注意 Chrome 会派发各分量为 <code>null</code> 的空事件，必须判断 <code>typeof x === 'number'</code> 才算拿到数据。
+    </div>
+  </div>
+
+<script>
+  /* mx_ 菜谱数据：摇一摇随机抽取 */
+  var mx_sDishes = [
+    { name:'宫保鸡丁', tag:'川菜 · 糊辣荔枝味', icon:'🍗', desc:'鸡丁滑嫩、花生碎酥，干辣椒与花椒爆出糊辣香。' },
+    { name:'清蒸鲈鱼', tag:'粤菜 · 原汁原味', icon:'🐟', desc:'大火八分钟，出锅淋豉油、铺姜丝葱段，热油一激。' },
+    { name:'麻婆豆腐', tag:'川菜 · 麻辣烫嫩', icon:'🌶️', desc:'嫩豆腐在红汤里颤，牛肉臊子与郫县豆瓣三重叠加。' },
+    { name:'蟹粉小笼', tag:'苏式点心 · 一咬一包汤', icon:'🥟', desc:'薄皮十八褶，咬开先吸一口滚烫汤汁。' },
+    { name:'葱油拌面', tag:'沪上家常 · 素面之王', icon:'🍜', desc:'小葱慢炸到焦香，酱油一浇，面条根根裹油。' },
+    { name:'番茄牛腩', tag:'家常炖菜 · 酸甜软烂', icon:'🍲', desc:'牛腩炖到筷子一戳就开，汤汁浓稠可拌两碗饭。' }
+  ];
+  var mx_sAccThreshold = 18;    /* mx_ 加速度通道阈值（合成值） */
+  var mx_sRotThreshold = 300;   /* mx_ 角速度通道阈值（°/s） */
+  var mx_sAccMax = 40;          /* mx_ 加速度进度条满刻度 */
+  var mx_sRotMax = 800;         /* mx_ 角速度进度条满刻度 */
+  var mx_sCooldown = 1500;      /* mx_ 冷却时长（ms） */
+  var mx_sLocked = false;       /* mx_ 是否冷却中 */
+  var mx_sGotEvent = false;     /* mx_ 是否拿到有效数值数据 */
+  var mx_sIndex = -1;           /* mx_ 当前结果下标，避免连续抽到同一道 */
+  var mx_sPeakAcc = 0;          /* mx_ 加速度历史峰值 */
+  var mx_sPeakRot = 0;          /* mx_ 角速度历史峰值 */
+
+  /* mx_ 仪表盘各元素引用 */
+  var mx_sAccValEl = document.getElementById('mx_sAccVal');
+  var mx_sRotValEl = document.getElementById('mx_sRotVal');
+  var mx_sAccBarEl = document.getElementById('mx_sAccBar');
+  var mx_sRotBarEl = document.getElementById('mx_sRotBar');
+  var mx_sPeakTipEl = document.getElementById('mx_sPeakTip');
+
+  /**
+   * mx_ 主要功能：随机抽一道菜（不与上次重复）并带弹出动画显示
+   */
+  function mx_drawDish() {
+    var mx_next = mx_sIndex;
+    while (mx_next === mx_sIndex) {
+      mx_next = Math.floor(Math.random() * mx_sDishes.length);
+    }
+    mx_sIndex = mx_next;
+    var mx_item = mx_sDishes[mx_next];
+
+    document.getElementById('mx_sIcon').textContent = mx_item.icon;
+    document.getElementById('mx_sName').textContent = mx_item.name;
+    document.getElementById('mx_sTag').textContent = mx_item.tag;
+    document.getElementById('mx_sDesc').textContent = mx_item.desc;
+
+    var mx_box = document.getElementById('mx_sResult');
+    mx_box.classList.remove('mx_result--on');
+    mx_box.offsetHeight;          /* mx_ 强制重排，让动画能重复播放 */
+    mx_box.classList.add('mx_result--on');
+  }
+
+  /**
+   * mx_ 主要功能：手机图标抖一下并更新状态文字
+   */
+  function mx_playShake(mx_text) {
+    var mx_phone = document.getElementById('mx_sPhone');
+    mx_phone.classList.remove('mx_phone--shake');
+    mx_phone.offsetHeight;
+    mx_phone.classList.add('mx_phone--shake');
+    var mx_state = document.getElementById('mx_sState');
+    mx_state.textContent = mx_text;
+    mx_state.className = 'mx_state';
+  }
+
+  /**
+   * mx_ 主要功能：摇动触发入口——冷却期内忽略，冷却结束自动解锁（1.5 秒防一次摇动重复触发）
+   */
+  function mx_onShake() {
+    if (mx_sLocked) { return; }
+    mx_sLocked = true;
+    mx_playShake('摇到了！正在抽菜谱…');
+    mx_drawDish();
+    setTimeout(function () {
+      mx_sLocked = false;
+      document.getElementById('mx_sState').textContent = '再摇一次，看看今天吃什么';
+    }, mx_sCooldown);
+  }
+
+  /**
+   * mx_ 主要功能：刷新实时仪表盘——当前值、进度条宽度（按满刻度折算）、峰值文字
+   */
+  function mx_updateMeter(mx_mag, mx_rot) {
+    mx_sAccValEl.innerHTML = (mx_mag === null ? '--' : mx_mag.toFixed(1)) + '<small>m/s²</small>';
+    mx_sRotValEl.innerHTML = (mx_rot === null ? '--' : Math.round(mx_rot)) + '<small>°/s</small>';
+    if (mx_mag !== null) {
+      mx_sAccBarEl.style.width = Math.min(100, mx_mag / mx_sAccMax * 100) + '%';
+    }
+    if (mx_rot !== null) {
+      mx_sRotBarEl.style.width = Math.min(100, mx_rot / mx_sRotMax * 100) + '%';
+    }
+    mx_sPeakTipEl.textContent = '峰值：加速度 ' +
+      (mx_sPeakAcc ? mx_sPeakAcc.toFixed(1) : '--') +
+      ' · 角速度 ' + (mx_sPeakRot ? Math.round(mx_sPeakRot) : '--');
+  }
+
+  /**
+   * mx_ 主要功能：把阈值刻度画到两条进度条上（按阈值/满刻度折算成位置百分比）
+   */
+  function mx_placeThresholds() {
+    document.getElementById('mx_sAccTh').style.left = (mx_sAccThreshold / mx_sAccMax * 100) + '%';
+    document.getElementById('mx_sRotTh').style.left = (mx_sRotThreshold / mx_sRotMax * 100) + '%';
+  }
+
+  /**
+   * mx_ 主要功能：devicemotion 双通道检测——加速度合成值或角速度合成值任一超标即判定摇动；
+   * 只有分量为数值的通道才算有效（过滤 Chrome 空事件），翻转/摇动时实时刷新峰值
+   */
+  function mx_onMotion(mx_e) {
+    var mx_acc = mx_e.accelerationIncludingGravity;
+    var mx_rr = mx_e.rotationRate;
+    var mx_mag = null;
+    var mx_rot = null;
+
+    /* mx_ 通道一：合成加速度（含重力），静止平放约 9.8 */
+    if (mx_acc && typeof mx_acc.x === 'number') {
+      mx_mag = Math.sqrt(
+        (mx_acc.x || 0) * (mx_acc.x || 0) +
+        (mx_acc.y || 0) * (mx_acc.y || 0) +
+        (mx_acc.z || 0) * (mx_acc.z || 0)
+      );
+      if (mx_mag > mx_sPeakAcc) { mx_sPeakAcc = mx_mag; }
+    }
+
+    /* mx_ 通道二：翻转角速度，快速翻转/甩动可达数百 °/s */
+    if (mx_rr && typeof mx_rr.alpha === 'number') {
+      mx_rot = Math.sqrt(
+        (mx_rr.alpha || 0) * (mx_rr.alpha || 0) +
+        (mx_rr.beta || 0) * (mx_rr.beta || 0) +
+        (mx_rr.gamma || 0) * (mx_rr.gamma || 0)
+      );
+      if (mx_rot > mx_sPeakRot) { mx_sPeakRot = mx_rot; }
+    }
+
+    /* mx_ 两个通道全为空才算「没数据」，任一通道有值即认为设备支持 */
+    if (mx_mag === null && mx_rot === null) { return; }
+    mx_sGotEvent = true;
+
+    mx_updateMeter(mx_mag, mx_rot);
+
+    if ((mx_mag !== null && mx_mag > mx_sAccThreshold) ||
+        (mx_rot !== null && mx_rot > mx_sRotThreshold)) {
+      mx_onShake();
+    }
+  }
+
+  /**
+   * mx_ 主要功能：切到「不支持」状态——显示警示文字并放出降级按钮
+   */
+  function mx_showSensorFallback(mx_text) {
+    var mx_state = document.getElementById('mx_sState');
+    mx_state.textContent = mx_text;
+    mx_state.className = 'mx_state mx_state--warn';
+    document.getElementById('mx_sFallback').classList.add('mx_fallback--show');
+  }
+
+  /**
+   * mx_ 主要功能：启动摇一摇——绑定降级按钮与峰值清零、按设备能力决定直接监听或申请 iOS 权限，
+   * 并做 2 秒无数据的兜底检测
+   */
+  function mx_initSensor() {
+    var mx_btn = document.getElementById('mx_sFallback');
+    mx_btn.addEventListener('click', function () {
+      mx_playShake('手动抽取中…');
+      mx_drawDish();
+    });
+
+    /* mx_ 峰值清零：重新观察下一次摇动的峰值 */
+    document.getElementById('mx_sPeakClear').addEventListener('click', function () {
+      mx_sPeakAcc = 0;
+      mx_sPeakRot = 0;
+      mx_updateMeter(null, null);
+    });
+
+    if (typeof DeviceMotionEvent === 'undefined') {
+      mx_showSensorFallback('当前设备不支持（没有 devicemotion），请用手机打开');
+      return;
+    }
+
+    if (typeof DeviceMotionEvent.requestPermission === 'function') {
+      /* mx_ iOS 13+ 必须由用户手势触发授权 */
+      mx_showSensorFallback('iOS 需要先授权：点下方按钮开启摇一摇');
+      mx_btn.textContent = '开启摇一摇';
+      mx_btn.addEventListener('click', function () {
+        DeviceMotionEvent.requestPermission().then(function (mx_res) {
+          if (mx_res === 'granted') {
+            window.addEventListener('devicemotion', mx_onMotion);
+            document.getElementById('mx_sState').textContent = '已开启，摇一摇试试';
+            document.getElementById('mx_sState').className = 'mx_state';
+            mx_btn.textContent = '点我抽一次';
+          } else {
+            mx_showSensorFallback('授权被拒绝，仍可点按钮抽取');
+          }
+        }).catch(function () {
+          mx_showSensorFallback('授权失败，仍可点按钮抽取');
+        });
+      });
+    } else {
+      window.addEventListener('devicemotion', mx_onMotion);
+      document.getElementById('mx_sState').textContent = '正在等待摇动…';
+    }
+
+    /* mx_ 兜底：2 秒内没拿到有效数据，说明这台设备没有传感器 */
+    setTimeout(function () {
+      if (!mx_sGotEvent) {
+        mx_showSensorFallback('当前设备不支持，请用手机打开');
+      }
+    }, 2000);
+  }
+
+  /* mx_ 初始化 */
+  mx_placeThresholds();
+  mx_initSensor();
+</script>
+</body>
+</html>

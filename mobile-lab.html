@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<!--
+  mx_ 作者：孟欣
+  mx_ 学号：24002120321
+  mx_ 建立时间：2026-11-18
+  mx_ 使用大模型：GLM-5.3-FlashX
+  mx_ 功能名称：移动端手势实验室（单页四任务：事件探针 / 滑动卡片 / 缩放查看器 / 摇一摇，标签切换）
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>移动端手势实验室 · 四个任务 · 孟欣 24002120321</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    background:linear-gradient(180deg,#f8fcff 0%,#eaf4fe 60%,#f6fbff 100%);
+    background-attachment:fixed;color:#17324a;min-height:100vh;-webkit-font-smoothing:antialiased;
+  }
+  .mx_page{max-width:560px;margin:0 auto;padding:26px 16px 60px}
+
+  /* mx_ 页头 */
+  .mx_head{text-align:center;margin-bottom:20px}
+  .mx_eyebrow{
+    display:inline-block;font-size:10.5px;letter-spacing:.3em;color:#1f6aab;
+    background:#e7f3fd;border:1px solid #cfe6fa;border-radius:999px;padding:5px 14px;margin-bottom:12px;
+  }
+  .mx_head h1{font-size:22px;letter-spacing:1px;font-weight:700;color:#17324a}
+  .mx_head p{font-size:12.8px;color:#5b7a95;line-height:1.95;margin-top:9px}
+  .mx_id{font-size:12.5px;color:#6b8aa3;margin-top:8px}
+
+  /* mx_ 标签目录 */
+  .mx_tabs{
+    display:flex;gap:6px;background:#fff;border:1px solid #d9e9f8;border-radius:999px;
+    padding:5px;box-shadow:0 6px 16px rgba(59,143,212,.08);margin-bottom:22px;
+  }
+  .mx_tabs button{
+    flex:1;border:none;background:none;font-family:inherit;font-size:12px;color:#3d6079;
+    padding:9px 4px;border-radius:999px;cursor:pointer;white-space:nowrap;letter-spacing:.5px;
+  }
+  .mx_tabs button.mx_tab--on{
+    background:linear-gradient(135deg,#3b8fd4,#1f6aab);color:#fff;font-weight:600;
+    box-shadow:0 6px 14px rgba(31,106,171,.26);
+  }
+  .mx_tab-panel{display:none}
+  .mx_tab-panel.mx_panel--on{display:block}
+
+  /* mx_ 通用说明块 */
+  .mx_req{
+    background:#fffbea;border:1px solid #f2ddb8;border-radius:12px;
+    padding:13px 16px;font-size:12.4px;color:#7c5e10;line-height:2;margin-bottom:16px;
+  }
+  .mx_req b{color:#b45309}
+  .mx_req code{background:#fdf3e3;color:#92400e;border-radius:4px;padding:1px 6px;font-family:Consolas,monospace;font-size:11.6px}
+  .mx_qa{
+    margin-top:20px;background:#fff;border:1px solid #d9e9f8;border-radius:14px;
+    padding:15px 17px;font-size:12.6px;color:#31506b;line-height:2.05;
+    box-shadow:0 6px 16px rgba(59,143,212,.08);
+  }
+  .mx_qa h3{font-size:14px;color:#1f6aab;margin-bottom:9px;letter-spacing:1px}
+  .mx_qa ul{list-style:none}
+  .mx_qa li{margin-bottom:8px;padding-left:16px;position:relative}
+  .mx_qa li::before{content:"·";position:absolute;left:2px;color:#e8890c;font-weight:700}
+  .mx_qa b{color:#1f6aab}
+  .mx_qa code{background:#eaf3fd;color:#1f6aab;border-radius:4px;padding:1px 6px;font-family:Consolas,monospace;font-size:11.8px}
+
+  /* ============ 任务一 事件探针 ============ */
+  .mx_probe{
+    height:190px;border-radius:16px;background:#fff;border:2px dashed #9cc4e8;
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;color:#6b8aa3;letter-spacing:2px;user-select:none;-webkit-user-select:none;
+    touch-action:none;transition:border-color .2s,background .2s;
+  }
+  .mx_probe.mx_probe--on{border-color:#2c7fc2;background:#eef6fe;color:#1f6aab}
+  .mx_probe-stats{display:flex;gap:9px;margin-top:11px}
+  .mx_probe-stat{
+    flex:1;background:#fff;border:1px solid #d9e9f8;border-radius:11px;
+    padding:9px 6px;text-align:center;
+  }
+  .mx_probe-stat b{display:block;font-size:17px;color:#e8890c;font-variant-numeric:tabular-nums}
+  .mx_probe-stat span{font-size:10.5px;color:#6b8aa3;letter-spacing:.5px}
+  .mx_probe-status{text-align:center;font-size:12px;color:#6b8aa3;margin-top:9px;min-height:19px}
+  .mx_timeline{
+    margin-top:11px;background:#17324a;border-radius:12px;padding:11px 13px;min-height:66px;
+    display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start;
+  }
+  .mx_chip{
+    font-size:10.5px;font-family:Consolas,monospace;color:#cfe6fa;
+    background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);
+    padding:3px 8px;border-radius:6px;letter-spacing:.3px;
+  }
+  .mx_chip--start{color:#8fd3a8;border-color:rgba(143,211,168,.4)}
+  .mx_chip--end{color:#f6b352;border-color:rgba(246,179,82,.4)}
+  .mx_chip--move{color:#9cc4e8}
+  .mx_chip--cancel{color:#f1948a;border-color:rgba(241,148,138,.4)}
+  .mx_chip--click{color:#d7bde8;border-color:rgba(215,189,232,.4)}
+  .mx_chip--sep{color:#6b8aa3;background:none;border:none;padding:3px 1px}
+  .mx_probe-clear{
+    margin-top:11px;border:1px solid #cfe4f8;background:#fff;color:#1f6aab;
+    font-size:12.5px;padding:8px 20px;border-radius:999px;font-family:inherit;cursor:pointer;
+  }
+  .mx_record{margin-top:18px}
+  .mx_record h3{font-size:14px;color:#1f6aab;margin-bottom:9px;letter-spacing:1px}
+  .mx_record p{font-size:11.5px;color:#9ab4ca;margin-bottom:9px}
+  .mx_record table{
+    width:100%;border-collapse:collapse;background:#fff;border-radius:11px;overflow:hidden;
+    box-shadow:0 6px 16px rgba(59,143,212,.08);font-size:12px;
+  }
+  .mx_record th{
+    background:#eaf3fd;color:#1f6aab;padding:9px 6px;font-weight:600;border-bottom:1px solid #d9e9f8;
+  }
+  .mx_record td{
+    border-bottom:1px solid #eaf2fb;padding:10px 8px;color:#31506b;min-width:64px;
+  }
+  .mx_record tr:last-child td{border-bottom:none}
+  .mx_record td[contenteditable]{
+    outline:none;min-height:20px;
+  }
+  .mx_record td[contenteditable]:empty::before{
+    content:"点填";color:#c3d8ec;
+  }
+  .mx_record td[contenteditable]:focus{background:#f4faff}
+
+  /* ============ 任务二 滑动卡片 ============ */
+  .mx_stage2{touch-action:pan-y}
+  .mx_card{
+    position:relative;border-radius:18px;overflow:hidden;height:300px;
+    display:flex;flex-direction:column;justify-content:flex-end;
+    box-shadow:0 16px 34px rgba(31,106,171,.22);
+    transition:transform .3s ease,opacity .3s ease;
+    will-change:transform,opacity;user-select:none;-webkit-user-select:none;
+  }
+  .mx_card::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(180deg,rgba(0,0,0,0) 34%,rgba(0,0,0,.62) 100%);
+  }
+  .mx_card-no2{
+    position:absolute;top:16px;left:16px;z-index:2;font-size:11px;font-weight:700;letter-spacing:1.5px;
+    color:#fff;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.34);
+    padding:4px 11px;border-radius:999px;backdrop-filter:blur(4px);
+  }
+  .mx_card-body{position:relative;z-index:2;padding:20px 20px 24px;color:#fff}
+  .mx_card-tag{font-size:11px;letter-spacing:1.5px;opacity:.85;margin-bottom:6px}
+  .mx_card-name{font-size:24px;font-weight:700;letter-spacing:2px}
+  .mx_card-line{width:42px;height:3px;background:rgba(255,255,255,.85);border-radius:2px;margin:10px 0 11px}
+  .mx_card-desc{font-size:13px;line-height:1.95;color:rgba(255,255,255,.92)}
+  .mx_counter{
+    text-align:center;margin-top:14px;font-size:13.5px;letter-spacing:2px;color:#3d6079;
+    font-variant-numeric:tabular-nums;
+  }
+  .mx_counter b{color:#e8890c;font-size:16px}
+  .mx_dots{display:flex;gap:7px;justify-content:center;margin-top:9px}
+  .mx_dot{width:7px;height:7px;border-radius:50%;background:#c3d8ec;transition:all .3s}
+  .mx_dot.mx_dot--on{background:#e8890c;width:19px;border-radius:4px}
+  .mx_toast{
+    position:fixed;left:50%;bottom:52px;transform:translate(-50%,14px);
+    background:rgba(23,50,74,.88);color:#fff;font-size:12.5px;letter-spacing:1px;
+    padding:9px 19px;border-radius:999px;white-space:nowrap;
+    opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:9;
+  }
+  .mx_toast.mx_toast--on{opacity:1;transform:translate(-50%,0)}
+
+  /* ============ 任务三 缩放查看器 ============ */
+  .mx_stage3{
+    position:relative;height:330px;border-radius:16px;overflow:hidden;background:#dde9f5;
+    touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
+    box-shadow:0 14px 30px rgba(31,106,171,.18);
+  }
+  .mx_img{
+    width:100%;height:100%;object-fit:contain;display:block;
+    transform-origin:center center;will-change:transform;transition:transform .25s ease;
+  }
+  .mx_mask3{
+    position:absolute;left:0;right:0;bottom:0;padding:22px 14px 10px;
+    font-size:11.5px;color:#31506b;text-align:center;pointer-events:none;
+    background:linear-gradient(transparent,rgba(255,255,255,.85));
+  }
+  .mx_bar3{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+  .mx_scale3{font-size:12.5px;color:#31506b;letter-spacing:.5px}
+  .mx_scale3 b{color:#e8890c;font-size:15px;font-variant-numeric:tabular-nums}
+  .mx_reset3{
+    border:1px solid #cfe4f8;background:#fff;color:#1f6aab;
+    font-size:12.5px;padding:7px 16px;border-radius:999px;font-family:inherit;cursor:pointer;
+  }
+  .mx_reset3:active{background:#eaf3fd}
+
+  /* ============ 任务四 摇一摇 ============ */
+  .mx_sensor{text-align:center}
+  .mx_phone{
+    width:62px;height:106px;margin:2px auto 8px;border-radius:13px;
+    border:3px solid #9cc4e8;position:relative;background:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:24px;
+    box-shadow:0 10px 22px rgba(31,106,171,.14);
+  }
+  .mx_phone::after{
+    content:"";position:absolute;bottom:5px;left:50%;transform:translateX(-50%);
+    width:22px;height:3px;border-radius:2px;background:#c3d8ec;
+  }
+  .mx_phone.mx_phone--shake{animation:mx_shake .5s ease-in-out}
+  @keyframes mx_shake{
+    0%,100%{transform:rotate(0) translateX(0)}
+    20%{transform:rotate(-12deg) translateX(-8px)}
+    45%{transform:rotate(10deg) translateX(8px)}
+    70%{transform:rotate(-6deg) translateX(-4px)}
+  }
+  .mx_state{font-size:12.8px;color:#6b8aa3;min-height:21px;margin-bottom:4px}
+  .mx_state.mx_state--warn{color:#c25b1e}
+  .mx_meter{
+    margin:10px auto 14px;background:#fff;border:1px solid #d9e9f8;border-radius:14px;
+    padding:13px 15px;box-shadow:0 6px 16px rgba(59,143,212,.08);
+    font-variant-numeric:tabular-nums;text-align:left;
+  }
+  .mx_meter-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
+  .mx_meter-label{font-size:11.5px;color:#6b8aa3;letter-spacing:1px}
+  .mx_meter-peak{font-size:11.5px;color:#b26205;font-weight:600}
+  .mx_meter-val{font-size:21px;font-weight:700;color:#1f6aab;line-height:1.15}
+  .mx_meter-val small{font-size:10.5px;font-weight:400;color:#9ab4ca;margin-left:3px}
+  .mx_bar-track{
+    position:relative;height:9px;border-radius:5px;background:#e4eef9;overflow:hidden;margin:4px 0 10px;
+  }
+  .mx_bar-fill{
+    height:100%;width:0%;border-radius:5px;
+    background:linear-gradient(90deg,#5cb2ea,#2c7fc2);
+    transition:width .12s linear;
+  }
+  .mx_bar-fill.mx_bar-fill--rot{background:linear-gradient(90deg,#f6b352,#e8890c)}
+  .mx_bar-th{position:absolute;top:-2px;bottom:-2px;width:2px;background:#c25b1e;border-radius:1px}
+  .mx_result{
+    border-radius:18px;padding:20px 18px;min-height:160px;
+    display:flex;flex-direction:column;justify-content:center;align-items:center;
+    background:#fff;border:1px solid #d9e9f8;
+    box-shadow:0 10px 24px rgba(31,106,171,.1);
+    opacity:0;transform:scale(.92);
+    transition:opacity .35s ease,transform .35s cubic-bezier(.2,1.3,.4,1);
+  }
+  .mx_result.mx_result--on{opacity:1;transform:scale(1)}
+  .mx_result-cap{font-size:10.5px;letter-spacing:.3em;color:#9ab4ca;margin-bottom:8px}
+  .mx_result-icon{font-size:38px;margin-bottom:8px}
+  .mx_result-name{font-size:21px;font-weight:700;letter-spacing:2px;color:#17324a}
+  .mx_result-tag{
+    margin-top:8px;font-size:11.5px;letter-spacing:1px;color:#b26205;
+    padding:5px 13px;border-radius:999px;
+    background:#fdf3e3;border:1px solid #f2ddb8;
+  }
+  .mx_result-desc{font-size:12.6px;color:#5b7a95;line-height:1.9;margin-top:10px}
+  .mx_fallback{
+    display:none;margin:16px auto 0;border:none;cursor:pointer;
+    padding:12px 28px;border-radius:999px;font-family:inherit;font-size:14px;font-weight:600;
+    color:#fff;background:linear-gradient(135deg,#3b8fd4,#1f6aab);
+    box-shadow:0 10px 22px rgba(31,106,171,.28);
+  }
+  .mx_fallback.mx_fallback--show{display:inline-block}
+  .mx_fallback:active{opacity:.85}
+</style>
+</head>
+<body>
+  <div class="mx_page">
+    <div class="mx_head">
+      <span class="mx_eyebrow">课堂实践 · 手势实验室</span>
+      <h1>移动端手势实验室 · 四个任务</h1>
+      <p>任务一 事件探针 → 任务二 滑动卡片 → 任务三 缩放查看器 → 任务四 摇一摇。<br>用下方标签切换；触摸类任务建议手机或 DevTools 设备模式体验。</p>
+      <div class="mx_id">姓名：孟欣　班级学号：24002120321</div>
+    </div>
+
+    <!-- mx_ 四任务标签目录 -->
+    <div class="mx_tabs" id="mx_tabs">
+      <button type="button" class="mx_tab--on" data-mx-tab="1">任务一 · 事件探针</button>
+      <button type="button" data-mx-tab="2">任务二 · 滑动卡片</button>
+      <button type="button" data-mx-tab="3">任务三 · 缩放</button>
+      <button type="button" data-mx-tab="4">任务四 · 摇一摇</button>
+    </div>
+
+    <!-- ============ 任务一：事件探针 ============ -->
+    <section class="mx_tab-panel mx_panel--on" id="mx_panel1">
+      <div class="mx_req">
+        <b>观察目标：</b>在探针区依次做 5 种操作——单击、向上拖动、向左快速滑、双指触摸、长按后抬起。每做一种先点「清空时间线」，单独观察这种操作触发了哪些事件、先后顺序如何，填进下面的记录表。
+      </div>
+
+      <div class="mx_probe" id="mx_pArea">在此区域按住并滑动</div>
+      <div class="mx_probe-stats">
+        <div class="mx_probe-stat"><b id="mx_pMoves">0</b><span>本次 touchmove 次数</span></div>
+        <div class="mx_probe-stat"><b id="mx_pDist">0</b><span>横移距离 (px)</span></div>
+      </div>
+      <div class="mx_probe-status" id="mx_pStatus">等待操作…</div>
+      <div class="mx_timeline" id="mx_pTimeline"></div>
+      <button class="mx_probe-clear" id="mx_pClear" type="button">清空时间线</button>
+
+      <div class="mx_record">
+        <h3>记录表</h3>
+        <p>真机上做完每种操作，把观察到的事件顺序填进表格（单元格可直接点选输入）。</p>
+        <table>
+          <tr><th>操作</th><th>事件触发顺序</th><th>touchmove 次数</th></tr>
+          <tr><td>单击</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+          <tr><td>向上拖动</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+          <tr><td>向左快速滑</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+          <tr><td>双指触摸</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+          <tr><td>长按后抬起</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+        </table>
+      </div>
+
+      <div class="mx_qa">
+        <h3>三个问题的答案</h3>
+        <ul>
+          <li><b>① 一次拖动里 touchmove 大约多少次？和距离什么关系？</b><br>浏览器按帧派发（约每 16ms 一次），拖得越快越长次数越多；横移 100px 通常 5～10 次，不是固定值。</li>
+          <li><b>② click 在 touchend 之前还是之后？</b><br>在之后。顺序是 touchstart → touchmove… → touchend →（约 300ms 后）click；若判定为滑动，click 通常不再触发。</li>
+          <li><b>③ touchend 换成 touchcancel 会怎样？</b><br>touchcancel 在触摸被系统中断时派发（来电、系统手势、页面切走），之后不再补发 touchend 和 click；手势逻辑必须监听它做状态复位，否则卡在「按下一半」。</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ 任务二：滑动卡片 ============ -->
+    <section class="mx_tab-panel" id="mx_panel2">
+      <div class="mx_req">
+        <b>操作要求：</b>四道菜卡片，左滑下一道、右滑上一道；位移小于 <code>40px</code> 视为误触不切换；过渡 <code>0.3s</code>；<code>300ms</code> 冷却防止一次连滑跳两张；容器 <code>touch-action: pan-y</code>，纵向仍可滚动页面。
+      </div>
+
+      <div class="mx_stage2" id="mx_gStage">
+        <div class="mx_card" id="mx_gCard">
+          <div class="mx_card-no2" id="mx_gNo">01</div>
+          <div class="mx_card-body">
+            <div class="mx_card-tag" id="mx_gTag">川菜</div>
+            <div class="mx_card-name" id="mx_gName">菜名</div>
+            <div class="mx_card-line"></div>
+            <div class="mx_card-desc" id="mx_gDesc">简介</div>
+          </div>
+        </div>
+      </div>
+      <div class="mx_counter" id="mx_gCounter">第 <b>1</b> / 4 张</div>
+      <div class="mx_dots" id="mx_gDots"></div>
+
+      <div class="mx_qa">
+        <h3>实现要点</h3>
+        <ul>
+          <li>用 <code>changedTouches[0]</code> 计算 touchstart 与 touchend 的横坐标差，<b>左滑为负、右滑为正</b>。</li>
+          <li>小于 <code>40px</code> 视为误触；边界时提示「已经是第一张 / 最后一张」。</li>
+          <li>切换成功立即上锁 <code>mx_gLocked</code>，300ms 后解锁——一次连滑只翻一张。</li>
+          <li>进场动画：先把卡片挪到一侧再还原，靠 <code>offsetHeight</code> 强制重排触发 0.3s 过渡。</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ 任务三：缩放查看器 ============ -->
+    <section class="mx_tab-panel" id="mx_panel3">
+      <div class="mx_req">
+        <b>操作要求：</b>双指捏合按两指距离比例缩放，范围锁在 <code>1×～4×</code>，以两指中点为基准；单指在放大后拖动，松手贴回边界；双击在 <code>1×</code> 与 <code>2×</code> 之间切换，过渡 <code>0.25s</code>。
+      </div>
+
+      <div class="mx_stage3" id="mx_zStage">
+        <img class="mx_img" id="mx_zImg" src="swiper-imgs/tiangong_1.jpg" alt="天宫空间站">
+        <div class="mx_mask3">双指缩放请用手机打开　·　捏合 1×~4×　·　双击切换 1×/2×</div>
+      </div>
+      <div class="mx_bar3">
+        <div class="mx_scale3">当前缩放：<b id="mx_zScaleText">1.00</b> 倍</div>
+        <button class="mx_reset3" id="mx_zReset" type="button">还原</button>
+      </div>
+
+      <div class="mx_qa">
+        <h3>为什么「缩放不跳」</h3>
+        <ul>
+          <li><b>基准点换算到内容坐标</b>　按下两指时先算 anchor =（中点 − 位移）÷ 当前倍数，得到手指压住的那个图像点。</li>
+          <li><b>每帧用当前中点反解位移</b>　位移 = 当前中点 − anchor × 新倍数，捏合同时平移也不会飘。</li>
+          <li><b>起始倍数取按下瞬间的值</b>　第二次捏合接着上次结果放大，不会跳回 1 倍。</li>
+          <li><b>手势期间移除过渡</b>　只在双击时加 0.25s，否则画面追不上手指。</li>
+          <li><b>松手夹回边界</b>　<code>mx_clampZoom()</code> 把位移限制在图片边缘内，1× 时位移归零拖不出去。</li>
+          <li><b>touchcancel 同样收尾</b>　来电、系统手势打断触摸时复位状态，否则卡在拖动中。</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ 任务四：摇一摇 ============ -->
+    <section class="mx_tab-panel" id="mx_panel4">
+      <div class="mx_req">
+        <b>判定规则：</b>监听 <code>devicemotion</code>，取 <code>accelerationIncludingGravity</code> 的 x/y/z，合成加速度 = √(x²+y²+z²)。静止时约 9.8（只有重力），合成值超 <code>18</code> <b>或</b>翻转角速度超 <code>300°/s</code> 判定为摇动，触发后进入 <code>1.5 秒</code>冷却。
+      </div>
+
+      <div class="mx_sensor">
+        <div class="mx_phone" id="mx_sPhone">🍽️</div>
+        <div class="mx_state" id="mx_sState">正在检测设备传感器…</div>
+
+        <div class="mx_meter" id="mx_sMeter">
+          <div class="mx_meter-row">
+            <span class="mx_meter-label">合成加速度</span>
+            <span class="mx_meter-val" id="mx_sAccVal">--<small>m/s²</small></span>
+          </div>
+          <div class="mx_bar-track">
+            <div class="mx_bar-fill" id="mx_sAccBar"></div>
+            <div class="mx_bar-th" id="mx_sAccTh"></div>
+          </div>
+          <div class="mx_meter-row">
+            <span class="mx_meter-label">翻转角速度</span>
+            <span class="mx_meter-val" id="mx_sRotVal">--<small>°/s</small></span>
+          </div>
+          <div class="mx_bar-track">
+            <div class="mx_bar-fill mx_bar-fill--rot" id="mx_sRotBar"></div>
+            <div class="mx_bar-th" id="mx_sRotTh"></div>
+          </div>
+          <div class="mx_meter-row" style="margin-bottom:0">
+            <span class="mx_meter-peak" id="mx_sPeakTip">峰值：加速度 -- · 角速度 --</span>
+            <button class="mx_probe-clear" id="mx_sPeakClear" type="button" style="margin:0;padding:5px 14px;font-size:11px">峰值清零</button>
+          </div>
+        </div>
+
+        <div class="mx_result" id="mx_sResult">
+          <div class="mx_result-cap">今 日 菜 谱</div>
+          <div class="mx_result-icon" id="mx_sIcon">🎲</div>
+          <div class="mx_result-name" id="mx_sName">还没有结果</div>
+          <div class="mx_result-tag" id="mx_sTag">摇一摇试试</div>
+          <div class="mx_result-desc" id="mx_sDesc">摇动或快速翻转手机即出结果。</div>
+        </div>
+
+        <button class="mx_fallback" id="mx_sFallback" type="button">点我抽一次</button>
+      </div>
+
+      <div class="mx_qa">
+        <h3>为什么必须做降级</h3>
+        <ul>
+          <li><b>桌面浏览器不派发 devicemotion</b>　电脑上打开就是「摇了没反应」，必须有第二条路。</li>
+          <li><b>部分设备数据为 null</b>　Chrome 会派发各分量为 <code>null</code> 的空事件——「收到事件」不等于「拿到数据」，必须判断 <code>typeof x === 'number'</code>。</li>
+          <li><b>iOS 13+ 需要用户授权</b>　用户点「不允许」后就永久拿不到数据，且无法再次询问。</li>
+          <li><b>部分安卓机只有角速度</b>　所以用加速度 + 旋转速率双通道检测，任一通道有数据就算支持。</li>
+          <li><b>结论</b>　核心功能不能只挂在传感器上：检测不到事件或 2 秒内没有有效数据，就提示原因并保留「点我抽一次」把流程走通。</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <div class="mx_toast" id="mx_toast"></div>
+
+<script>
+  /* ================================================================
+   * mx_ 标签切换：四个任务面板互斥显隐
+   * ============================================================== */
+  var mx_currentTab = 1;
+
+  /**
+   * mx_ 主要功能：按编号切换任务面板，切到任务三时延迟重算缩放边界（隐藏时容器宽度为 0）
+   */
+  function mx_switchTab(mx_no) {
+    mx_currentTab = mx_no;
+    var mx_btns = document.querySelectorAll('#mx_tabs button');
+    for (var mx_i = 0; mx_i < mx_btns.length; mx_i++) {
+      mx_btns[mx_i].className = (mx_i + 1) === mx_no ? 'mx_tab--on' : '';
+    }
+    document.getElementById('mx_panel1').classList.toggle('mx_panel--on', mx_no === 1);
+    document.getElementById('mx_panel2').classList.toggle('mx_panel--on', mx_no === 2);
+    document.getElementById('mx_panel3').classList.toggle('mx_panel--on', mx_no === 3);
+    document.getElementById('mx_panel4').classList.toggle('mx_panel--on', mx_no === 4);
+    if (mx_no === 3) {
+      setTimeout(function () { mx_clampZoom(); mx_applyZoom(false); }, 30);
+    }
+  }
+  document.getElementById('mx_tabs').addEventListener('click', function (mx_e) {
+    var mx_btn = mx_e.target.closest('button');
+    if (mx_btn) { mx_switchTab(Number(mx_btn.getAttribute('data-mx-tab'))); }
+  });
+
+  /* ================================================================
+   * mx_ 任务一：事件探针
+   * ============================================================== */
+  var mx_pArea = document.getElementById('mx_pArea');
+  var mx_pMoves = 0;      /* mx_ 本次操作 touchmove 次数 */
+  var mx_pStartX = null;  /* mx_ 按下横坐标 */
+  var mx_pActive = false; /* mx_ 是否按住中 */
+
+  /**
+   * mx_ 主要功能：往时间线追加一个事件胶囊
+   */
+  function mx_pChip(mx_text, mx_cls) {
+    var mx_el = document.createElement('span');
+    mx_el.className = 'mx_chip' + (mx_cls ? ' ' + mx_cls : '');
+    mx_el.textContent = mx_text;
+    document.getElementById('mx_pTimeline').appendChild(mx_el);
+  }
+
+  /**
+   * mx_ 主要功能：刷新探针实时读数（次数 / 横移距离）
+   */
+  function mx_pRender() {
+    document.getElementById('mx_pMoves').textContent = mx_pMoves;
+    var mx_d = mx_pStartX === null ? 0 : Math.abs(mx_pLastX - mx_pStartX);
+    document.getElementById('mx_pDist').textContent = Math.round(mx_d);
+  }
+
+  var mx_pLastX = 0; /* mx_ 最近一次 touchmove 横坐标 */
+
+  /**
+   * mx_ 主要功能：touchstart——开新一轮记录，重置计数并标记 touchstart 胶囊
+   */
+  mx_pArea.addEventListener('touchstart', function (mx_e) {
+    mx_pActive = true;
+    mx_pMoves = 0;
+    mx_pStartX = mx_e.touches[0].clientX;
+    mx_pLastX = mx_pStartX;
+    mx_pChip('touchstart', 'mx_chip--start');
+    mx_pArea.classList.add('mx_probe--on');
+    mx_pArea.textContent = '记录中…';
+    document.getElementById('mx_pStatus').textContent = '记录中…';
+    mx_pRender();
+  }, { passive:true });
+
+  /**
+   * mx_ 主要功能：touchmove——累计次数与横移距离，实时刷新读数（胶囊只记次数防刷屏）
+   */
+  mx_pArea.addEventListener('touchmove', function (mx_e) {
+    if (!mx_pActive) { return; }
+    mx_pLastX = mx_e.touches[0].clientX;
+    mx_pMoves++;
+    mx_pRender();
+    if (mx_pMoves <= 3 || mx_pMoves % 10 === 0) {
+      mx_pChip('touchmove ×' + mx_pMoves, 'mx_chip--move');
+    }
+  }, { passive:true });
+
+  /**
+   * mx_ 主要功能：touchend——收尾标记，稍后浏览器还会补发 click（正好验证问题②）
+   */
+  mx_pArea.addEventListener('touchend', function () {
+    mx_pActive = false;
+    mx_pChip('touchend', 'mx_chip--end');
+    mx_pArea.classList.remove('mx_probe--on');
+    mx_pArea.textContent = '在此区域按住并滑动';
+    document.getElementById('mx_pStatus').textContent = '已抬起，共 touchmove ' + mx_pMoves + ' 次';
+  }, { passive:true });
+
+  /**
+   * mx_ 主要功能：touchcancel——触摸被系统中断时标记（验证问题③）
+   */
+  mx_pArea.addEventListener('touchcancel', function () {
+    mx_pActive = false;
+    mx_pChip('touchcancel', 'mx_chip--cancel');
+    mx_pArea.classList.remove('mx_probe--on');
+    mx_pArea.textContent = '在此区域按住并滑动';
+    document.getElementById('mx_pStatus').textContent = '触摸被系统中断';
+  }, { passive:true });
+
+  /**
+   * mx_ 主要功能：click——移动端约 300ms 后补发；若判定为滑动则浏览器通常不再触发
+   */
+  mx_pArea.addEventListener('click', function () {
+    mx_pChip('click', 'mx_chip--click');
+    if (!mx_pActive) {
+      document.getElementById('mx_pStatus').textContent = 'click 已触发（注意它在 touchend 之后）';
+    }
+  });
+
+  /* mx_ 清空时间线按钮 */
+  document.getElementById('mx_pClear').addEventListener('click', function () {
+    document.getElementById('mx_pTimeline').innerHTML = '';
+    mx_pMoves = 0;
+    mx_pStartX = null;
+    mx_pRender();
+    document.getElementById('mx_pStatus').textContent = '等待操作…';
+  });
+
+  /* ================================================================
+   * mx_ 任务二：滑动卡片（touchstart/touchend + 40px 阈值 + 300ms 冷却）
+   * ============================================================== */
+  var mx_gDishes = [
+    { no:'01', name:'宫保鸡丁', tag:'川菜 · 小荔枝口', desc:'鸡丁、花生、干辣椒同炒，酸甜中带一点麻辣，讲究「辣而不燥、荔枝味厚」。', bg:'linear-gradient(135deg,#f7971e 0%,#ffb347 42%,#e2542c 100%)' },
+    { no:'02', name:'兰州牛肉面', tag:'西北 · 一清二白三红', desc:'清汤、白萝卜、红辣子，配一把现拉的毛细。牛骨与二十余味香料熬足数小时。', bg:'linear-gradient(135deg,#2bc0e4 0%,#3f8ce8 46%,#1f4a8a 100%)' },
+    { no:'03', name:'广式虾饺', tag:'粤菜 · 一盅两件', desc:'澄面皮薄得能透出粉红虾仁，捏出十二道褶。早茶桌上与烧卖、凤爪并称老三样。', bg:'linear-gradient(135deg,#f6d365 0%,#fda085 52%,#c9694a 100%)' },
+    { no:'04', name:'麻婆豆腐', tag:'川菜 · 麻辣鲜香', desc:'嫩豆腐配牛肉末，郫县豆瓣与花椒面收尾，麻、辣、烫、香、酥、嫩、鲜、活八字诀缺一不可。', bg:'linear-gradient(135deg,#e94e77 0%,#c0392b 54%,#7b1f1f 100%)' }
+  ];
+  var mx_gIndex = 0;       /* mx_ 当前第几张（0 起） */
+  var mx_gStartX = 0;      /* mx_ touchstart 记录的横坐标 */
+  var mx_gLocked = false;  /* mx_ 冷却锁 */
+  var mx_gThreshold = 40;  /* mx_ 滑动判定阈值（px） */
+  var mx_gCooldown = 300;  /* mx_ 冷却时长（ms） */
+
+  /**
+   * mx_ 主要功能：把当前菜写进卡片并同步计数与圆点；先挪到一侧再还原触发 0.3s 进场过渡
+   */
+  function mx_renderDish(mx_dir) {
+    var mx_item = mx_gDishes[mx_gIndex];
+    var mx_card = document.getElementById('mx_gCard');
+
+    document.getElementById('mx_gNo').textContent = mx_item.no;
+    document.getElementById('mx_gName').textContent = mx_item.name;
+    document.getElementById('mx_gTag').textContent = mx_item.tag;
+    document.getElementById('mx_gDesc').textContent = mx_item.desc;
+    mx_card.style.background = mx_item.bg;
+
+    document.getElementById('mx_gCounter').innerHTML = '第 <b>' + (mx_gIndex + 1) + '</b> / ' + mx_gDishes.length + ' 张';
+    var mx_dots = document.getElementById('mx_gDots');
+    mx_dots.innerHTML = '';
+    for (var mx_i = 0; mx_i < mx_gDishes.length; mx_i++) {
+      var mx_dot = document.createElement('span');
+      mx_dot.className = 'mx_dot' + (mx_i === mx_gIndex ? ' mx_dot--on' : '');
+      mx_dots.appendChild(mx_dot);
+    }
+
+    mx_card.style.transition = 'none';
+    mx_card.style.transform = 'translateX(' + (mx_dir * 46) + 'px) scale(.96)';
+    mx_card.style.opacity = '0.25';
+    mx_card.offsetHeight;   /* mx_ 强制重排，让起始状态立即生效 */
+    mx_card.style.transition = 'transform .3s ease, opacity .3s ease';
+    mx_card.style.transform = 'translateX(0) scale(1)';
+    mx_card.style.opacity = '1';
+  }
+
+  /**
+   * mx_ 主要功能：底部弹出提示文字（边界提示），1.4 秒后自动淡出
+   */
+  function mx_showTip(mx_text) {
+    var mx_toast = document.getElementById('mx_toast');
+    mx_toast.textContent = mx_text;
+    mx_toast.classList.add('mx_toast--on');
+    clearTimeout(mx_showTip.mx_timer);
+    mx_showTip.mx_timer = setTimeout(function () {
+      mx_toast.classList.remove('mx_toast--on');
+    }, 1400);
+  }
+
+  /* mx_ 记录按下横坐标 */
+  document.getElementById('mx_gStage').addEventListener('touchstart', function (mx_e) {
+    mx_gStartX = mx_e.changedTouches[0].clientX;
+  }, { passive:true });
+
+  /**
+   * mx_ 主要功能：touchend 算横向位移（左滑负右滑正），超 40px 才翻卡；冷却中忽略；边界只提示不切换
+   */
+  document.getElementById('mx_gStage').addEventListener('touchend', function (mx_e) {
+    if (mx_gLocked) { return; }
+    var mx_dx = mx_e.changedTouches[0].clientX - mx_gStartX;
+    if (Math.abs(mx_dx) < mx_gThreshold) { return; }  /* mx_ 小于阈值视为误触 */
+
+    if (mx_dx < 0) {
+      if (mx_gIndex >= mx_gDishes.length - 1) { mx_showTip('已经是最后一张'); return; }
+      mx_gIndex++;
+      mx_renderDish(1);
+    } else {
+      if (mx_gIndex <= 0) { mx_showTip('已经是第一张'); return; }
+      mx_gIndex--;
+      mx_renderDish(-1);
+    }
+
+    mx_gLocked = true;   /* mx_ 上锁，防止一次连滑跳两张 */
+    setTimeout(function () { mx_gLocked = false; }, mx_gCooldown);
+  }, { passive:true });
+
+  /* mx_ 初始化第一张卡 */
+  mx_renderDish(1);
+
+  /* ================================================================
+   * mx_ 任务三：缩放查看器（双指 1~4 倍中点基准 + 单指拖动夹边界 + 双击切换）
+   * ============================================================== */
+  var mx_zStage = document.getElementById('mx_zStage');
+  var mx_zImg = document.getElementById('mx_zImg');
+  var mx_zMin = 1, mx_zMax = 4;           /* mx_ 缩放范围 */
+  var mx_zScale = 1;                      /* mx_ 当前倍数 */
+  var mx_zTx = 0, mx_zTy = 0;             /* mx_ 当前位移（相对容器中心） */
+  var mx_zMode = '';                      /* mx_ pinch 双指 / drag 单指 */
+  var mx_zStartDist = 0;                  /* mx_ 双指初始间距 */
+  var mx_zStartScale = 1;                 /* mx_ 双指起始倍数 */
+  var mx_zLastMidX = 0, mx_zLastMidY = 0; /* mx_ 上一帧两指中点 */
+  var mx_zStartX = 0, mx_zStartY = 0;     /* mx_ 单指按下坐标 */
+  var mx_zStartTx = 0, mx_zStartTy = 0;   /* mx_ 单指按下时的位移 */
+  var mx_zMoved = 0;                      /* mx_ 本轮累计移动，判断是否单击 */
+  var mx_zLastTap = 0;                    /* mx_ 上一次单击时间（双击判定） */
+
+  /**
+   * mx_ 主要功能：把当前倍数与位移写进 transform，并刷新「当前缩放 X.XX 倍」读数
+   */
+  function mx_applyZoom(mx_animate) {
+    mx_zImg.style.transition = mx_animate ? 'transform .25s ease' : 'none';
+    mx_zImg.style.transform = 'translate3d(' + mx_zTx + 'px,' + mx_zTy + 'px,0) scale(' + mx_zScale + ')';
+    document.getElementById('mx_zScaleText').textContent = mx_zScale.toFixed(2);
+  }
+
+  /**
+   * mx_ 主要功能：以容器中心为原点，把位移限制在图片边缘之内（1× 时自动归零）
+   */
+  function mx_clampZoom() {
+    var mx_rect = mx_zStage.getBoundingClientRect();
+    if (mx_rect.width === 0) { return; }   /* mx_ 面板隐藏时容器无尺寸，跳过 */
+    var mx_maxX = Math.max(0, (mx_zImg.offsetWidth * mx_zScale - mx_rect.width) / 2);
+    var mx_maxY = Math.max(0, (mx_zImg.offsetHeight * mx_zScale - mx_rect.height) / 2);
+    if (mx_zTx > mx_maxX) { mx_zTx = mx_maxX; }
+    if (mx_zTx < -mx_maxX) { mx_zTx = -mx_maxX; }
+    if (mx_zTy > mx_maxY) { mx_zTy = mx_maxY; }
+    if (mx_zTy < -mx_maxY) { mx_zTy = -mx_maxY; }
+  }
+
+  /**
+   * mx_ 主要功能：以 (mx_px, mx_py) 为基准缩放，保证基准点下的内容不位移——「缩放不跳」的核心
+   * 推导：内容点 c = (m - t) / s，缩放后仍停在 m 上 → t2 = m - (m - t) × (s2 / s)
+   */
+  function mx_zoomAt(mx_newScale, mx_px, mx_py) {
+    var mx_ratio = mx_newScale / mx_zScale;
+    mx_zTx = mx_px - (mx_px - mx_zTx) * mx_ratio;
+    mx_zTy = mx_py - (mx_py - mx_zTy) * mx_ratio;
+    mx_zScale = mx_newScale;
+  }
+
+  /**
+   * mx_ 主要功能：把触点坐标换算成「相对容器中心」的坐标
+   */
+  function mx_toCenter(mx_clientX, mx_clientY) {
+    var mx_rect = mx_zStage.getBoundingClientRect();
+    return {
+      x: mx_clientX - (mx_rect.left + mx_rect.width / 2),
+      y: mx_clientY - (mx_rect.top + mx_rect.height / 2)
+    };
+  }
+
+  /**
+   * mx_ 主要功能：算两指之间的直线距离（勾股定理）
+   */
+  function mx_dist(mx_t1, mx_t2) {
+    return Math.hypot(mx_t2.clientX - mx_t1.clientX, mx_t2.clientY - mx_t1.clientY);
+  }
+
+  /**
+   * mx_ 主要功能：touchstart 记录单指/双指状态与初始数据
+   */
+  function mx_onZoomStart(mx_e) {
+    mx_zMoved = 0;
+    if (mx_e.touches.length >= 2) {
+      mx_zMode = 'pinch';
+      mx_zStartDist = mx_dist(mx_e.touches[0], mx_e.touches[1]);
+      mx_zStartScale = mx_zScale;   /* mx_ 起始倍数取按下瞬间，二次捏合不跳回 1 */
+      var mx_mid = mx_toCenter(
+        (mx_e.touches[0].clientX + mx_e.touches[1].clientX) / 2,
+        (mx_e.touches[0].clientY + mx_e.touches[1].clientY) / 2
+      );
+      mx_zLastMidX = mx_mid.x;
+      mx_zLastMidY = mx_mid.y;
+    } else {
+      mx_zMode = 'drag';
+      mx_zStartDist = 0;
+      mx_zStartX = mx_e.touches[0].clientX;
+      mx_zStartY = mx_e.touches[0].clientY;
+      mx_zStartTx = mx_zTx;
+      mx_zStartTy = mx_zTy;
+    }
+  }
+
+  /**
+   * mx_ 主要功能：双指按「当前距离/起始距离」比例缩放并跟随中点；单指且已放大时拖动（不加过渡）
+   */
+  function mx_onZoomMove(mx_e) {
+    if (mx_zMode === 'pinch' && mx_e.touches.length >= 2) {
+      mx_e.preventDefault();   /* mx_ 阻止浏览器自身缩放页面 */
+      var mx_d = mx_dist(mx_e.touches[0], mx_e.touches[1]);
+      var mx_mid = mx_toCenter(
+        (mx_e.touches[0].clientX + mx_e.touches[1].clientX) / 2,
+        (mx_e.touches[0].clientY + mx_e.touches[1].clientY) / 2
+      );
+      if (mx_zStartDist > 0) {
+        var mx_next = mx_zStartScale * (mx_d / mx_zStartDist);
+        if (mx_next < mx_zMin) { mx_next = mx_zMin; }
+        if (mx_next > mx_zMax) { mx_next = mx_zMax; }
+
+        mx_zTx += mx_mid.x - mx_zLastMidX;
+        mx_zTy += mx_mid.y - mx_zLastMidY;
+        mx_zoomAt(mx_next, mx_mid.x, mx_mid.y);
+
+        mx_zLastMidX = mx_mid.x;
+        mx_zLastMidY = mx_mid.y;
+        mx_zMoved += 10;
+        mx_applyZoom(false);
+      }
+    } else if (mx_zMode === 'drag' && mx_e.touches.length === 1 && mx_zScale > 1) {
+      mx_e.preventDefault();
+      var mx_dx = mx_e.touches[0].clientX - mx_zStartX;
+      var mx_dy = mx_e.touches[0].clientY - mx_zStartY;
+      mx_zMoved = Math.abs(mx_dx) + Math.abs(mx_dy);
+      mx_zTx = mx_zStartTx + mx_dx;
+      mx_zTy = mx_zStartTy + mx_dy;
+      mx_applyZoom(false);
+    }
+  }
+
+  /**
+   * mx_ 主要功能：松手夹回边界；几乎没移动判为点击，300ms 内两次即双击
+   */
+  function mx_onZoomEnd(mx_e) {
+    mx_clampZoom();
+    mx_applyZoom(true);
+
+    if (mx_zMode === 'drag' && mx_zMoved < 10) {
+      var mx_now = Date.now();
+      if (mx_now - mx_zLastTap < 300) {
+        mx_zLastTap = 0;
+        mx_toggleZoom(mx_e.changedTouches[0]);
+      } else {
+        mx_zLastTap = mx_now;
+      }
+    }
+    mx_zMode = '';
+    mx_zStartDist = 0;
+  }
+
+  /**
+   * mx_ 主要功能：双击切换——已放大回 1×，否则以双击点为基准放大到 2×（带 0.25s 过渡）
+   */
+  function mx_toggleZoom(mx_touch) {
+    if (mx_zScale > 1.05) {
+      mx_zScale = 1;
+      mx_zTx = 0;
+      mx_zTy = 0;
+    } else {
+      var mx_p = mx_toCenter(mx_touch.clientX, mx_touch.clientY);
+      mx_zoomAt(2, mx_p.x, mx_p.y);
+      mx_clampZoom();
+    }
+    mx_applyZoom(true);
+  }
+
+  /**
+   * mx_ 主要功能：横竖屏切换 / 尺寸变化时只重算边界，保留当前倍数
+   */
+  function mx_onZoomResize() {
+    mx_clampZoom();
+    mx_applyZoom(false);
+  }
+
+  /* mx_ 事件绑定：touchmove 必须 passive:false 才能 preventDefault */
+  mx_zStage.addEventListener('touchstart', mx_onZoomStart, { passive:true });
+  mx_zStage.addEventListener('touchmove', mx_onZoomMove, { passive:false });
+  mx_zStage.addEventListener('touchend', mx_onZoomEnd, { passive:true });
+  /* mx_ touchcancel：被电话/通知打断时同样收尾，否则状态卡在拖动中 */
+  mx_zStage.addEventListener('touchcancel', function () {
+    mx_zMode = '';
+    mx_zStartDist = 0;
+    mx_clampZoom();
+    mx_applyZoom(true);
+  });
+  window.addEventListener('resize', mx_onZoomResize);
+  window.addEventListener('orientationchange', function () {
+    setTimeout(mx_onZoomResize, 260);  /* mx_ 等旋转动画结束再取尺寸 */
+  });
+  document.getElementById('mx_zReset').addEventListener('click', function () {
+    mx_zScale = 1;
+    mx_zTx = 0;
+    mx_zTy = 0;
+    mx_applyZoom(true);
+  });
+
+  /* ================================================================
+   * mx_ 任务四：摇一摇（加速度 + 角速度双通道 + 1.5s 冷却 + 三层降级）
+   * ============================================================== */
+  var mx_sDishes = [
+    { name:'宫保鸡丁', tag:'川菜 · 糊辣荔枝味', icon:'🍗', desc:'鸡丁滑嫩、花生碎酥，干辣椒与花椒爆出糊辣香。' },
+    { name:'清蒸鲈鱼', tag:'粤菜 · 原汁原味', icon:'🐟', desc:'大火八分钟，出锅淋豉油、铺姜丝葱段，热油一激。' },
+    { name:'麻婆豆腐', tag:'川菜 · 麻辣烫嫩', icon:'🌶️', desc:'嫩豆腐在红汤里颤，牛肉臊子与郫县豆瓣三重叠加。' },
+    { name:'蟹粉小笼', tag:'苏式点心 · 一咬一包汤', icon:'🥟', desc:'薄皮十八褶，咬开先吸一口滚烫汤汁。' },
+    { name:'葱油拌面', tag:'沪上家常 · 素面之王', icon:'🍜', desc:'小葱慢炸到焦香，酱油一浇，面条根根裹油。' },
+    { name:'番茄牛腩', tag:'家常炖菜 · 酸甜软烂', icon:'🍲', desc:'牛腩炖到筷子一戳就开，汤汁浓稠可拌两碗饭。' }
+  ];
+  var mx_sAccThreshold = 18;    /* mx_ 加速度通道阈值（合成值） */
+  var mx_sRotThreshold = 300;   /* mx_ 角速度通道阈值（°/s） */
+  var mx_sAccMax = 40;          /* mx_ 加速度进度条满刻度 */
+  var mx_sRotMax = 800;         /* mx_ 角速度进度条满刻度 */
+  var mx_sCooldown = 1500;      /* mx_ 冷却时长（ms） */
+  var mx_sLocked = false;       /* mx_ 是否冷却中 */
+  var mx_sGotEvent = false;     /* mx_ 是否拿到有效数值数据 */
+  var mx_sIndex = -1;           /* mx_ 当前结果下标，避免连续抽到同一道 */
+  var mx_sPeakAcc = 0;          /* mx_ 加速度历史峰值 */
+  var mx_sPeakRot = 0;          /* mx_ 角速度历史峰值 */
+
+  var mx_sAccValEl = document.getElementById('mx_sAccVal');
+  var mx_sRotValEl = document.getElementById('mx_sRotVal');
+  var mx_sAccBarEl = document.getElementById('mx_sAccBar');
+  var mx_sRotBarEl = document.getElementById('mx_sRotBar');
+  var mx_sPeakTipEl = document.getElementById('mx_sPeakTip');
+
+  /**
+   * mx_ 主要功能：随机抽一道菜（不与上次重复）并带弹出动画显示
+   */
+  function mx_drawDish() {
+    var mx_next = mx_sIndex;
+    while (mx_next === mx_sIndex) {
+      mx_next = Math.floor(Math.random() * mx_sDishes.length);
+    }
+    mx_sIndex = mx_next;
+    var mx_item = mx_sDishes[mx_next];
+
+    document.getElementById('mx_sIcon').textContent = mx_item.icon;
+    document.getElementById('mx_sName').textContent = mx_item.name;
+    document.getElementById('mx_sTag').textContent = mx_item.tag;
+    document.getElementById('mx_sDesc').textContent = mx_item.desc;
+
+    var mx_box = document.getElementById('mx_sResult');
+    mx_box.classList.remove('mx_result--on');
+    mx_box.offsetHeight;
+    mx_box.classList.add('mx_result--on');
+  }
+
+  /**
+   * mx_ 主要功能：手机图标抖一下并更新状态文字
+   */
+  function mx_playShake(mx_text) {
+    var mx_phone = document.getElementById('mx_sPhone');
+    mx_phone.classList.remove('mx_phone--shake');
+    mx_phone.offsetHeight;
+    mx_phone.classList.add('mx_phone--shake');
+    var mx_state = document.getElementById('mx_sState');
+    mx_state.textContent = mx_text;
+    mx_state.className = 'mx_state';
+  }
+
+  /**
+   * mx_ 主要功能：摇动触发入口——冷却期内忽略，冷却结束自动解锁
+   */
+  function mx_onShake() {
+    if (mx_sLocked) { return; }
+    mx_sLocked = true;
+    mx_playShake('摇到了！正在抽菜谱…');
+    mx_drawDish();
+    setTimeout(function () {
+      mx_sLocked = false;
+      document.getElementById('mx_sState').textContent = '再摇一次，看看今天吃什么';
+    }, mx_sCooldown);
+  }
+
+  /**
+   * mx_ 主要功能：刷新实时仪表盘——当前值、进度条宽度、峰值文字
+   */
+  function mx_updateMeter(mx_mag, mx_rot) {
+    mx_sAccValEl.innerHTML = (mx_mag === null ? '--' : mx_mag.toFixed(1)) + '<small>m/s²</small>';
+    mx_sRotValEl.innerHTML = (mx_rot === null ? '--' : Math.round(mx_rot)) + '<small>°/s</small>';
+    if (mx_mag !== null) {
+      mx_sAccBarEl.style.width = Math.min(100, mx_mag / mx_sAccMax * 100) + '%';
+    }
+    if (mx_rot !== null) {
+      mx_sRotBarEl.style.width = Math.min(100, mx_rot / mx_sRotMax * 100) + '%';
+    }
+    mx_sPeakTipEl.textContent = '峰值：加速度 ' +
+      (mx_sPeakAcc ? mx_sPeakAcc.toFixed(1) : '--') +
+      ' · 角速度 ' + (mx_sPeakRot ? Math.round(mx_sPeakRot) : '--');
+  }
+
+  /**
+   * mx_ 主要功能：把阈值刻度画到两条进度条上
+   */
+  function mx_placeThresholds() {
+    document.getElementById('mx_sAccTh').style.left = (mx_sAccThreshold / mx_sAccMax * 100) + '%';
+    document.getElementById('mx_sRotTh').style.left = (mx_sRotThreshold / mx_sRotMax * 100) + '%';
+  }
+
+  /**
+   * mx_ 主要功能：devicemotion 双通道检测——加速度合成值或角速度合成值任一超标即判定摇动；
+   * 只有分量为数值的通道才算有效（过滤 Chrome 空事件），翻转/摇动时实时刷新峰值
+   */
+  function mx_onMotion(mx_e) {
+    var mx_acc = mx_e.accelerationIncludingGravity;
+    var mx_rr = mx_e.rotationRate;
+    var mx_mag = null;
+    var mx_rot = null;
+
+    /* mx_ 通道一：合成加速度（含重力），静止平放约 9.8 */
+    if (mx_acc && typeof mx_acc.x === 'number') {
+      mx_mag = Math.sqrt(
+        (mx_acc.x || 0) * (mx_acc.x || 0) +
+        (mx_acc.y || 0) * (mx_acc.y || 0) +
+        (mx_acc.z || 0) * (mx_acc.z || 0)
+      );
+      if (mx_mag > mx_sPeakAcc) { mx_sPeakAcc = mx_mag; }
+    }
+
+    /* mx_ 通道二：翻转角速度，快速翻转/甩动可达数百 °/s */
+    if (mx_rr && typeof mx_rr.alpha === 'number') {
+      mx_rot = Math.sqrt(
+        (mx_rr.alpha || 0) * (mx_rr.alpha || 0) +
+        (mx_rr.beta || 0) * (mx_rr.beta || 0) +
+        (mx_rr.gamma || 0) * (mx_rr.gamma || 0)
+      );
+      if (mx_rot > mx_sPeakRot) { mx_sPeakRot = mx_rot; }
+    }
+
+    /* mx_ 两个通道全为空才算「没数据」，任一通道有值即认为设备支持 */
+    if (mx_mag === null && mx_rot === null) { return; }
+    mx_sGotEvent = true;
+
+    mx_updateMeter(mx_mag, mx_rot);
+
+    if ((mx_mag !== null && mx_mag > mx_sAccThreshold) ||
+        (mx_rot !== null && mx_rot > mx_sRotThreshold)) {
+      mx_onShake();
+    }
+  }
+
+  /**
+   * mx_ 主要功能：切到「不支持」状态——显示警示文字并放出降级按钮
+   */
+  function mx_showSensorFallback(mx_text) {
+    var mx_state = document.getElementById('mx_sState');
+    mx_state.textContent = mx_text;
+    mx_state.className = 'mx_state mx_state--warn';
+    document.getElementById('mx_sFallback').classList.add('mx_fallback--show');
+  }
+
+  /**
+   * mx_ 主要功能：启动摇一摇——绑定降级按钮与峰值清零、按设备能力决定直接监听或申请 iOS 权限，
+   * 并做 2 秒无数据的兜底检测
+   */
+  function mx_initSensor() {
+    var mx_btn = document.getElementById('mx_sFallback');
+    mx_btn.addEventListener('click', function () {
+      mx_playShake('手动抽取中…');
+      mx_drawDish();
+    });
+
+    document.getElementById('mx_sPeakClear').addEventListener('click', function () {
+      mx_sPeakAcc = 0;
+      mx_sPeakRot = 0;
+      mx_updateMeter(null, null);
+    });
+
+    if (typeof DeviceMotionEvent === 'undefined') {
+      mx_showSensorFallback('当前设备不支持（没有 devicemotion），请用手机打开');
+      return;
+    }
+
+    if (typeof DeviceMotionEvent.requestPermission === 'function') {
+      /* mx_ iOS 13+ 必须由用户手势触发授权 */
+      mx_showSensorFallback('iOS 需要先授权：点下方按钮开启摇一摇');
+      mx_btn.textContent = '开启摇一摇';
+      mx_btn.addEventListener('click', function () {
+        DeviceMotionEvent.requestPermission().then(function (mx_res) {
+          if (mx_res === 'granted') {
+            window.addEventListener('devicemotion', mx_onMotion);
+            document.getElementById('mx_sState').textContent = '已开启，摇一摇试试';
+            document.getElementById('mx_sState').className = 'mx_state';
+            mx_btn.textContent = '点我抽一次';
+          } else {
+            mx_showSensorFallback('授权被拒绝，仍可点按钮抽取');
+          }
+        }).catch(function () {
+          mx_showSensorFallback('授权失败，仍可点按钮抽取');
+        });
+      });
+    } else {
+      window.addEventListener('devicemotion', mx_onMotion);
+      document.getElementById('mx_sState').textContent = '正在等待摇动…';
+    }
+
+    /* mx_ 兜底：2 秒内没拿到有效数据，说明这台设备没有传感器 */
+    setTimeout(function () {
+      if (!mx_sGotEvent) {
+        mx_showSensorFallback('当前设备不支持，请用手机打开');
+      }
+    }, 2000);
+  }
+
+  /* mx_ 初始化 */
+  mx_placeThresholds();
+  mx_initSensor();
+</script>
+</body>
+</html>

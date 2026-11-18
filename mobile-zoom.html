@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<!--
+  mx_ 作者：孟欣
+  mx_ 学号：24002120321
+  mx_ 建立时间：2026-11-18
+  mx_ 使用大模型：GLM-5.3-FlashX
+  mx_ 功能名称：移动端图片查看器（双指缩放 1~4 倍以中点为基准 + 单指拖动夹边界 + 双击 1x/2x 切换）
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>双指缩放图片查看器 · 孟欣 24002120321</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    background:linear-gradient(180deg,#f8fcff 0%,#eaf4fe 60%,#f6fbff 100%);
+    background-attachment:fixed;color:#17324a;min-height:100vh;-webkit-font-smoothing:antialiased;
+  }
+  .mx_page{max-width:480px;margin:0 auto;padding:26px 16px 56px}
+
+  /* mx_ 页头 */
+  .mx_head{text-align:center;margin-bottom:20px}
+  .mx_head h1{font-size:20px;letter-spacing:2px;font-weight:600;color:#17324a}
+  .mx_head p{font-size:12.5px;color:#6b8aa3;margin-top:7px}
+  .mx_tip{
+    display:inline-block;margin-top:10px;font-size:12px;letter-spacing:1px;color:#b26205;
+    padding:6px 15px;border-radius:999px;background:#fdf3e3;border:1px solid #f2ddb8;
+  }
+
+  /* mx_ 查看器舞台：手势全归 JS，浏览器别插手 */
+  .mx_stage{
+    position:relative;height:360px;border-radius:16px;overflow:hidden;background:#dde9f5;
+    touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
+    box-shadow:0 14px 30px rgba(31,106,171,.18);
+  }
+  .mx_img{
+    width:100%;height:100%;object-fit:contain;display:block;
+    transform-origin:center center;will-change:transform;transition:transform .25s ease;
+  }
+  .mx_mask{
+    position:absolute;left:0;right:0;bottom:0;padding:24px 14px 11px;
+    font-size:11.5px;color:#31506b;text-align:center;pointer-events:none;
+    background:linear-gradient(transparent,rgba(255,255,255,.85));
+  }
+  .mx_bar{display:flex;justify-content:space-between;align-items:center;margin-top:13px}
+  .mx_scale{font-size:13px;color:#e8890c;letter-spacing:1px;font-variant-numeric:tabular-nums;font-weight:600}
+  .mx_reset{
+    border:1px solid #cfe4f8;background:#fff;color:#1f6aab;
+    font-size:12.5px;padding:7px 16px;border-radius:999px;font-family:inherit;cursor:pointer;
+  }
+  .mx_reset:active{background:#eaf3fd}
+
+  /* mx_ 「缩放不跳」答辩说明区 */
+  .mx_note{
+    margin-top:22px;background:#fff;border:1px solid #d9e9f8;border-radius:14px;
+    padding:15px 17px;font-size:12.6px;color:#31506b;line-height:2.05;
+    box-shadow:0 6px 16px rgba(59,143,212,.08);
+  }
+  .mx_note b{color:#1f6aab}
+  .mx_note code{background:#eaf3fd;color:#1f6aab;border-radius:4px;padding:1px 6px;font-family:Consolas,monospace;font-size:11.8px}
+</style>
+</head>
+<body>
+  <div class="mx_page">
+    <div class="mx_head">
+      <h1>双指缩放图片查看器</h1>
+      <p>孟欣 24002120321 · 双指捏合 1×~4× · 双击切换 1×/2×</p>
+      <span class="mx_tip">双指缩放请用手机打开</span>
+    </div>
+
+    <!-- mx_ 查看器：大图 + 提示遮罩 -->
+    <div class="mx_stage" id="mx_zStage">
+      <img class="mx_img" id="mx_zImg" src="swiper-imgs/tiangong_1.jpg" alt="天宫空间站">
+      <div class="mx_mask">双指缩放请用手机打开　·　捏合 1×~4×　·　双击切换 1×/2×　·　放大后可单指拖动</div>
+    </div>
+
+    <div class="mx_bar">
+      <div class="mx_scale" id="mx_zScale">1.00×</div>
+      <button class="mx_reset" id="mx_zReset" type="button">重置为 1×</button>
+    </div>
+
+    <div class="mx_note">
+      <b>缩放为什么不会「跳」（答辩说明）：</b>以容器中心为原点，当前位移 <code>t</code>、倍数 <code>s</code>，两指中点 <code>m</code> 压住的内容点 <code>c = (m - t) / s</code>；缩放后让同一个内容点仍停在 <code>m</code> 上，得 <code>t2 = m - (m - t) × (s2 / s)</code>。每一帧都按这个公式更新位移，手指压住的点就纹丝不动。松手时把位移夹回图片边缘内，1× 时最大位移为 0、拖不出去；<code>touchcancel</code>（来电/通知打断）同样收尾；横竖屏切换只重算边界、保留倍数。
+    </div>
+  </div>
+
+<script>
+  var mx_zStage = document.getElementById('mx_zStage');
+  var mx_zImg = document.getElementById('mx_zImg');
+  var mx_zScaleEl = document.getElementById('mx_zScale');
+  var mx_zMin = 1, mx_zMax = 4;           /* mx_ 缩放范围 */
+  var mx_zScale = 1;                      /* mx_ 当前倍数 */
+  var mx_zTx = 0, mx_zTy = 0;             /* mx_ 当前位移（相对容器中心） */
+  var mx_zMode = '';                      /* mx_ pinch 双指 / drag 单指 */
+  var mx_zStartDist = 0;                  /* mx_ 双指初始间距 */
+  var mx_zStartScale = 1;                 /* mx_ 双指起始倍数 */
+  var mx_zLastMidX = 0, mx_zLastMidY = 0; /* mx_ 上一帧两指中点 */
+  var mx_zStartX = 0, mx_zStartY = 0;     /* mx_ 单指按下坐标 */
+  var mx_zStartTx = 0, mx_zStartTy = 0;   /* mx_ 单指按下时的位移 */
+  var mx_zMoved = 0;                      /* mx_ 本轮累计移动，判断是否单击 */
+  var mx_zLastTap = 0;                    /* mx_ 上一次单击时间（双击判定） */
+
+  /**
+   * mx_ 主要功能：把当前倍数与位移写进 transform，并刷新比例指示器
+   * @param {boolean} mx_animate 是否带 0.25s 过渡
+   */
+  function mx_applyZoom(mx_animate) {
+    mx_zImg.style.transition = mx_animate ? 'transform .25s ease' : 'none';
+    mx_zImg.style.transform = 'translate3d(' + mx_zTx + 'px,' + mx_zTy + 'px,0) scale(' + mx_zScale + ')';
+    mx_zScaleEl.textContent = mx_zScale.toFixed(2) + '×';
+  }
+
+  /**
+   * mx_ 主要功能：以容器中心为原点，把位移限制在图片边缘之内（1× 时自动归零）
+   */
+  function mx_clampZoom() {
+    var mx_rect = mx_zStage.getBoundingClientRect();
+    if (mx_rect.width === 0) { return; }   /* mx_ 容器无尺寸（隐藏中）时跳过 */
+    var mx_maxX = Math.max(0, (mx_zImg.offsetWidth * mx_zScale - mx_rect.width) / 2);
+    var mx_maxY = Math.max(0, (mx_zImg.offsetHeight * mx_zScale - mx_rect.height) / 2);
+    if (mx_zTx > mx_maxX) { mx_zTx = mx_maxX; }
+    if (mx_zTx < -mx_maxX) { mx_zTx = -mx_maxX; }
+    if (mx_zTy > mx_maxY) { mx_zTy = mx_maxY; }
+    if (mx_zTy < -mx_maxY) { mx_zTy = -mx_maxY; }
+  }
+
+  /**
+   * mx_ 主要功能：以 (mx_px, mx_py) 为基准缩放，保证基准点下的内容不位移——「缩放不跳」的核心
+   * 推导：内容点 c = (m - t) / s，缩放后仍停在 m 上 → t2 = m - (m - t) × (s2 / s)
+   */
+  function mx_zoomAt(mx_newScale, mx_px, mx_py) {
+    var mx_ratio = mx_newScale / mx_zScale;
+    mx_zTx = mx_px - (mx_px - mx_zTx) * mx_ratio;
+    mx_zTy = mx_py - (mx_py - mx_zTy) * mx_ratio;
+    mx_zScale = mx_newScale;
+  }
+
+  /**
+   * mx_ 主要功能：把触点坐标换算成「相对容器中心」的坐标
+   */
+  function mx_toCenter(mx_clientX, mx_clientY) {
+    var mx_rect = mx_zStage.getBoundingClientRect();
+    return {
+      x: mx_clientX - (mx_rect.left + mx_rect.width / 2),
+      y: mx_clientY - (mx_rect.top + mx_rect.height / 2)
+    };
+  }
+
+  /**
+   * mx_ 主要功能：算两指之间的直线距离（勾股定理）
+   */
+  function mx_dist(mx_t1, mx_t2) {
+    return Math.hypot(mx_t2.clientX - mx_t1.clientX, mx_t2.clientY - mx_t1.clientY);
+  }
+
+  /**
+   * mx_ 主要功能：touchstart 记录单指/双指状态与初始数据；单指时清空上轮间距避免首帧跳一下
+   */
+  function mx_onZoomStart(mx_e) {
+    mx_zMoved = 0;
+    if (mx_e.touches.length >= 2) {
+      mx_zMode = 'pinch';
+      mx_zStartDist = mx_dist(mx_e.touches[0], mx_e.touches[1]);
+      mx_zStartScale = mx_zScale;
+      var mx_mid = mx_toCenter(
+        (mx_e.touches[0].clientX + mx_e.touches[1].clientX) / 2,
+        (mx_e.touches[0].clientY + mx_e.touches[1].clientY) / 2
+      );
+      mx_zLastMidX = mx_mid.x;
+      mx_zLastMidY = mx_mid.y;
+    } else {
+      mx_zMode = 'drag';
+      mx_zStartDist = 0;
+      mx_zStartX = mx_e.touches[0].clientX;
+      mx_zStartY = mx_e.touches[0].clientY;
+      mx_zStartTx = mx_zTx;
+      mx_zStartTy = mx_zTy;
+    }
+  }
+
+  /**
+   * mx_ 主要功能：touchmove——双指按「当前距离 / 起始距离」比例缩放（1~4 倍），
+   * 跟随中点平移并以中点为基准缩放；单指且已放大时拖动图片（不加过渡，保证跟手）
+   */
+  function mx_onZoomMove(mx_e) {
+    if (mx_zMode === 'pinch' && mx_e.touches.length >= 2) {
+      mx_e.preventDefault();   /* mx_ 阻止浏览器自身缩放页面 */
+      var mx_d = mx_dist(mx_e.touches[0], mx_e.touches[1]);
+      var mx_mid = mx_toCenter(
+        (mx_e.touches[0].clientX + mx_e.touches[1].clientX) / 2,
+        (mx_e.touches[0].clientY + mx_e.touches[1].clientY) / 2
+      );
+      if (mx_zStartDist > 0) {
+        var mx_next = mx_zStartScale * (mx_d / mx_zStartDist);
+        if (mx_next < mx_zMin) { mx_next = mx_zMin; }
+        if (mx_next > mx_zMax) { mx_next = mx_zMax; }
+
+        mx_zTx += mx_mid.x - mx_zLastMidX;
+        mx_zTy += mx_mid.y - mx_zLastMidY;
+        mx_zoomAt(mx_next, mx_mid.x, mx_mid.y);
+
+        mx_zLastMidX = mx_mid.x;
+        mx_zLastMidY = mx_mid.y;
+        mx_zMoved += 10;
+        mx_applyZoom(false);
+      }
+    } else if (mx_zMode === 'drag' && mx_e.touches.length === 1 && mx_zScale > 1) {
+      mx_e.preventDefault();
+      var mx_dx = mx_e.touches[0].clientX - mx_zStartX;
+      var mx_dy = mx_e.touches[0].clientY - mx_zStartY;
+      mx_zMoved = Math.abs(mx_dx) + Math.abs(mx_dy);
+      mx_zTx = mx_zStartTx + mx_dx;
+      mx_zTy = mx_zStartTy + mx_dy;
+      mx_applyZoom(false);
+    }
+  }
+
+  /**
+   * mx_ 主要功能：touchend——松手把位移夹回边界；几乎没移动判为点击，300ms 内两次即双击
+   */
+  function mx_onZoomEnd(mx_e) {
+    mx_clampZoom();
+    mx_applyZoom(true);
+
+    if (mx_zMode === 'drag' && mx_zMoved < 10) {
+      var mx_now = Date.now();
+      if (mx_now - mx_zLastTap < 300) {
+        mx_zLastTap = 0;
+        mx_toggleZoom(mx_e.changedTouches[0]);
+      } else {
+        mx_zLastTap = mx_now;
+      }
+    }
+    mx_zMode = '';
+    mx_zStartDist = 0;
+  }
+
+  /**
+   * mx_ 主要功能：双击切换——已放大回 1×，否则以双击点为基准放大到 2×（带 0.25s 过渡）
+   */
+  function mx_toggleZoom(mx_touch) {
+    if (mx_zScale > 1.05) {
+      mx_zScale = 1;
+      mx_zTx = 0;
+      mx_zTy = 0;
+    } else {
+      var mx_p = mx_toCenter(mx_touch.clientX, mx_touch.clientY);
+      mx_zoomAt(2, mx_p.x, mx_p.y);
+      mx_clampZoom();
+    }
+    mx_applyZoom(true);
+  }
+
+  /**
+   * mx_ 主要功能：横竖屏切换 / 尺寸变化时只重算边界，保留当前倍数
+   */
+  function mx_onZoomResize() {
+    mx_clampZoom();
+    mx_applyZoom(false);
+  }
+
+  /* mx_ 事件绑定：touchmove 必须 passive:false 才能 preventDefault */
+  mx_zStage.addEventListener('touchstart', mx_onZoomStart, { passive:true });
+  mx_zStage.addEventListener('touchmove', mx_onZoomMove, { passive:false });
+  mx_zStage.addEventListener('touchend', mx_onZoomEnd, { passive:true });
+  /* mx_ touchcancel：被电话/通知打断时同样收尾，否则状态卡在拖动中 */
+  mx_zStage.addEventListener('touchcancel', function () {
+    mx_zMode = '';
+    mx_zStartDist = 0;
+    mx_clampZoom();
+    mx_applyZoom(true);
+  });
+  window.addEventListener('resize', mx_onZoomResize);
+  window.addEventListener('orientationchange', function () {
+    setTimeout(mx_onZoomResize, 260);  /* mx_ 等旋转动画结束再取尺寸 */
+  });
+
+  /* mx_ 重置按钮：倍数回 1 并居中 */
+  document.getElementById('mx_zReset').addEventListener('click', function () {
+    mx_zScale = 1;
+    mx_zTx = 0;
+    mx_zTy = 0;
+    mx_applyZoom(true);
+  });
+</script>
+</body>
+</html>
