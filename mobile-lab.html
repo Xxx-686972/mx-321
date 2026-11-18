@@ -120,8 +120,12 @@
     45%{transform:rotate(10deg) translateX(8px)}
     70%{transform:rotate(-6deg) translateX(-4px)}
   }
-  .mx_state{font-size:12.8px;color:#6b8aa3;min-height:21px;margin-bottom:16px}
+  .mx_state{font-size:12.8px;color:#6b8aa3;min-height:21px;margin-bottom:5px}
   .mx_state.mx_state--warn{color:#c25b1e}
+  .mx_dbg{
+    font-size:11.5px;color:#9ab4ca;letter-spacing:.5px;
+    font-variant-numeric:tabular-nums;margin-bottom:15px;min-height:18px;
+  }
   .mx_result{
     border-radius:18px;padding:24px 18px;min-height:170px;
     display:flex;flex-direction:column;justify-content:center;align-items:center;
@@ -231,6 +235,7 @@
       <div class="mx_sensor">
         <div class="mx_phone" id="mx_sPhone">🍽️</div>
         <div class="mx_state" id="mx_sState">正在检测设备传感器…</div>
+        <div class="mx_dbg" id="mx_sDbg">传感器数据：--　·　摇到 18 以上触发</div>
 
         <div class="mx_result" id="mx_sResult">
           <div class="mx_result-icon" id="mx_sIcon">🎲</div>
@@ -595,6 +600,8 @@
   var mx_sCooldown = 1500;   /* mx_ 冷却时长（ms） */
   var mx_sLocked = false;    /* mx_ 是否冷却中 */
   var mx_sGotEvent = false;  /* mx_ 是否拿到有效数值数据 */
+  var mx_sDbgEl = document.getElementById('mx_sDbg');  /* mx_ 实时加速度读数元素 */
+  var mx_sPeak = 0;          /* mx_ 历史峰值，便于观察摇动强度 */
   var mx_sIndex = -1;        /* mx_ 当前结果下标，避免连续抽到同一道 */
 
   /**
@@ -662,6 +669,10 @@
     var mx_z = mx_acc.z || 0;
     var mx_mag = Math.sqrt(mx_x * mx_x + mx_y * mx_y + mx_z * mx_z);
 
+    /* mx_ 实时读数：数据有没有到、摇动时峰值多大，用于现场诊断阈值问题 */
+    if (mx_mag > mx_sPeak) { mx_sPeak = mx_mag; }
+    mx_sDbgEl.textContent = '实时加速度 ' + mx_mag.toFixed(1) + '　·　峰值 ' + mx_sPeak.toFixed(1) + '　·　≥ 18 触发';
+
     if (mx_mag > mx_sThreshold) { mx_onShake(); }
   }
 
@@ -673,6 +684,7 @@
     mx_state.textContent = mx_text;
     mx_state.className = 'mx_state mx_state--warn';
     document.getElementById('mx_sFallback').classList.add('mx_fallback--show');
+    mx_sDbgEl.textContent = '传感器数据：--　·　摇到 18 以上触发';
   }
 
   /**
