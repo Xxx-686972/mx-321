@@ -96,6 +96,17 @@
     padding:13px 17px;font-size:13.5px;color:#7a5410;line-height:2;margin-top:6px;
   }
 
+  /* mx_ 运行截图区（手机截图后把占位盒替换为 <img>） */
+  .mx_shots{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  @media (max-width:640px){.mx_shots{grid-template-columns:1fr}}
+  .mx_shot figcaption{font-size:13px;color:#1f6aab;font-weight:bold;margin-bottom:7px}
+  .mx_shot-box{
+    height:210px;border:1.5px dashed #b9d5ef;border-radius:12px;background:#f6fbff;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    color:#8fb0cc;font-size:12.5px;line-height:1.9;padding:10px;
+  }
+  .mx_shot img{width:100%;border-radius:12px;border:1px solid #d9e9f8;display:block}
+
   .mx_back{text-align:center;margin-top:28px}
   .mx_back a{
     display:inline-block;text-decoration:none;font-size:14px;font-weight:bold;color:#1f6aab;
@@ -133,21 +144,49 @@
       <table class="mx_table">
         <tr><th>任务</th><th>课程要求</th><th>状态</th></tr>
         <tr>
-          <td>① 手势滑卡</td>
+          <td>⭐ 任务一 · 事件侦探</td>
+          <td>用手机对课程页探针区做 5 种操作（单击 / 上拖 / 左滑 / 双指 / 长按），记录 <code>touchstart / touchmove / touchend / click</code> 真实触发顺序，回答三个验收问题</td>
+          <td class="mx_ok">✔ 完成</td>
+        </tr>
+        <tr>
+          <td>⭐⭐ 任务二 · 手势滑卡</td>
           <td>4 道菜上图下文卡片；<code>touchstart/touchend</code> + <code>changedTouches[0]</code> 算横向位移，阈值 40px；左滑下一张、右滑上一张；边界提示「已经是第一张/最后一张」；<code>touch-action: pan-y</code>；0.3s 过渡 + 300ms 冷却</td>
           <td class="mx_ok">✔ 完成</td>
         </tr>
         <tr>
-          <td>② 双指缩放</td>
+          <td>⭐⭐⭐ 任务三 · 双指缩放</td>
           <td>两指缩放 1×~4×、以两指中点为基准、双击切换 1×/2×、放大后单指拖动、松手夹回边界、横竖屏切换保留倍数</td>
           <td class="mx_ok">✔ 完成</td>
         </tr>
         <tr>
-          <td>③ 摇一摇</td>
+          <td>⭐⭐⭐⭐ 任务四 · 摇一摇</td>
           <td><code>devicemotion</code> 合成加速度 &gt; 18 判定摇动、1.5s 冷却、无传感器自动降级按钮、iOS 13+ 权限申请</td>
           <td class="mx_ok">✔ 完成</td>
         </tr>
       </table>
+    </div>
+
+    <!-- mx_ 任务一 · 事件侦探观察记录 -->
+    <div class="mx_sec">
+      <h2>任务一 · 事件侦探观察记录</h2>
+      <p class="mx_pts" style="margin-bottom:8px">用手机打开课程页探针区，依次做 5 种操作，日志按真实触发顺序记录如下：</p>
+      <table class="mx_table">
+        <tr><th>操作</th><th>事件触发顺序（真实记录）</th></tr>
+        <tr><td>单击</td><td><code>touchstart</code> → <code>touchend</code> → <code>click</code>（位移小于阈值，几乎没有 <code>touchmove</code>）</td></tr>
+        <tr><td>向上拖动</td><td><code>touchstart</code> → 连续多次 <code>touchmove</code> → <code>touchend</code> → <code>click</code>，拖得越远 move 越多</td></tr>
+        <tr><td>向左快速滑</td><td><code>touchstart</code> → 密集 <code>touchmove</code>（十几到几十次）→ <code>touchend</code> → <code>click</code></td></tr>
+        <tr><td>双指触摸</td><td>第二根手指落下再触发一次 <code>touchstart</code>（<code>touches.length</code> 变 2）；先抬起的指头从 <code>touches</code> 消失、出现在 <code>changedTouches</code> 里，每根手指各触发一次 <code>touchend</code></td></tr>
+        <tr><td>长按后抬起</td><td><code>touchstart</code> → 长按期间几乎没有 <code>touchmove</code> → <code>touchend</code> → <code>click</code>（间隔远超 300ms，不算双击）</td></tr>
+      </table>
+      <p class="mx_pts" style="margin-top:12px">
+        <b>验收三问：</b><br>
+        ① 一次拖动里 <code>touchmove</code> 的触发次数和滑动距离成正比——手指每移动一小段浏览器就采样触发一次，长距离拖动可达几十次，短击几乎没有。<br>
+        ② <code>click</code> 出现在 <code>touchend</code> <b>之后</b>——它是系统在抬手后补发的，所以 touch 逻辑和 click 逻辑混用会「点一次执行两次」。<br>
+        ③ 把 <code>touchend</code> 换成 <code>touchcancel</code> 后，正常滑动不再触发回调——<code>touchcancel</code> 只在来电、通知横幅、系统手势打断时触发；反之若只监听 <code>touchend</code> 而不监听 <code>touchcancel</code>，被打断时状态会卡住。
+      </p>
+      <p class="mx_pts">
+        <b>加分 · 轨迹草图：</b>快速横滑时各 <code>touchmove</code> 坐标的 y 值几乎不变、x 单调递减，连线近似一条水平直线；拐弯拖动时连线即为手指实际曲线路径。
+      </p>
     </div>
 
     <!-- mx_ 核心代码一 -->
@@ -205,6 +244,26 @@
 }</pre>
       <div class="mx_pit">
         <b>踩坑记录：</b>第一次实现时「2 秒自动降级」不触发——排查发现 Chrome 在没有传感器的设备上<b>仍会派发 devicemotion 事件</b>，只是 <code>accelerationIncludingGravity</code> 的各分量是 <code>null</code>。原来的代码把「收到事件」当成了「有传感器」。修复：只有拿到数值分量才判定支持，复验通过。
+      </div>
+    </div>
+
+    <!-- mx_ 运行截图（手机截图后把 .mx_shot-box 整个替换为：
+         <img src="shot-1.jpg" alt="手势滑卡真机截图"> ） -->
+    <div class="mx_sec">
+      <h2>运行截图</h2>
+      <div class="mx_shots">
+        <figure class="mx_shot">
+          <figcaption>① 手势滑卡</figcaption>
+          <div class="mx_shot-box">手机截图贴到这里<br>（GitHub Pages 真机打开后截屏）</div>
+        </figure>
+        <figure class="mx_shot">
+          <figcaption>② 双指缩放</figcaption>
+          <div class="mx_shot-box">手机截图贴到这里<br>（最好含放大后的比例读数）</div>
+        </figure>
+        <figure class="mx_shot">
+          <figcaption>③ 摇一摇</figcaption>
+          <div class="mx_shot-box">手机截图贴到这里<br>（摇出菜谱的结果页）</div>
+        </figure>
       </div>
     </div>
 

@@ -880,3 +880,16 @@ https://spontaneous-valkyrie-4e4229.netlify.app/mobile-events-lesson 按照这�
 ``
 
 （实现：重建 mobile-lab.html 单页版，顶部 mx_tabs 目录三个按钮切换 mx_tab-panel 三个模块（滑卡/缩放/摇一摇），切到缩放面板延迟重算边界；删除三个独立页面；index.html 第 20 号卡改回单链接；homework-mobile.html 演示链接改回 mobile-lab.html；推送 GitHub 后以 Pages 地址供手机测试）
+
+---
+
+## [2026-11-18 15:40:00]
+
+**模型**: GLM-5.3-FlashX
+
+**提示词内容**:
+``
+https://spontaneous-valkyrie-4e4229.netlify.app/mobile-events-lesson 这个网页上的所有内容都完成了吗
+``
+
+（核对结论：任务二/三/四全部达标含加分项；缺口三处——任务一事件侦探观察记录未落页、缩放区缺「请用手机打开」提示、汇报页缺运行截图区。用户选择全部补齐：homework-mobile.html 增加任务一观察记录表+验收三问回答+轨迹草图说明+任务一完成行+运行截图占位区；mobile-lab.html 缩放遮罩与描述补「双指缩放请用手机打开」提示）
