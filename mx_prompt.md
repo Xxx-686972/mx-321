@@ -828,3 +828,16 @@ https://spontaneous-valkyrie-4e4229.netlify.app/mobile-events-lesson 按照这�
 ``
 
 （实现：按移动端触摸交互课程补齐任务三 mobile-zoom.html（双指缩放 1~4 倍 / 以两指中点为基准 / 双击 1x↔2x / 放大后拖动 / 边界限制 / 旋转屏幕不丢状态）与任务四 mobile-sensor.html（devicemotion 摇一摇抽菜谱 / 阈值 18 / 1.5s 冷却 / 不支持时降级按钮 / iOS 权限申请），任务二 mobile-gesture.html 已完成；两个新页均加入 index.html 入口）
+
+---
+
+## [2026-11-18 13:40:00]
+
+**模型**: DeepSeek-V4.1-Flash
+
+**提示词内容**:
+``
+帮我把今天的内容放到一个 网页中不要三个分开放
+``
+
+（实现：新建 mobile-lab.html，把手势滑卡 / 双指缩放 / 摇一摇合并为一页，顶部锚点导航 + 三个分区 + 原理说明；删除 mobile-gesture.html、mobile-zoom.html、mobile-sensor.html；index.html 三张卡片合并为一张，统计数 22→20）
