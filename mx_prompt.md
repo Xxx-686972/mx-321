@@ -841,3 +841,42 @@ https://spontaneous-valkyrie-4e4229.netlify.app/mobile-events-lesson 按照这�
 ``
 
 （实现：新建 mobile-lab.html，把手势滑卡 / 双指缩放 / 摇一摇合并为一页，顶部锚点导航 + 三个分区 + 原理说明；删除 mobile-gesture.html、mobile-zoom.html、mobile-sensor.html；index.html 三张卡片合并为一张，统计数 22→20）
+
+---
+
+## [2026-11-18 14:05:00]
+
+**模型**: DeepSeek-V4.1-Flash
+
+**提示词内容**:
+``
+并且给我可以提交作业的网页
+``
+
+（实现：新建 homework-mobile.html 作业汇报页——任务完成对照表、三段核心代码（滑动判定/缩放不跳推导/摇一摇降级）、踩坑记录、本机与 GitHub Pages 演示链接，抬头含姓名孟欣、学号 24002120321；index.html 新增第 21 张卡片，统计数 20→21）
+
+---
+
+## [2026-11-18 14:35:00]
+
+**模型**: DeepSeek-V4.1-Flash
+
+**提示词内容**:
+``
+主页也改为一个模块，交互实验改成三页一页一个模块背景改为浅色 然后我要用手机测试 改为一个手机端测试代码
+``
+
+（实现：mobile-lab.html 拆回三个独立浅色页面 mobile-gesture / mobile-zoom / mobile-sensor，每页顶部三页互跳导航，viewport 禁缩放适配手机；index.html 第 20 号卡改为一卡三链接；homework-mobile.html 演示链接同步更新；删除 mobile-lab.html；启动 0.0.0.0 静态服务器供手机同一 WiFi 真机测试）
+
+---
+
+## [2026-11-18 15:20:00]
+
+**模型**: GLM-5.3-FlashX
+
+**提示词内容**:
+``
+是把这三模块放到一个网页 页面设置目录可以转换到三个模块然后给我一个网址可以用手机端测试的网址
+``
+
+（实现：重建 mobile-lab.html 单页版，顶部 mx_tabs 目录三个按钮切换 mx_tab-panel 三个模块（滑卡/缩放/摇一摇），切到缩放面板延迟重算边界；删除三个独立页面；index.html 第 20 号卡改回单链接；homework-mobile.html 演示链接改回 mobile-lab.html；推送 GitHub 后以 Pages 地址供手机测试）

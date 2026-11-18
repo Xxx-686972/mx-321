@@ -147,6 +147,9 @@
   }
   .mx_card-link span{transition:transform .22s}
   .mx_card-link:hover span{transform:translateX(4px)}
+  /* mx_ 多链接卡片：一排多个入口 */
+  .mx_card-links{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:18px}
+  .mx_card-links .mx_card-link{margin-top:0}
 
   /* mx_ 待添加卡片 */
   .mx_card--empty{
@@ -227,7 +230,7 @@
   <!-- mx_ 数据统计 -->
   <section class="mx_stats">
     <div class="mx_stat">
-      <div class="mx_stat-num">20</div>
+      <div class="mx_stat-num">21</div>
       <div class="mx_stat-label">已完成模块</div>
     </div>
     <div class="mx_stat">
@@ -247,7 +250,7 @@
         <div class="mx_section-tag">Lesson Index</div>
         <h2 class="mx_section-title">课堂目录</h2>
       </div>
-      <div class="mx_section-note">已完成模块 <b>20</b> · 后续内容持续增加</div>
+      <div class="mx_section-note">已完成模块 <b>21</b> · 后续内容持续增加</div>
     </div>
 
     <div class="mx_grid">
@@ -404,12 +407,20 @@
         <a class="mx_card-link" href="poems.html">查看页面 <span>→</span></a>
       </article>
 
-      <!-- mx_ 20 移动端触摸交互实验室（滑卡 / 缩放 / 摇一摇 三合一） -->
+      <!-- mx_ 20 移动端触摸交互实验（单页三模块：滑卡 / 缩放 / 摇一摇） -->
       <article class="mx_card">
         <div class="mx_card-no">20</div>
-        <h3>移动端触摸交互实验室</h3>
-        <p>手势滑卡、双指缩放、摇一摇三个演示合并在同一页，含阈值、冷却与无传感器降级。</p>
+        <h3>移动端触摸交互实验</h3>
+        <p>单页三模块：顶部目录切换手势滑卡、双指缩放、摇一摇抽菜谱，浅色手机端界面，支持真机测试。</p>
         <a class="mx_card-link" href="mobile-lab.html">查看页面 <span>→</span></a>
+      </article>
+
+      <!-- mx_ 21 作业汇报页（移动端触摸交互） -->
+      <article class="mx_card">
+        <div class="mx_card-no">21</div>
+        <h3>作业汇报 · 移动端触摸交互</h3>
+        <p>任务要求对照、三段核心代码、踩坑记录与在线演示链接，可直接提交的作业汇报页。</p>
+        <a class="mx_card-link" href="homework-mobile.html">查看页面 <span>→</span></a>
       </article>
 
     </div>

@@ -4,59 +4,54 @@
   mx_ 学号：24002120321
   mx_ 建立时间：2026-11-18
   mx_ 使用大模型：DeepSeek-V4.1-Flash
-  mx_ 功能名称：移动端触摸交互实验室——手势滑卡 / 双指缩放 / 摇一摇三合一
+  mx_ 功能名称：移动端触摸交互实验（单页三模块：手势滑卡 / 双指缩放 / 摇一摇，顶部目录切换）
 -->
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>移动端触摸交互实验室 · 滑卡 / 缩放 / 摇一摇</title>
+<title>移动端触摸交互实验 · 滑卡 / 缩放 / 摇一摇 · 孟欣 24002120321</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   body{
     font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
-    background:radial-gradient(900px 520px at 50% -8%,#26304a 0%,#14181f 52%,#0b0f16 100%);
-    background-attachment:fixed;color:#fff;min-height:100vh;-webkit-font-smoothing:antialiased;
+    background:linear-gradient(180deg,#f8fcff 0%,#eaf4fe 60%,#f6fbff 100%);
+    background-attachment:fixed;color:#17324a;min-height:100vh;-webkit-font-smoothing:antialiased;
   }
-  .mx_page{max-width:560px;margin:0 auto;padding:26px 16px 60px}
+  .mx_page{max-width:480px;margin:0 auto;padding:22px 16px 56px}
 
   /* mx_ 页头 */
-  .mx_head{text-align:center;margin-bottom:18px}
-  .mx_head h1{font-size:21px;letter-spacing:2px;font-weight:600}
-  .mx_head p{font-size:12.5px;color:#8b94a7;margin-top:9px;line-height:1.9}
+  .mx_head{text-align:center;margin-bottom:16px}
+  .mx_head h1{font-size:20px;letter-spacing:2px;font-weight:600;color:#17324a}
+  .mx_head p{font-size:12.5px;color:#6b8aa3;margin-top:7px}
 
-  /* mx_ 顶部锚点导航 */
-  .mx_nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:26px}
-  .mx_nav a{
-    text-decoration:none;font-size:12.5px;letter-spacing:.5px;color:#cfe0ff;
-    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
-    padding:7px 15px;border-radius:999px;
+  /* mx_ 顶部目录：点击切换三个模块 */
+  .mx_tabs{
+    display:flex;background:#fff;border:1px solid #cfe4f8;border-radius:999px;
+    padding:4px;gap:4px;box-shadow:0 6px 16px rgba(31,106,171,.1);margin-bottom:22px;
   }
-  .mx_nav a:active{background:rgba(255,255,255,.18)}
+  .mx_tabs button{
+    flex:1;border:none;cursor:pointer;font-family:inherit;font-size:13px;
+    padding:9px 0;border-radius:999px;color:#3d6079;background:transparent;
+    transition:background .25s,color .25s;
+  }
+  .mx_tabs button.mx_tab--on{
+    color:#fff;background:linear-gradient(135deg,#3b8fd4,#1f6aab);font-weight:600;
+  }
 
-  /* mx_ 分区 */
-  .mx_sec{
-    background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.1);
-    border-radius:20px;padding:22px 16px 24px;margin-bottom:26px;
-    scroll-margin-top:14px;
-  }
-  .mx_sec-head{display:flex;align-items:center;gap:10px;margin-bottom:6px}
-  .mx_sec-no{
-    width:30px;height:30px;flex:none;border-radius:9px;font-size:13px;font-weight:700;
-    display:flex;align-items:center;justify-content:center;color:#12161f;
-    background:linear-gradient(135deg,#ffd166,#f6a13c);
-  }
-  .mx_sec-head h2{font-size:16px;letter-spacing:1px}
-  .mx_sec-desc{font-size:12.5px;color:#8b94a7;line-height:1.95;margin:8px 0 18px}
+  /* mx_ 模块容器：同一时刻只显示一个 */
+  .mx_tab-panel{display:none}
+  .mx_tab-panel.mx_panel--on{display:block;animation:mx_fade .3s ease}
+  @keyframes mx_fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-  /* ============ mx_ 一 · 手势滑卡 ============ */
-  .mx_stage{
-    touch-action:pan-y;                    /* mx_ 只接管横向手势，纵向留给浏览器 */
-  }
+  .mx_sec-desc{font-size:12.6px;color:#6b8aa3;line-height:1.95;margin-bottom:16px;text-align:center}
+
+  /* ============ mx_ 模块一 · 手势滑卡 ============ */
+  .mx_stage{touch-action:pan-y}   /* mx_ 只接管横向手势，纵向滚动交还浏览器 */
   .mx_card{
     position:relative;border-radius:20px;overflow:hidden;height:330px;
     display:flex;flex-direction:column;justify-content:flex-end;
-    box-shadow:0 18px 40px rgba(0,0,0,.45);
+    box-shadow:0 16px 34px rgba(31,106,171,.22);
     transition:transform .3s ease,opacity .3s ease;
     will-change:transform,opacity;user-select:none;-webkit-user-select:none;
   }
@@ -65,7 +60,7 @@
     background:linear-gradient(180deg,rgba(0,0,0,0) 34%,rgba(0,0,0,.62) 100%);
   }
   .mx_card-icon{position:absolute;top:28px;left:26px;font-size:46px;opacity:.92}
-  .mx_card-body{position:relative;z-index:2;padding:22px 22px 26px}
+  .mx_card-body{position:relative;z-index:2;padding:22px 22px 26px;color:#fff}
   .mx_card-name{font-size:25px;font-weight:700;letter-spacing:2px}
   .mx_card-line{width:42px;height:3px;background:rgba(255,255,255,.85);border-radius:2px;margin:11px 0 12px}
   .mx_card-desc{font-size:13.5px;line-height:1.95;color:rgba(255,255,255,.92)}
@@ -75,19 +70,19 @@
     background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.34);
   }
   .mx_counter{
-    text-align:center;margin-top:16px;font-size:13.5px;letter-spacing:2px;color:#cfd6e4;
+    text-align:center;margin-top:16px;font-size:13.5px;letter-spacing:2px;color:#3d6079;
     font-variant-numeric:tabular-nums;
   }
-  .mx_counter b{color:#ffd166;font-size:16px}
+  .mx_counter b{color:#e8890c;font-size:16px}
   .mx_dots{display:flex;gap:7px;justify-content:center;margin-top:10px}
-  .mx_dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.26);transition:all .3s}
-  .mx_dot.mx_dot--on{background:#ffd166;width:19px;border-radius:4px}
+  .mx_dot{width:7px;height:7px;border-radius:50%;background:#c3d8ec;transition:all .3s}
+  .mx_dot.mx_dot--on{background:#e8890c;width:19px;border-radius:4px}
 
-  /* ============ mx_ 二 · 双指缩放 ============ */
+  /* ============ mx_ 模块二 · 双指缩放 ============ */
   .mx_zstage{
-    position:relative;height:340px;border-radius:16px;overflow:hidden;background:#070b14;
-    touch-action:none;                     /* mx_ 手势全部交给 JS，浏览器不许缩放/滚动 */
-    user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
+    position:relative;height:360px;border-radius:16px;overflow:hidden;background:#dde9f5;
+    touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
+    box-shadow:0 14px 30px rgba(31,106,171,.18);
   }
   .mx_zimg{
     width:100%;height:100%;object-fit:contain;display:block;
@@ -95,27 +90,28 @@
   }
   .mx_zmask{
     position:absolute;left:0;right:0;bottom:0;padding:24px 14px 11px;
-    font-size:11.5px;color:#c9d3e6;text-align:center;pointer-events:none;
-    background:linear-gradient(transparent,rgba(0,0,0,.72));
+    font-size:11.5px;color:#31506b;text-align:center;pointer-events:none;
+    background:linear-gradient(transparent,rgba(255,255,255,.85));
   }
-  .mx_zbar{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
-  .mx_zscale{font-size:12.5px;color:#ffd166;letter-spacing:1px;font-variant-numeric:tabular-nums}
+  .mx_zbar{display:flex;justify-content:space-between;align-items:center;margin-top:13px}
+  .mx_zscale{font-size:13px;color:#e8890c;letter-spacing:1px;font-variant-numeric:tabular-nums;font-weight:600}
   .mx_zreset{
-    border:1px solid rgba(255,255,255,.26);background:rgba(255,255,255,.1);color:#dbe3f2;
-    font-size:12px;padding:6px 15px;border-radius:999px;font-family:inherit;cursor:pointer;
+    border:1px solid #cfe4f8;background:#fff;color:#1f6aab;
+    font-size:12.5px;padding:7px 16px;border-radius:999px;font-family:inherit;cursor:pointer;
   }
-  .mx_zreset:active{background:rgba(255,255,255,.2)}
+  .mx_zreset:active{background:#eaf3fd}
 
-  /* ============ mx_ 三 · 摇一摇 ============ */
+  /* ============ mx_ 模块三 · 摇一摇 ============ */
   .mx_sensor{text-align:center}
   .mx_phone{
-    width:70px;height:120px;margin:8px auto 6px;border-radius:14px;
-    border:3px solid rgba(255,255,255,.35);position:relative;
+    width:70px;height:120px;margin:4px auto 8px;border-radius:14px;
+    border:3px solid #9cc4e8;position:relative;background:#fff;
     display:flex;align-items:center;justify-content:center;font-size:27px;
+    box-shadow:0 10px 22px rgba(31,106,171,.14);
   }
   .mx_phone::after{
     content:"";position:absolute;bottom:6px;left:50%;transform:translateX(-50%);
-    width:24px;height:3px;border-radius:2px;background:rgba(255,255,255,.35);
+    width:24px;height:3px;border-radius:2px;background:#c3d8ec;
   }
   .mx_phone.mx_phone--shake{animation:mx_shake .5s ease-in-out}
   @keyframes mx_shake{
@@ -124,47 +120,47 @@
     45%{transform:rotate(10deg) translateX(8px)}
     70%{transform:rotate(-6deg) translateX(-4px)}
   }
-  .mx_state{font-size:12.5px;color:#9fb0cc;min-height:21px;margin-bottom:16px}
-  .mx_state.mx_state--warn{color:#ffb4a2}
+  .mx_state{font-size:12.8px;color:#6b8aa3;min-height:21px;margin-bottom:16px}
+  .mx_state.mx_state--warn{color:#c25b1e}
   .mx_result{
-    border-radius:18px;padding:22px 18px;min-height:150px;
+    border-radius:18px;padding:24px 18px;min-height:170px;
     display:flex;flex-direction:column;justify-content:center;align-items:center;
-    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);
+    background:#fff;border:1px solid #d9e9f8;
+    box-shadow:0 10px 24px rgba(31,106,171,.1);
     opacity:0;transform:scale(.92);
     transition:opacity .35s ease,transform .35s cubic-bezier(.2,1.3,.4,1);
   }
   .mx_result.mx_result--on{opacity:1;transform:scale(1)}
-  .mx_result-icon{font-size:40px;margin-bottom:10px}
-  .mx_result-name{font-size:22px;font-weight:700;letter-spacing:2px}
+  .mx_result-icon{font-size:42px;margin-bottom:10px}
+  .mx_result-name{font-size:22px;font-weight:700;letter-spacing:2px;color:#17324a}
   .mx_result-tag{
-    margin-top:10px;font-size:11.5px;letter-spacing:1px;color:#ffd166;
+    margin-top:10px;font-size:11.5px;letter-spacing:1px;color:#b26205;
     padding:5px 13px;border-radius:999px;
-    background:rgba(255,209,102,.14);border:1px solid rgba(255,209,102,.34);
+    background:#fdf3e3;border:1px solid #f2ddb8;
   }
-  .mx_result-desc{font-size:12.5px;color:#c3cde0;line-height:1.95;margin-top:12px}
+  .mx_result-desc{font-size:12.8px;color:#5b7a95;line-height:1.95;margin-top:12px}
   .mx_fallback{
-    display:none;margin:18px auto 0;border:none;cursor:pointer;
-    padding:12px 28px;border-radius:999px;font-family:inherit;font-size:14px;font-weight:600;
-    color:#12161f;background:linear-gradient(135deg,#ffd166,#f6a13c);
-    box-shadow:0 10px 24px rgba(246,161,60,.3);
+    display:none;margin:20px auto 0;border:none;cursor:pointer;
+    padding:13px 30px;border-radius:999px;font-family:inherit;font-size:14.5px;font-weight:600;
+    color:#fff;background:linear-gradient(135deg,#3b8fd4,#1f6aab);
+    box-shadow:0 10px 22px rgba(31,106,171,.28);
   }
   .mx_fallback.mx_fallback--show{display:inline-block}
+  .mx_fallback:active{opacity:.85}
 
-  /* mx_ 底部说明 */
-  .mx_notes{margin-top:6px}
-  .mx_notes h3{font-size:13px;color:#ffd166;letter-spacing:1px;margin:22px 0 8px}
-  .mx_notes p{font-size:12.6px;color:#8b94a7;line-height:2.05;margin-bottom:9px}
-  .mx_notes code{
-    background:rgba(255,255,255,.1);color:#9fd0ff;border-radius:4px;
-    padding:1px 6px;font-family:Consolas,monospace;font-size:11.8px;
+  /* mx_ 底部要点说明（随模块切换） */
+  .mx_note{
+    margin-top:22px;background:#fff;border:1px solid #d9e9f8;border-radius:14px;
+    padding:15px 17px;font-size:12.6px;color:#31506b;line-height:2.05;
+    box-shadow:0 6px 16px rgba(59,143,212,.08);
   }
-  .mx_notes em{font-style:normal;color:#cfe0ff}
+  .mx_note b{color:#1f6aab}
+  .mx_note code{background:#eaf3fd;color:#1f6aab;border-radius:4px;padding:1px 6px;font-family:Consolas,monospace;font-size:11.8px}
 
-  /* mx_ 通用提示条（滑卡边界提示） */
+  /* mx_ 通用提示条 */
   .mx_toast{
     position:fixed;left:50%;bottom:52px;transform:translate(-50%,14px);
-    background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.26);
-    backdrop-filter:blur(10px);color:#fff;font-size:12.5px;letter-spacing:1px;
+    background:rgba(23,50,74,.88);color:#fff;font-size:12.5px;letter-spacing:1px;
     padding:9px 19px;border-radius:999px;white-space:nowrap;
     opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:9;
   }
@@ -174,26 +170,20 @@
 <body>
   <div class="mx_page">
     <div class="mx_head">
-      <h1>移动端触摸交互实验室</h1>
-      <p>滑卡 · 双指缩放 · 摇一摇，三合一单页演示　·　建议用手机打开</p>
+      <h1>移动端触摸交互实验</h1>
+      <p>孟欣 24002120321 · 点击目录切换三个实验模块</p>
     </div>
 
-    <div class="mx_nav">
-      <a href="#mx_sec1">① 手势滑卡</a>
-      <a href="#mx_sec2">② 双指缩放</a>
-      <a href="#mx_sec3">③ 摇一摇</a>
+    <!-- mx_ 顶部目录 -->
+    <div class="mx_tabs" id="mx_tabs">
+      <button class="mx_tab--on" data-mx-tab="1" type="button">① 手势滑卡</button>
+      <button data-mx-tab="2" type="button">② 双指缩放</button>
+      <button data-mx-tab="3" type="button">③ 摇一摇</button>
     </div>
 
-    <!-- ================= mx_ 一 · 手势滑卡 ================= -->
-    <section class="mx_sec" id="mx_sec1">
-      <div class="mx_sec-head">
-        <div class="mx_sec-no">01</div>
-        <h2>手势滑卡</h2>
-      </div>
-      <p class="mx_sec-desc">
-        监听 <code>touchstart / touchend</code>，用 <code>changedTouches[0]</code> 算横向位移；
-        超过 40px 判定为滑动，左滑下一张、右滑上一张，边界弹提示，连滑有 300ms 冷却。
-      </p>
+    <!-- ================= mx_ 模块一 · 手势滑卡 ================= -->
+    <section class="mx_tab-panel mx_panel--on" id="mx_panel1">
+      <p class="mx_sec-desc">监听 touchstart / touchend，横向位移超 40px 判定滑动</p>
 
       <div class="mx_stage" id="mx_gStage">
         <div class="mx_card" id="mx_gCard">
@@ -209,18 +199,15 @@
 
       <div class="mx_counter" id="mx_gCounter">第 <b>1</b>/4 张</div>
       <div class="mx_dots" id="mx_gDots"></div>
+
+      <div class="mx_note">
+        <b>实现要点：</b>用 <code>changedTouches[0]</code> 计算横向位移，阈值 40px 过滤抖动；左滑下一张、右滑上一张，边界弹提示；容器 <code>touch-action: pan-y</code> 保证纵向还能滚页面；切换带 0.3s 过渡，300ms 冷却防连滑一次跳两张。
+      </div>
     </section>
 
-    <!-- ================= mx_ 二 · 双指缩放 ================= -->
-    <section class="mx_sec" id="mx_sec2">
-      <div class="mx_sec-head">
-        <div class="mx_sec-no">02</div>
-        <h2>双指缩放</h2>
-      </div>
-      <p class="mx_sec-desc">
-        <code>touchmove</code> 读两指间距算比例，缩放基准取两指中点，范围 1×~4×；
-        双击在 1×/2× 之间切换；放大后单指拖动；松手把位移夹回边界内。
-      </p>
+    <!-- ================= mx_ 模块二 · 双指缩放 ================= -->
+    <section class="mx_tab-panel" id="mx_panel2">
+      <p class="mx_sec-desc">双指捏合缩放 1×~4×，双击切换 1×/2×</p>
 
       <div class="mx_zstage" id="mx_zStage">
         <img class="mx_zimg" id="mx_zImg" src="swiper-imgs/tiangong_1.jpg" alt="天宫空间站">
@@ -231,18 +218,15 @@
         <div class="mx_zscale" id="mx_zScale">1.00×</div>
         <button class="mx_zreset" id="mx_zReset" type="button">重置为 1×</button>
       </div>
+
+      <div class="mx_note">
+        <b>缩放为什么不会「跳」：</b>以容器中心为原点，当前位移 <code>t</code>、倍数 <code>s</code>，两指中点 <code>m</code> 压住的内容点 <code>c = (m - t) / s</code>；缩放后让同一个内容点仍停在 <code>m</code> 上，得 <code>t2 = m - (m - t) × (s2 / s)</code>。松手时把位移夹回图片边缘内，1× 时拖不出去；横竖屏切换只重算边界、保留倍数。
+      </div>
     </section>
 
-    <!-- ================= mx_ 三 · 摇一摇 ================= -->
-    <section class="mx_sec" id="mx_sec3">
-      <div class="mx_sec-head">
-        <div class="mx_sec-no">03</div>
-        <h2>摇一摇抽菜谱</h2>
-      </div>
-      <p class="mx_sec-desc">
-        监听 <code>devicemotion</code>，用 <code>accelerationIncludingGravity</code> 算合成加速度，
-        超过 18 判定为摇动；1.5 秒冷却；设备没有传感器时自动降级为按钮抽取。
-      </p>
+    <!-- ================= mx_ 模块三 · 摇一摇 ================= -->
+    <section class="mx_tab-panel" id="mx_panel3">
+      <p class="mx_sec-desc">devicemotion 合成加速度超 18 判定摇动，1.5s 冷却</p>
 
       <div class="mx_sensor">
         <div class="mx_phone" id="mx_sPhone">🍽️</div>
@@ -257,29 +241,52 @@
 
         <button class="mx_fallback" id="mx_sFallback" type="button">点我抽一次</button>
       </div>
+
+      <div class="mx_note">
+        <b>为什么必须做降级：</b>传感器只在真机上有数据。三层兜底：2 秒无有效数据判定不支持并显示按钮；iOS 13+ 由按钮触发 <code>requestPermission()</code>；授权被拒仍可手动抽。注意 Chrome 会派发各分量为 <code>null</code> 的空事件——「收到事件」不等于「拿到数据」，必须判断 <code>typeof x === 'number'</code> 才算支持。
+      </div>
     </section>
-
-    <!-- ================= mx_ 原理说明 ================= -->
-    <div class="mx_notes">
-      <h3>为什么滑卡容器写 touch-action: pan-y</h3>
-      <p>卡片只接管「横向」手势，把「纵向」还给浏览器。这样上下滑页面不会被卡片拦住，只有明显左右移动才判成翻卡。判断阈值 40px 用来过滤手指抖动；300ms 冷却防止一次快速连滑跳两张。</p>
-
-      <h3>缩放为什么不会「跳」</h3>
-      <p>以容器中心为原点，当前位移 <code>t</code>、倍数 <code>s</code>，两指中点 <code>m</code> 压住的内容点 <code>c = (m - t) / s</code>。缩放后要让同一个内容点仍停在 <code>m</code> 上：<code>t2 = m - (m - t) × (s2 / s)</code>。</p>
-      <p>松手时用 <code>mx_clampZoom()</code> 把位移夹在 <code>(图片显示尺寸 - 容器尺寸) / 2</code> 以内，所以 1× 时拖不出边界；横竖屏切换只重算边界、保留倍数。</p>
-
-      <h3>摇一摇为什么必须做降级</h3>
-      <p>传感器只在真机上有数据：电脑浏览器、旧机型、iOS 未授权页面都收不到 <em>devicemotion</em>。只等事件会让页面永远停在「请摇一摇」。这里三层兜底：2 秒无有效数据判定不支持并显示按钮；iOS 13+ 由按钮触发 <code>requestPermission()</code>；授权被拒仍可手动抽。</p>
-      <p>注意 Chrome 会派发各分量为 <code>null</code> 的空事件——「收到事件」不等于「拿到数据」，必须判断 <code>typeof x === 'number'</code> 才算支持。</p>
-    </div>
   </div>
 
   <div class="mx_toast" id="mx_toast"></div>
 
 <script>
   /* ============================================================
-     mx_ 一 · 手势滑卡
+     mx_ 顶部目录切换
      ============================================================ */
+  /**
+   * mx_ 主要功能：点击目录按钮切换显示对应模块面板，并同步按钮高亮；
+   * 切到缩放模块时重算一次边界（隐藏时容器尺寸为 0）
+   */
+  function mx_switchTab(mx_no) {
+    var mx_btns = document.querySelectorAll('#mx_tabs button');
+    var mx_panels = document.querySelectorAll('.mx_tab-panel');
+    for (var mx_i = 0; mx_i < mx_btns.length; mx_i++) {
+      mx_btns[mx_i].className = (mx_i + 1) === mx_no ? 'mx_tab--on' : '';
+    }
+    for (var mx_j = 0; mx_j < mx_panels.length; mx_j++) {
+      mx_panels[mx_j].className = 'mx_tab-panel' + (mx_j + 1) === mx_no ? '' : mx_panels[mx_j].className;
+    }
+    /* mx_ 重新按编号设置面板显隐 */
+    document.getElementById('mx_panel1').classList.toggle('mx_panel--on', mx_no === 1);
+    document.getElementById('mx_panel2').classList.toggle('mx_panel--on', mx_no === 2);
+    document.getElementById('mx_panel3').classList.toggle('mx_panel--on', mx_no === 3);
+
+    if (mx_no === 2) {
+      /* mx_ 面板从 display:none 变回可见后，容器才有尺寸，重算边界 */
+      setTimeout(function () { mx_clampZoom(); mx_applyZoom(false); }, 30);
+    }
+  }
+
+  document.getElementById('mx_tabs').addEventListener('click', function (mx_e) {
+    var mx_btn = mx_e.target.closest('button');
+    if (mx_btn) { mx_switchTab(Number(mx_btn.getAttribute('data-mx-tab'))); }
+  });
+
+  /* ============================================================
+     mx_ 模块一 · 手势滑卡
+     ============================================================ */
+  /* mx_ 4 道菜数据：菜名 / 简介 / 渐变背景 / 图标 / 标签 */
   var mx_gDishes = [
     { name:'宫保鸡丁', desc:'鸡丁滑嫩、花生碎酥，干辣椒与花椒在热油里爆出糊辣香，酸甜咸鲜一口到位。', tag:'川菜 · 糊辣荔枝味', icon:'🍗', bg:'linear-gradient(135deg,#f7971e 0%,#ffb347 42%,#e2542c 100%)' },
     { name:'清蒸鲈鱼', desc:'整条鲈鱼大火八分钟，出锅淋豉油、铺姜丝葱段，热油一激，只留最本真的鲜。', tag:'粤菜 · 原汁原味', icon:'🐟', bg:'linear-gradient(135deg,#2bc0e4 0%,#3f8ce8 46%,#1f4a8a 100%)' },
@@ -293,8 +300,8 @@
   var mx_gCooldown = 300;  /* mx_ 冷却时长（ms） */
 
   /**
-   * mx_ 主要功能：把当前这道菜的菜名/简介/标签/图标/渐变写进卡片，并同步计数与圆点；
-   * 同时做 0.3s 进场过渡（先把卡片挪到一侧，再还原到原位触发 transition）
+   * mx_ 主要功能：把当前菜的菜名/简介/标签/图标/渐变写进卡片，并同步计数与圆点；
+   * 做一次 0.3s 进场过渡（先挪到一侧，再还原触发 transition）
    */
   function mx_renderDish(mx_dir) {
     var mx_item = mx_gDishes[mx_gIndex];
@@ -345,7 +352,7 @@
   }
 
   /**
-   * mx_ 主要功能：算横向位移（左滑为负、右滑为正），超过 40px 才翻卡；
+   * mx_ 主要功能：算横向位移（左滑负、右滑正），超 40px 才翻卡；
    * 冷却中忽略；到头或到尾只弹提示不切换
    */
   function mx_onGestureEnd(mx_e) {
@@ -371,22 +378,22 @@
   document.getElementById('mx_gStage').addEventListener('touchend', mx_onGestureEnd, { passive:true });
 
   /* ============================================================
-     mx_ 二 · 双指缩放
+     mx_ 模块二 · 双指缩放
      ============================================================ */
   var mx_zStage = document.getElementById('mx_zStage');
   var mx_zImg = document.getElementById('mx_zImg');
   var mx_zScaleEl = document.getElementById('mx_zScale');
-  var mx_zMin = 1, mx_zMax = 4;         /* mx_ 缩放范围 */
-  var mx_zScale = 1;                    /* mx_ 当前倍数 */
-  var mx_zTx = 0, mx_zTy = 0;           /* mx_ 当前位移（相对容器中心） */
-  var mx_zMode = '';                    /* mx_ pinch 双指 / drag 单指 */
-  var mx_zStartDist = 0;                /* mx_ 双指起始间距 */
-  var mx_zStartScale = 1;               /* mx_ 双指起始倍数 */
+  var mx_zMin = 1, mx_zMax = 4;           /* mx_ 缩放范围 */
+  var mx_zScale = 1;                      /* mx_ 当前倍数 */
+  var mx_zTx = 0, mx_zTy = 0;             /* mx_ 当前位移（相对容器中心） */
+  var mx_zMode = '';                      /* mx_ pinch 双指 / drag 单指 */
+  var mx_zStartDist = 0;                  /* mx_ 双指起始间距 */
+  var mx_zStartScale = 1;                 /* mx_ 双指起始倍数 */
   var mx_zLastMidX = 0, mx_zLastMidY = 0; /* mx_ 上一帧中点 */
-  var mx_zStartX = 0, mx_zStartY = 0;   /* mx_ 单指按下坐标 */
-  var mx_zStartTx = 0, mx_zStartTy = 0; /* mx_ 单指按下时的位移 */
-  var mx_zMoved = 0;                    /* mx_ 本轮累计移动，判断是否单击 */
-  var mx_zLastTap = 0;                  /* mx_ 上一次单击时间（双击判定） */
+  var mx_zStartX = 0, mx_zStartY = 0;     /* mx_ 单指按下坐标 */
+  var mx_zStartTx = 0, mx_zStartTy = 0;   /* mx_ 单指按下时的位移 */
+  var mx_zMoved = 0;                      /* mx_ 本轮累计移动，判断是否单击 */
+  var mx_zLastTap = 0;                    /* mx_ 上一次单击时间（双击判定） */
 
   /**
    * mx_ 主要功能：把当前倍数与位移写进 transform，并刷新比例指示器
@@ -403,6 +410,7 @@
    */
   function mx_clampZoom() {
     var mx_rect = mx_zStage.getBoundingClientRect();
+    if (mx_rect.width === 0) { return; }   /* mx_ 模块隐藏时容器无尺寸，跳过 */
     var mx_maxX = Math.max(0, (mx_zImg.offsetWidth * mx_zScale - mx_rect.width) / 2);
     var mx_maxY = Math.max(0, (mx_zImg.offsetHeight * mx_zScale - mx_rect.height) / 2);
     if (mx_zTx > mx_maxX) { mx_zTx = mx_maxX; }
@@ -572,8 +580,9 @@
   });
 
   /* ============================================================
-     mx_ 三 · 摇一摇
+     mx_ 模块三 · 摇一摇
      ============================================================ */
+  /* mx_ 菜谱数据 */
   var mx_sDishes = [
     { name:'宫保鸡丁', tag:'川菜 · 糊辣荔枝味', icon:'🍗', desc:'鸡丁滑嫩、花生碎酥，干辣椒与花椒爆出糊辣香。' },
     { name:'清蒸鲈鱼', tag:'粤菜 · 原汁原味', icon:'🐟', desc:'大火八分钟，出锅淋豉油、铺姜丝葱段，热油一激。' },
@@ -637,7 +646,7 @@
   }
 
   /**
-   * mx_ 主要功能：监听 devicemotion，用 accelerationIncludingGravity 算合成加速度，超过 18 判定摇动；
+   * mx_ 主要功能：监听 devicemotion，用 accelerationIncludingGravity 算合成加速度，超 18 判定摇动；
    * 只有拿到数值分量才算「设备支持」，空事件不算
    */
   function mx_onMotion(mx_e) {
@@ -713,9 +722,8 @@
     }, 2000);
   }
 
-  /* mx_ 三块演示初始化 */
+  /* mx_ 初始化 */
   mx_renderDish(1);
-  mx_applyZoom(false);
   mx_initSensor();
 </script>
 </body>

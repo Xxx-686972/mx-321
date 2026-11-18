@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<!--
+  mx_ 作者：孟欣
+  mx_ 学号：24002120321
+  mx_ 建立时间：2026-11-18
+  mx_ 使用大模型：DeepSeek-V4.1-Flash
+  mx_ 功能名称：移动端触摸交互课程作业汇报页（任务要求 · 核心代码 · 在线演示链接）
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>作业汇报 · 移动端触摸交互 · 孟欣 24002120321</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    background:radial-gradient(900px 500px at 85% -6%,#d8ecfd 0%,rgba(216,236,253,0) 58%),linear-gradient(180deg,#f8fcff,#eef5fd 55%,#f8fcff);
+    color:#17324a;min-height:100vh;line-height:1.7;-webkit-font-smoothing:antialiased;
+  }
+  .mx_wrap{max-width:860px;margin:0 auto;padding:36px 20px 70px}
+
+  /* mx_ 作业抬头 */
+  .mx_head{
+    background:linear-gradient(135deg,#1f6aab,#3b8fd4);border-radius:20px;color:#fff;
+    padding:30px 32px;margin-bottom:22px;box-shadow:0 14px 30px rgba(31,106,171,.25);
+  }
+  .mx_head .mx_badge{
+    display:inline-block;font-size:12.5px;letter-spacing:2px;padding:5px 14px;border-radius:999px;
+    background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.32);margin-bottom:12px;
+  }
+  .mx_head h1{font-size:25px;letter-spacing:1px;line-height:1.5}
+  .mx_head p{margin-top:10px;font-size:14px;color:#dbeafa;line-height:1.95}
+  .mx_head b{color:#ffd166}
+
+  /* mx_ 学生信息卡 */
+  .mx_meta{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:26px;
+  }
+  .mx_meta div{
+    background:#fff;border:1px solid #d9e9f8;border-radius:14px;padding:13px 16px;
+    box-shadow:0 6px 16px rgba(59,143,212,.08);
+  }
+  .mx_meta small{display:block;font-size:11.5px;color:#6b8aa3;letter-spacing:.08em;margin-bottom:3px}
+  .mx_meta b{font-size:15px;color:#17324a}
+
+  /* mx_ 区块 */
+  .mx_sec{
+    background:#fff;border:1px solid #e2ecf8;border-radius:18px;padding:24px 26px;margin-bottom:22px;
+    box-shadow:0 8px 20px rgba(31,106,171,.06);
+  }
+  .mx_sec h2{
+    font-size:17px;color:#1f6aab;margin-bottom:12px;display:flex;align-items:center;gap:9px;
+  }
+  .mx_sec h2::before{content:"";width:5px;height:19px;border-radius:3px;background:linear-gradient(#1f6aab,#3b8fd4)}
+
+  /* mx_ 任务清单表 */
+  .mx_table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:4px}
+  .mx_table th,.mx_table td{border:1px solid #e2ecf8;padding:10px 13px;text-align:left;vertical-align:top;line-height:1.8}
+  .mx_table th{background:#eaf3fd;color:#1f6aab;white-space:nowrap}
+  .mx_table td:first-child{white-space:nowrap;font-weight:bold;color:#17324a}
+  .mx_table .mx_ok{color:#1c8a4e;font-weight:bold}
+
+  /* mx_ 代码块 */
+  .mx_code{
+    background:#101826;color:#d5e3f5;border-radius:12px;padding:16px 18px;
+    font-family:Consolas,Menlo,monospace;font-size:12.6px;line-height:1.95;
+    overflow-x:auto;white-space:pre;margin:10px 0 4px;
+  }
+  .mx_code .mx_c{color:#7d8ba1}   /* mx_ 注释 */
+  .mx_code .mx_k{color:#82aaff}   /* mx_ 关键字 */
+  .mx_code .mx_s{color:#9ece6a}   /* mx_ 字符串/数值 */
+  .mx_sec code{
+    background:#eaf3fd;color:#1f6aab;border-radius:4px;padding:1px 6px;
+    font-family:Consolas,monospace;font-size:12.6px;
+  }
+
+  /* mx_ 要点列表 */
+  .mx_pts{font-size:13.8px;color:#31506b;line-height:2.1}
+  .mx_pts li{margin-left:20px;margin-bottom:5px}
+  .mx_pts b{color:#1f6aab}
+
+  /* mx_ 链接卡 */
+  .mx_links{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .mx_links a{
+    display:block;text-decoration:none;background:#f3f9ff;border:1px solid #cfe4f8;
+    border-radius:13px;padding:15px 17px;transition:transform .2s,box-shadow .2s;
+  }
+  .mx_links a:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(59,143,212,.16)}
+  .mx_links b{display:block;font-size:14.5px;color:#1f6aab;margin-bottom:3px}
+  .mx_links span{font-size:12.5px;color:#6b8aa3;word-break:break-all}
+
+  /* mx_ 坑与解决 */
+  .mx_pit{
+    border-left:4px solid #f6a13c;background:#fffaf0;border-radius:0 12px 12px 0;
+    padding:13px 17px;font-size:13.5px;color:#7a5410;line-height:2;margin-top:6px;
+  }
+
+  .mx_back{text-align:center;margin-top:28px}
+  .mx_back a{
+    display:inline-block;text-decoration:none;font-size:14px;font-weight:bold;color:#1f6aab;
+    background:#fff;border:1px solid #d9e9f8;border-radius:999px;padding:10px 26px;
+    transition:transform .2s,box-shadow .2s;
+  }
+  .mx_back a:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(31,106,171,.15)}
+
+  @media (max-width:640px){
+    .mx_meta{grid-template-columns:1fr}
+    .mx_links{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+  <div class="mx_wrap">
+
+    <!-- mx_ 抬头 -->
+    <div class="mx_head">
+      <div class="mx_badge">课程作业 · 移动端触摸交互</div>
+      <h1>手势滑卡 · 双指缩放 · 摇一摇<br>移动端触摸交互单页实现汇报</h1>
+      <p>课程要求：监听触摸事件实现卡片切换、手势缩放与传感器交互，三个实验合并为 <b>mobile-lab.html</b> 一个手机端页面，顶部目录可切换三个模块。</p>
+    </div>
+
+    <!-- mx_ 学生信息 -->
+    <div class="mx_meta">
+      <div><small>姓名</small><b>孟欣</b></div>
+      <div><small>学号</small><b>24002120321</b></div>
+      <div><small>提交日期</small><b>2026-11-18</b></div>
+    </div>
+
+    <!-- mx_ 任务完成情况 -->
+    <div class="mx_sec">
+      <h2>任务完成情况</h2>
+      <table class="mx_table">
+        <tr><th>任务</th><th>课程要求</th><th>状态</th></tr>
+        <tr>
+          <td>① 手势滑卡</td>
+          <td>4 道菜上图下文卡片；<code>touchstart/touchend</code> + <code>changedTouches[0]</code> 算横向位移，阈值 40px；左滑下一张、右滑上一张；边界提示「已经是第一张/最后一张」；<code>touch-action: pan-y</code>；0.3s 过渡 + 300ms 冷却</td>
+          <td class="mx_ok">✔ 完成</td>
+        </tr>
+        <tr>
+          <td>② 双指缩放</td>
+          <td>两指缩放 1×~4×、以两指中点为基准、双击切换 1×/2×、放大后单指拖动、松手夹回边界、横竖屏切换保留倍数</td>
+          <td class="mx_ok">✔ 完成</td>
+        </tr>
+        <tr>
+          <td>③ 摇一摇</td>
+          <td><code>devicemotion</code> 合成加速度 &gt; 18 判定摇动、1.5s 冷却、无传感器自动降级按钮、iOS 13+ 权限申请</td>
+          <td class="mx_ok">✔ 完成</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- mx_ 核心代码一 -->
+    <div class="mx_sec">
+      <h2>核心代码 ① 滑动判定与冷却</h2>
+<pre class="mx_code"><span class="mx_c">// mx_ touchend 里用 changedTouches[0] 算横向位移，阈值 40px</span>
+<span class="mx_k">function</span> mx_onGestureEnd(mx_e) {
+  <span class="mx_k">var</span> mx_dx = mx_e.changedTouches[<span class="mx_s">0</span>].clientX - mx_gStartX;
+  <span class="mx_k">if</span> (Math.abs(mx_dx) &lt; mx_gThreshold) { <span class="mx_k">return</span>; }  <span class="mx_c">// 40px 内视为误触</span>
+  <span class="mx_k">if</span> (mx_dx &lt; <span class="mx_s">0</span>) {
+    <span class="mx_k">if</span> (mx_gIndex &gt;= mx_gDishes.length - <span class="mx_s">1</span>) { mx_showTip(<span class="mx_s">'已经是最后一张'</span>); <span class="mx_k">return</span>; }
+    mx_gIndex++;
+  } <span class="mx_k">else</span> {
+    <span class="mx_k">if</span> (mx_gIndex &lt;= <span class="mx_s">0</span>) { mx_showTip(<span class="mx_s">'已经是第一张'</span>); <span class="mx_k">return</span>; }
+    mx_gIndex--;
+  }
+  mx_renderDish(mx_dx &lt; <span class="mx_s">0</span> ? <span class="mx_s">1</span> : -<span class="mx_s">1</span>);
+  mx_gLocked = <span class="mx_k">true</span>;                                <span class="mx_c">// 300ms 冷却，防连滑跳两张</span>
+  setTimeout(<span class="mx_k">function</span> () { mx_gLocked = <span class="mx_k">false</span>; }, mx_gCooldown);
+}</pre>
+      <p class="mx_pts" style="margin-top:10px">容器上写 <code>touch-action: pan-y</code>：横向手势由 JS 接管，纵向滚动交还浏览器，互不打架。</p>
+    </div>
+
+    <!-- mx_ 核心代码二 -->
+    <div class="mx_sec">
+      <h2>核心代码 ② 双指缩放「不跳」的关键</h2>
+<pre class="mx_code"><span class="mx_c">// mx_ 以两指中点 m 为基准缩放：压住的同一个内容点缩放前后位置不变</span>
+<span class="mx_c">// 推导：c = (m - t) / s  →  t2 = m - (m - t) × (s2 / s)</span>
+<span class="mx_k">function</span> mx_zoomAt(mx_newScale, mx_px, mx_py) {
+  <span class="mx_k">var</span> mx_ratio = mx_newScale / mx_zScale;
+  mx_zTx = mx_px - (mx_px - mx_zTx) * mx_ratio;
+  mx_zTy = mx_py - (mx_py - mx_zTy) * mx_ratio;
+  mx_zScale = mx_newScale;
+}
+
+<span class="mx_c">// mx_ 松手时把位移夹在图片边缘之内，1× 时最大位移为 0，拖不出去</span>
+<span class="mx_k">function</span> mx_clampZoom() {
+  <span class="mx_k">var</span> mx_maxX = Math.max(<span class="mx_s">0</span>, (mx_zImg.offsetWidth * mx_zScale - mx_rect.width) / <span class="mx_s">2</span>);
+  mx_zTx = Math.min(mx_maxX, Math.max(-mx_maxX, mx_zTx));
+  <span class="mx_c">/* y 轴同理 */</span>
+}</pre>
+    </div>
+
+    <!-- mx_ 核心代码三 -->
+    <div class="mx_sec">
+      <h2>核心代码 ③ 摇一摇判定与降级</h2>
+<pre class="mx_code"><span class="mx_k">function</span> mx_onMotion(mx_e) {
+  <span class="mx_k">var</span> mx_acc = mx_e.accelerationIncludingGravity;
+  <span class="mx_k">if</span> (!mx_acc) { <span class="mx_k">return</span>; }
+  <span class="mx_c">// Chrome 无传感器也派发分量为 null 的空事件，必须拿到数值才算支持</span>
+  <span class="mx_k">if</span> (<span class="mx_k">typeof</span> mx_acc.x !== <span class="mx_s">'number'</span> &amp;&amp; <span class="mx_k">typeof</span> mx_acc.y !== <span class="mx_s">'number'</span>
+   &amp;&amp; <span class="mx_k">typeof</span> mx_acc.z !== <span class="mx_s">'number'</span>) { <span class="mx_k">return</span>; }
+  <span class="mx_k">var</span> mx_mag = Math.sqrt(mx_acc.x ** <span class="mx_s">2</span> + mx_acc.y ** <span class="mx_s">2</span> + mx_acc.z ** <span class="mx_s">2</span>);
+  <span class="mx_k">if</span> (mx_mag &gt; <span class="mx_s">18</span>) { mx_onShake(); }   <span class="mx_c">// 超阈值 → 1.5s 冷却内抽菜谱</span>
+}</pre>
+      <div class="mx_pit">
+        <b>踩坑记录：</b>第一次实现时「2 秒自动降级」不触发——排查发现 Chrome 在没有传感器的设备上<b>仍会派发 devicemotion 事件</b>，只是 <code>accelerationIncludingGravity</code> 的各分量是 <code>null</code>。原来的代码把「收到事件」当成了「有传感器」。修复：只有拿到数值分量才判定支持，复验通过。
+      </div>
+    </div>
+
+    <!-- mx_ 演示链接 -->
+    <div class="mx_sec">
+      <h2>在线演示入口</h2>
+      <div class="mx_links">
+        <a href="mobile-lab.html">
+          <b>触摸交互实验（单页三模块）</b>
+          <span>mobile-lab.html · 顶部目录切换滑卡 / 缩放 / 摇一摇</span>
+        </a>
+        <a href="https://xxx-686972.github.io/mx-321/mobile-lab.html" target="_blank" rel="noopener">
+          <b>GitHub Pages 在线版</b>
+          <span>xxx-686972.github.io/mx-321/mobile-lab.html</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="mx_back"><a href="index.html">← 返回课堂实践中心</a></div>
+  </div>
+</body>
+</html>
