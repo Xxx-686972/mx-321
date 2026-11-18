@@ -944,3 +944,16 @@ https://spontaneous-valkyrie-4e4229.netlify.app/mobile-events-lesson 这个网�
 ``
 
 （实现：新建独立版 mobile-sensor.html，浅色手机端单文件页面，含实时加速度读数便于真机诊断；index.html 第 20 号卡增加该独立页入口。用户此前拒绝了推送，本轮改动只保存在本地）
+
+---
+
+## [2026-11-18 14:55:00]
+
+**模型**: GLM-5.3-FlashX
+
+**提示词内容**:
+``
+把今天让你做的东西全部撤销
+``
+
+（经确认执行：撤销移动端触摸交互相关全部内容——删除 mobile-lab.html / mobile-gesture.html / mobile-sensor.html / homework-mobile.html，首页移除第 20、21 号卡并把统计从 21 回退到 19；诗词模块 poems / poem-cards / db 按用户要求保留；mx_prompt.md 日志按追加原则保留全部记录；远程以反向提交回退，不改写历史）
