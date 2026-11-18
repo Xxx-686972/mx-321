@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<!--
+  mx_ 作者：孟欣
+  mx_ 学号：24002120321
+  mx_ 建立时间：2026-11-18
+  mx_ 使用大模型：GLM-5.3-FlashX
+  mx_ 功能名称：摇一摇抽今日菜谱（devicemotion 合成加速度 > 18 判定 + 1.5s 冷却 + 无传感器降级按钮）
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>摇一摇抽今日菜谱 · 孟欣 24002120321</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    background:linear-gradient(180deg,#f8fcff 0%,#eaf4fe 60%,#f6fbff 100%);
+    background-attachment:fixed;color:#17324a;min-height:100vh;-webkit-font-smoothing:antialiased;
+  }
+  .mx_page{max-width:480px;margin:0 auto;padding:26px 16px 56px}
+
+  /* mx_ 页头 */
+  .mx_head{text-align:center;margin-bottom:20px}
+  .mx_head h1{font-size:20px;letter-spacing:2px;font-weight:600;color:#17324a}
+  .mx_head p{font-size:12.5px;color:#6b8aa3;margin-top:7px}
+
+  /* mx_ 主体 */
+  .mx_sensor{text-align:center}
+  .mx_phone{
+    width:70px;height:120px;margin:4px auto 10px;border-radius:14px;
+    border:3px solid #9cc4e8;position:relative;background:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:27px;
+    box-shadow:0 10px 22px rgba(31,106,171,.14);
+  }
+  .mx_phone::after{
+    content:"";position:absolute;bottom:6px;left:50%;transform:translateX(-50%);
+    width:24px;height:3px;border-radius:2px;background:#c3d8ec;
+  }
+  .mx_phone.mx_phone--shake{animation:mx_shake .5s ease-in-out}
+  @keyframes mx_shake{
+    0%,100%{transform:rotate(0) translateX(0)}
+    20%{transform:rotate(-12deg) translateX(-8px)}
+    45%{transform:rotate(10deg) translateX(8px)}
+    70%{transform:rotate(-6deg) translateX(-4px)}
+  }
+  .mx_state{font-size:12.8px;color:#6b8aa3;min-height:21px;margin-bottom:5px}
+  .mx_state.mx_state--warn{color:#c25b1e}
+  .mx_dbg{
+    font-size:11.5px;color:#9ab4ca;letter-spacing:.5px;
+    font-variant-numeric:tabular-nums;margin-bottom:15px;min-height:18px;
+  }
+  .mx_result{
+    border-radius:18px;padding:24px 18px;min-height:180px;
+    display:flex;flex-direction:column;justify-content:center;align-items:center;
+    background:#fff;border:1px solid #d9e9f8;
+    box-shadow:0 10px 24px rgba(31,106,171,.1);
+    opacity:0;transform:scale(.92);
+    transition:opacity .35s ease,transform .35s cubic-bezier(.2,1.3,.4,1);
+  }
+  .mx_result.mx_result--on{opacity:1;transform:scale(1)}
+  .mx_result-icon{font-size:42px;margin-bottom:10px}
+  .mx_result-name{font-size:22px;font-weight:700;letter-spacing:2px;color:#17324a}
+  .mx_result-tag{
+    margin-top:10px;font-size:11.5px;letter-spacing:1px;color:#b26205;
+    padding:5px 13px;border-radius:999px;
+    background:#fdf3e3;border:1px solid #f2ddb8;
+  }
+  .mx_result-desc{font-size:12.8px;color:#5b7a95;line-height:1.95;margin-top:12px}
+  .mx_fallback{
+    display:none;margin:20px auto 0;border:none;cursor:pointer;
+    padding:13px 30px;border-radius:999px;font-family:inherit;font-size:14.5px;font-weight:600;
+    color:#fff;background:linear-gradient(135deg,#3b8fd4,#1f6aab);
+    box-shadow:0 10px 22px rgba(31,106,171,.28);
+  }
+  .mx_fallback.mx_fallback--show{display:inline-block}
+  .mx_fallback:active{opacity:.85}
+
+  /* mx_ 说明区（含降级原因） */
+  .mx_note{
+    margin-top:22px;background:#fff;border:1px solid #d9e9f8;border-radius:14px;
+    padding:15px 17px;font-size:12.6px;color:#31506b;line-height:2.05;
+    box-shadow:0 6px 16px rgba(59,143,212,.08);text-align:left;
+  }
+  .mx_note b{color:#1f6aab}
+  .mx_note code{background:#eaf3fd;color:#1f6aab;border-radius:4px;padding:1px 6px;font-family:Consolas,monospace;font-size:11.8px}
+</style>
+</head>
+<body>
+  <div class="mx_page">
+    <div class="mx_head">
+      <h1>摇一摇手机，抽今日菜谱</h1>
+      <p>孟欣 24002120321 · 摇动手机随机抽一道菜</p>
+    </div>
+
+    <div class="mx_sensor">
+      <div class="mx_phone" id="mx_sPhone">🍽️</div>
+      <div class="mx_state" id="mx_sState">正在检测设备传感器…</div>
+      <div class="mx_dbg" id="mx_sDbg">传感器数据：--　·　摇到 18 以上触发</div>
+
+      <div class="mx_result" id="mx_sResult">
+        <div class="mx_result-icon" id="mx_sIcon">🎲</div>
+        <div class="mx_result-name" id="mx_sName">还没有结果</div>
+        <div class="mx_result-tag" id="mx_sTag">摇一摇试试</div>
+        <div class="mx_result-desc" id="mx_sDesc">支持 devicemotion 的手机上摇动即出结果。</div>
+      </div>
+
+      <button class="mx_fallback" id="mx_sFallback" type="button">点我抽一次</button>
+    </div>
+
+    <div class="mx_note">
+      <b>为什么必须做降级：</b>传感器只在真机上有数据。三层兜底：2 秒无有效数据判定不支持并显示按钮；iOS 13+ 由按钮触发 <code>requestPermission()</code>；授权被拒仍可手动抽。注意 Chrome 会派发各分量为 <code>null</code> 的空事件——「收到事件」不等于「拿到数据」，必须判断 <code>typeof x === 'number'</code> 才算支持。如果不做降级，电脑或不支持传感器的设备上页面就是一片死白、什么也点不动，用户没有任何办法拿到结果。
+    </div>
+  </div>
+
+<script>
+  /* mx_ 菜谱数据：摇一摇随机抽取 */
+  var mx_sDishes = [
+    { name:'宫保鸡丁', tag:'川菜 · 糊辣荔枝味', icon:'🍗', desc:'鸡丁滑嫩、花生碎酥，干辣椒与花椒爆出糊辣香。' },
+    { name:'清蒸鲈鱼', tag:'粤菜 · 原汁原味', icon:'🐟', desc:'大火八分钟，出锅淋豉油、铺姜丝葱段，热油一激。' },
+    { name:'麻婆豆腐', tag:'川菜 · 麻辣烫嫩', icon:'🌶️', desc:'嫩豆腐在红汤里颤，牛肉臊子与郫县豆瓣三重叠加。' },
+    { name:'蟹粉小笼', tag:'苏式点心 · 一咬一包汤', icon:'🥟', desc:'薄皮十八褶，咬开先吸一口滚烫汤汁。' },
+    { name:'葱油拌面', tag:'沪上家常 · 素面之王', icon:'🍜', desc:'小葱慢炸到焦香，酱油一浇，面条根根裹油。' },
+    { name:'番茄牛腩', tag:'家常炖菜 · 酸甜软烂', icon:'🍲', desc:'牛腩炖到筷子一戳就开，汤汁浓稠可拌两碗饭。' }
+  ];
+  var mx_sThreshold = 18;    /* mx_ 合成加速度阈值 */
+  var mx_sCooldown = 1500;   /* mx_ 冷却时长（ms） */
+  var mx_sLocked = false;    /* mx_ 是否冷却中 */
+  var mx_sGotEvent = false;  /* mx_ 是否拿到有效数值数据 */
+  var mx_sDbgEl = document.getElementById('mx_sDbg');  /* mx_ 实时加速度读数元素 */
+  var mx_sPeak = 0;          /* mx_ 历史峰值，便于观察摇动强度 */
+  var mx_sIndex = -1;        /* mx_ 当前结果下标，避免连续抽到同一道 */
+
+  /**
+   * mx_ 主要功能：随机抽一道菜（不与上次重复）并带弹出动画显示
+   */
+  function mx_drawDish() {
+    var mx_next = mx_sIndex;
+    while (mx_next === mx_sIndex) {
+      mx_next = Math.floor(Math.random() * mx_sDishes.length);
+    }
+    mx_sIndex = mx_next;
+    var mx_item = mx_sDishes[mx_next];
+
+    document.getElementById('mx_sIcon').textContent = mx_item.icon;
+    document.getElementById('mx_sName').textContent = mx_item.name;
+    document.getElementById('mx_sTag').textContent = mx_item.tag;
+    document.getElementById('mx_sDesc').textContent = mx_item.desc;
+
+    var mx_box = document.getElementById('mx_sResult');
+    mx_box.classList.remove('mx_result--on');
+    mx_box.offsetHeight;          /* mx_ 强制重排，让动画能重复播放 */
+    mx_box.classList.add('mx_result--on');
+  }
+
+  /**
+   * mx_ 主要功能：手机图标抖一下并更新状态文字
+   */
+  function mx_playShake(mx_text) {
+    var mx_phone = document.getElementById('mx_sPhone');
+    mx_phone.classList.remove('mx_phone--shake');
+    mx_phone.offsetHeight;
+    mx_phone.classList.add('mx_phone--shake');
+    document.getElementById('mx_sState').textContent = mx_text;
+    document.getElementById('mx_sState').className = 'mx_state';
+  }
+
+  /**
+   * mx_ 主要功能：摇动触发入口——冷却期内忽略，冷却结束自动解锁
+   */
+  function mx_onShake() {
+    if (mx_sLocked) { return; }
+    mx_sLocked = true;
+    mx_playShake('摇到了！正在抽菜谱…');
+    mx_drawDish();
+    setTimeout(function () {
+      mx_sLocked = false;
+      document.getElementById('mx_sState').textContent = '再摇一次，看看今天吃什么';
+    }, mx_sCooldown);
+  }
+
+  /**
+   * mx_ 主要功能：监听 devicemotion，用 accelerationIncludingGravity 算合成加速度，超 18 判定摇动；
+   * 只有拿到数值分量才算「设备支持」，空事件不算
+   */
+  function mx_onMotion(mx_e) {
+    var mx_acc = mx_e.accelerationIncludingGravity;
+    if (!mx_acc) { return; }
+    if (typeof mx_acc.x !== 'number' && typeof mx_acc.y !== 'number' && typeof mx_acc.z !== 'number') {
+      return;
+    }
+    mx_sGotEvent = true;
+
+    var mx_x = mx_acc.x || 0;
+    var mx_y = mx_acc.y || 0;
+    var mx_z = mx_acc.z || 0;
+    var mx_mag = Math.sqrt(mx_x * mx_x + mx_y * mx_y + mx_z * mx_z);
+
+    /* mx_ 实时读数：数据有没有到、摇动时峰值多大，用于现场诊断阈值问题 */
+    if (mx_mag > mx_sPeak) { mx_sPeak = mx_mag; }
+    mx_sDbgEl.textContent = '实时加速度 ' + mx_mag.toFixed(1) + '　·　峰值 ' + mx_sPeak.toFixed(1) + '　·　≥ 18 触发';
+
+    if (mx_mag > mx_sThreshold) { mx_onShake(); }
+  }
+
+  /**
+   * mx_ 主要功能：切到「不支持」状态——显示警示文字并放出降级按钮
+   */
+  function mx_showSensorFallback(mx_text) {
+    var mx_state = document.getElementById('mx_sState');
+    mx_state.textContent = mx_text;
+    mx_state.className = 'mx_state mx_state--warn';
+    document.getElementById('mx_sFallback').classList.add('mx_fallback--show');
+    mx_sDbgEl.textContent = '传感器数据：--　·　摇到 18 以上触发';
+  }
+
+  /**
+   * mx_ 主要功能：启动摇一摇——绑定降级按钮、按设备能力决定直接监听或申请 iOS 权限，
+   * 并做 2 秒无数据的兜底检测
+   */
+  function mx_initSensor() {
+    var mx_btn = document.getElementById('mx_sFallback');
+    mx_btn.addEventListener('click', function () {
+      mx_playShake('手动抽取中…');
+      mx_drawDish();
+    });
+
+    if (typeof DeviceMotionEvent === 'undefined') {
+      mx_showSensorFallback('当前设备不支持（没有 devicemotion），请用手机打开');
+      return;
+    }
+
+    if (typeof DeviceMotionEvent.requestPermission === 'function') {
+      /* mx_ iOS 13+ 必须由用户手势触发授权 */
+      mx_showSensorFallback('iOS 需要先授权：点下方按钮开启摇一摇');
+      mx_btn.textContent = '开启摇一摇';
+      mx_btn.addEventListener('click', function () {
+        DeviceMotionEvent.requestPermission().then(function (mx_res) {
+          if (mx_res === 'granted') {
+            window.addEventListener('devicemotion', mx_onMotion);
+            document.getElementById('mx_sState').textContent = '已开启，摇一摇试试';
+            document.getElementById('mx_sState').className = 'mx_state';
+            mx_btn.textContent = '点我抽一次';
+          } else {
+            mx_showSensorFallback('授权被拒绝，仍可点按钮抽取');
+          }
+        }).catch(function () {
+          mx_showSensorFallback('授权失败，仍可点按钮抽取');
+        });
+      });
+    } else {
+      window.addEventListener('devicemotion', mx_onMotion);
+      document.getElementById('mx_sState').textContent = '正在等待摇动…';
+    }
+
+    /* mx_ 兜底：2 秒内没拿到有效数据，说明这台设备没有传感器 */
+    setTimeout(function () {
+      if (!mx_sGotEvent) {
+        mx_showSensorFallback('当前设备不支持，请用手机打开');
+      }
+    }, 2000);
+  }
+
+  /* mx_ 初始化 */
+  mx_initSensor();
+</script>
+</body>
+</html>
