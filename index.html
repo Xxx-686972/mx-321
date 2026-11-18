@@ -227,7 +227,7 @@
   <!-- mx_ 数据统计 -->
   <section class="mx_stats">
     <div class="mx_stat">
-      <div class="mx_stat-num">17</div>
+      <div class="mx_stat-num">22</div>
       <div class="mx_stat-label">已完成模块</div>
     </div>
     <div class="mx_stat">
@@ -247,7 +247,7 @@
         <div class="mx_section-tag">Lesson Index</div>
         <h2 class="mx_section-title">课堂目录</h2>
       </div>
-      <div class="mx_section-note">已完成模块 <b>17</b> · 后续内容持续增加</div>
+      <div class="mx_section-note">已完成模块 <b>22</b> · 后续内容持续增加</div>
     </div>
 
     <div class="mx_grid">
@@ -386,6 +386,46 @@
         <h3>微博界面 · 四级项目</h3>
         <p>推荐、视频、消息、发现、我五个页面组成完整的移动端仿微博界面。</p>
         <a class="mx_card-link" href="四级项目/tb/index.html">查看项目 <span>→</span></a>
+      </article>
+
+      <!-- mx_ 18 诗句卡片（本地数据服务器） -->
+      <article class="mx_card">
+        <div class="mx_card-no">18</div>
+        <h3>诗句卡片 · 本地接口</h3>
+        <p>上图下文卡片布局，数据由 db/server.js 启动的 3004 端口接口实时读取 db.json。</p>
+        <a class="mx_card-link" href="poem-cards.html">查看卡片页 <span>→</span></a>
+      </article>
+
+      <!-- mx_ 19 从 JSON 到 fetch（课堂五关 + 任务一二三） -->
+      <article class="mx_card">
+        <div class="mx_card-no">19</div>
+        <h3>从 JSON 到 fetch</h3>
+        <p>Promise.all 并发取诗词与作者两个接口，含搜索过滤、标题排序与断服提示。</p>
+        <a class="mx_card-link" href="poems.html">查看页面 <span>→</span></a>
+      </article>
+
+      <!-- mx_ 20 移动端手势滑卡 -->
+      <article class="mx_card">
+        <div class="mx_card-no">20</div>
+        <h3>移动端手势滑卡</h3>
+        <p>touchstart / touchend 计算横向位移，左滑下一张、右滑上一张，含边界提示与冷却。</p>
+        <a class="mx_card-link" href="mobile-gesture.html">查看页面 <span>→</span></a>
+      </article>
+
+      <!-- mx_ 21 图片查看器：双指缩放 -->
+      <article class="mx_card">
+        <div class="mx_card-no">21</div>
+        <h3>图片查看器 · 双指缩放</h3>
+        <p>以两指中点为基准缩放 1~4 倍，双击切换 1x/2x，放大后单指拖动并限制边界。</p>
+        <a class="mx_card-link" href="mobile-zoom.html">查看页面 <span>→</span></a>
+      </article>
+
+      <!-- mx_ 22 摇一摇抽菜谱 -->
+      <article class="mx_card">
+        <div class="mx_card-no">22</div>
+        <h3>摇一摇 · 今日菜谱</h3>
+        <p>devicemotion 合成加速度超过 18 判定摇动，1.5 秒冷却，无传感器时给出降级按钮。</p>
+        <a class="mx_card-link" href="mobile-sensor.html">查看页面 <span>→</span></a>
       </article>
 
     </div>

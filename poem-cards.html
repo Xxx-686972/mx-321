@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<!--
+  mx_ 作者：孟欣
+  mx_ 建立时间：2026-11-13
+  mx_ 使用大模型：GLM-5.3-Flash
+  mx_ 功能名称：上图下文诗句卡片（数据来自本地 3004 端口 /api/poems 接口）
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>诗句卡片 · 上图下文 · 本地接口获取数据</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;background:#f5f8fd;color:#1f2937;min-height:100vh}
+  .mx_wrap{max-width:1080px;margin:0 auto;padding:40px 20px 60px}
+
+  /* mx_ 页头 */
+  .mx_head{text-align:center;margin-bottom:30px}
+  .mx_head h1{font-size:26px;color:#0f2b5b;letter-spacing:2px}
+  .mx_head p{font-size:13.5px;color:#6b7a99;margin-top:8px;line-height:1.9}
+  .mx_head code{background:#e8f0ff;color:#1d5bbf;padding:2px 8px;border-radius:5px;font-family:Consolas,monospace;font-size:12.5px}
+
+  /* mx_ 状态条 */
+  .mx_status{
+    text-align:center;font-size:13px;margin-bottom:22px;
+    display:inline-block;padding:6px 18px;border-radius:999px;
+  }
+  .mx_status-box{text-align:center}
+  .mx_status--loading{color:#92600a;background:#fffbea;border:1px solid #fde68a}
+  .mx_status--ok{color:#2e7d4f;background:#f0fdf4;border:1px solid #bbe5c8}
+  .mx_status--err{color:#c0392b;background:#fff6f6;border:1px solid #f6d5d5}
+
+  /* mx_ 卡片网格：上图下文 */
+  .mx_grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
+  .mx_card{
+    background:#fff;border:1px solid #e3eaf6;border-radius:14px;overflow:hidden;
+    box-shadow:0 6px 18px rgba(31,41,55,.07);
+    transition:transform .2s,box-shadow .2s;
+  }
+  .mx_card:hover{transform:translateY(-4px);box-shadow:0 12px 26px rgba(31,41,55,.13)}
+
+  /* mx_ 上图 */
+  .mx_card-pic{
+    width:100%;height:180px;object-fit:cover;display:block;background:#eef3ff;
+  }
+
+  /* mx_ 下文 */
+  .mx_card-body{padding:14px 16px 18px}
+  .mx_card-title{font-size:16.5px;color:#0f2b5b;font-weight:bold;letter-spacing:1px}
+  .mx_card-line{width:34px;height:3px;background:#e8890c;border-radius:2px;margin:8px 0 10px}
+  .mx_card-text{font-size:13.5px;color:#4b5a72;line-height:2}
+
+  @media (max-width:560px){.mx_grid{grid-template-columns:1fr 1fr;gap:12px}.mx_card-pic{height:130px}}
+</style>
+</head>
+<body>
+  <div class="mx_wrap">
+    <div class="mx_head">
+      <h1>诗句卡片</h1>
+      <p>数据来源：本地数据服务器 <code>http://localhost:3004/api/poems</code>（读取 db/db.json 的 poems）</p>
+    </div>
+
+    <div class="mx_status-box">
+      <span class="mx_status mx_status--loading" id="mxStatus">正在连接数据服务器…</span>
+    </div>
+
+    <!-- mx_ 卡片容器：JS 动态填充 -->
+    <div class="mx_grid" id="mxGrid"></div>
+  </div>
+
+<script>
+  /**
+   * mx_ 主要功能：根据一条诗句数据生成一张「上图下文」卡片并插入网格
+   */
+  function mx_renderCard(mx_item) {
+    var mx_card = document.createElement('div');
+    mx_card.className = 'mx_card';
+
+    var mx_img = document.createElement('img');
+    mx_img.className = 'mx_card-pic';
+    mx_img.src = mx_item.pic;
+    mx_img.alt = mx_item.title;
+    /* mx_ 关键：gitee 图床有防盗链，img 必须不带 Referer 才能拿到原图 */
+    mx_img.referrerPolicy = 'no-referrer';
+    /* mx_ 主要功能：图片加载失败时显示占位底色并隐藏裂图图标 */
+    mx_img.onerror = function () { mx_img.style.visibility = 'hidden'; };
+
+    var mx_body = document.createElement('div');
+    mx_body.className = 'mx_card-body';
+
+    var mx_title = document.createElement('div');
+    mx_title.className = 'mx_card-title';
+    mx_title.textContent = mx_item.title;
+
+    var mx_line = document.createElement('div');
+    mx_line.className = 'mx_card-line';
+
+    var mx_text = document.createElement('div');
+    mx_text.className = 'mx_card-text';
+    mx_text.textContent = mx_item.content;
+
+    mx_body.appendChild(mx_title);
+    mx_body.appendChild(mx_line);
+    mx_body.appendChild(mx_text);
+    mx_card.appendChild(mx_img);
+    mx_card.appendChild(mx_body);
+    document.getElementById('mxGrid').appendChild(mx_card);
+  }
+
+  /**
+   * mx_ 主要功能：请求本地 3004 接口获取 poems 数据，渲染全部卡片并更新状态条
+   */
+  function mx_loadPoems() {
+    var mx_status = document.getElementById('mxStatus');
+    fetch('http://localhost:3004/api/poems')
+      .then(function (mx_res) {
+        if (!mx_res.ok) { throw new Error('接口返回 ' + mx_res.status); }
+        return mx_res.json();
+      })
+      .then(function (mx_list) {
+        mx_status.textContent = '加载成功 · 共 ' + mx_list.length + ' 条诗句';
+        mx_status.className = 'mx_status mx_status--ok';
+        mx_list.forEach(mx_renderCard);
+      })
+      .catch(function (mx_err) {
+        mx_status.textContent = '连接失败：' + mx_err.message + '（请先在 db 文件夹运行 node server.js）';
+        mx_status.className = 'mx_status mx_status--err';
+      });
+  }
+
+  mx_loadPoems();
+</script>
+</body>
+</html>

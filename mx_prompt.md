@@ -703,3 +703,128 @@ ai提示词页面按照这个样子修改
 ``
 
 （需求：删除 swiper-task.html 中 #mx_prompt 区块末尾的「答辩抽问准备」模块，含 HTML（Q1/Q2/Q3 三条问答）和配套 CSS（.mx_defend / .mx_defend-head / .mx_defend-list / .mx_defend-item）。已完整删除，无残留引用）
+
+---
+
+## [2026-11-13 14:11:32]
+
+**模型**: GLM-5.3-Flash
+
+**提示词内容**（连续三轮）:
+``
+请在当前目录的db文件夹下执行npm init -y
+再执行npm install express（下载依赖到 node_modules）
+帮我按照图片要求执行（db.json 结构 { "poems": [...] }、node server.js 启动 3004、验证 /api/poems）
+``
+（已完成：db 文件夹初始化、express 安装、db.json 写入 4 首诗、server.js 提供 /api/poems，接口验证 200）
+
+---
+
+## [2026-11-13 14:11:32]
+
+**模型**: GLM-5.3-Flash
+
+**提示词内容**:
+``
+给我新建一个html文件，显示上图下文的结构，图片和文字通过本地启动服务器获取当前文件夹下面的db里面db.json的poems里面的图片，title和content。并给我生成server.js数据服务器文件，server.js放在db文件夹中。其中端口号为3004。
+``
+（执行计划：生成 4 张诗词配图到 db/imgs/ → db.json 加 image 字段 → server.js 加静态托管 + CORS → 新建 poems.html 上图下文卡片 → index.html 加入口 → 验证）
+
+---
+
+## [2026-11-13 14:30:10]
+
+**模型**: GLM-5.3-Flash
+
+**提示词内容**:
+``
+给我新建一个html文件，显示上图下文的结构，图片和文字通过本地启动服务器获取当前文件夹下面的db里面db.json的poems里面的图片，title和content。并给我生成server.js数据服务器文件，server.js放在db文件夹中。其中端口号为3004。
+``
+
+---
+
+## [2026-11-13 10:30:00]
+
+**模型**: GLM-5.3-Flash
+
+**提示词内容**:
+``
+给我新建一个html文件，显示上图下文的结构，图片和文字通过本地启动服务器获取当前文件夹下面的db里面db.json的poems里面的图片，title和content。并给我生成server.js数据服务器文件，server.js放在db文件夹中。其中端口号为3004。
+``
+
+（需求：新建上图下文诗句卡片页 + db/server.js（Express，端口 3004，提供 /api/poems 接口读取 db.json 的 poems 数组，并托管静态文件 + CORS）。HTML 遵守 mx_ 前缀、文件头注释、函数注释规则，并加入 index.html 入口）
+
+---
+
+## [2026-11-13 14:45:00]
+
+**模型**: GLM-5.3-Flash
+
+**提示词内容**:
+``
+什么原因（附 poem-cards.html 截图：4 张卡片文字正常但图片区域空白）
+``
+
+（排查结论：gitee 图床防盗链。带 Referer: localhost 请求 raw 图片时 gitee 返回 image/x-icon 占位图而非 image/jpeg 原图，img 触发 onerror 被 onerror 处理隐藏。修复：mx_renderCard 中给 img 设置 referrerPolicy='no-referrer'，浏览器请求不再携带 Referer，4 张图片 naturalWidth=320 全部加载成功）
+
+---
+
+## [2026-11-13 15:05:00]
+
+**模型**: GLM-5.3-Flash
+
+**提示词内容**:
+``
+https://spontaneous-valkyrie-4e4229.netlify.app/json-fetch-lesson 按照网页内的步骤部署
+``
+
+（需求：按《从 JSON 到 fetch》课程页部署完整链路——新建 poems.html（上图下文、then 链 fetch、catch 友好报错）；课堂任务一：关闭服务器给出提示不白屏；任务二：db.json 新增 2 条诗词 + server.js 增加 /api/authors 接口 + 页面 Promise.all 并发取数；任务三：搜索框过滤标题/内容 + 按标题长度排序按钮）
+
+---
+
+## [2026-11-18 10:20:00]
+
+**模型**: GLM-5.3-Flash
+
+**提示词内容**:
+``
+在项目中新建移动端页面 mobile-gesture.html：
+1、页面显示一张美食卡片，共 4 道菜（菜名、简介、渐变背景），底部显示"第 1/4 张"；
+2、监听 touchstart / touchend，用 changedTouches[0] 计算横向位移，阈值 40px；
+3、左滑切到下一张，右滑切到上一张，边界时给出提示文字"已经是第一张/最后一张"；
+4、卡片容器加 touch-action: pan-y，保证纵向还能滚动页面；
+5、切换时加 0.3s 过渡动画，并防止快速连滑一次跳两张（加 300ms 冷却）；
+6、类名、id、JS 变量一律以 mx_ 开头，文件头写上姓名学号。
+``
+
+---
+
+## [2026-11-18 10:20:00]
+
+**模型**: DeepSeek-V4.1-Flash
+
+**提示词内容**:
+``
+在项目中新建移动端页面 mobile-gesture.html：
+1、页面显示一张美食卡片，共 4 道菜（菜名、简介、渐变背景），底部显示"第 1/4 张"；
+2、监听 touchstart / touchend，用 changedTouches[0] 计算横向位移，阈值 40px；
+3、左滑切到下一张，右滑切到上一张，边界时给出提示文字"已经是第一张/最后一张"；
+4、卡片容器加 touch-action: pan-y，保证纵向还能滚动页面；
+5、切换时加 0.3s 过渡动画，并防止快速连滑一次跳两张（加 300ms 冷却）；
+6、类名、id、JS 变量一律以 mx_ 开头，文件头写上姓名学号。
+``
+
+（实现：新建 mobile-gesture.html，4 道菜渐变卡片 + 触摸滑动切换 + 40px 阈值 + 边界提示 + pan-y + 0.3s 过渡 + 300ms 冷却；并把入口加入 index.html 第 20 张卡片）
+
+---
+
+## [2026-11-18 11:05:00]
+
+**模型**: DeepSeek-V4.1-Flash
+
+**提示词内容**:
+``
+https://spontaneous-valkyrie-4e4229.netlify.app/mobile-events-lesson 按照这个网页要求部署
+``
+
+（实现：按移动端触摸交互课程补齐任务三 mobile-zoom.html（双指缩放 1~4 倍 / 以两指中点为基准 / 双击 1x↔2x / 放大后拖动 / 边界限制 / 旋转屏幕不丢状态）与任务四 mobile-sensor.html（devicemotion 摇一摇抽菜谱 / 阈值 18 / 1.5s 冷却 / 不支持时降级按钮 / iOS 权限申请），任务二 mobile-gesture.html 已完成；两个新页均加入 index.html 入口）

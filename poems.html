@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<!--
+  mx_ 作者：孟欣
+  mx_ 建立时间：2026-11-13
+  mx_ 使用大模型：GLM-5.3-Flash
+  mx_ 功能名称：《从 JSON 到 fetch》课堂页面——上图下文诗词卡片，fetch 请求本地 3004 接口渲染（含任务一 catch 提示 / 任务二双接口并发 / 任务三搜索与排序）
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>诗词卡片 · 从 JSON 到 fetch · 本地接口实战</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;background:#f5f8fd;color:#1f2937;min-height:100vh}
+  .mx_wrap{max-width:1080px;margin:0 auto;padding:40px 20px 60px}
+
+  /* mx_ 页头 */
+  .mx_head{text-align:center;margin-bottom:22px}
+  .mx_head h1{font-size:26px;color:#0f2b5b;letter-spacing:2px}
+  .mx_head p{font-size:13.5px;color:#6b7a99;margin-top:8px;line-height:1.9}
+  .mx_head code{background:#e8f0ff;color:#1d5bbf;padding:2px 8px;border-radius:5px;font-family:Consolas,monospace;font-size:12.5px}
+
+  /* mx_ 作者名录条（第二个接口的数据） */
+  .mx_authors{
+    text-align:center;font-size:12.5px;color:#5b6b8c;line-height:2;
+    background:#fff;border:1px solid #e3eaf6;border-radius:999px;
+    padding:8px 20px;margin-bottom:18px;
+  }
+  .mx_authors b{color:#1d5bbf}
+
+  /* mx_ 搜索 + 排序工具条（任务三） */
+  .mx_toolbar{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:22px}
+  .mx_toolbar input{
+    flex:0 1 300px;border:1.5px solid #c7d8f8;border-radius:999px;
+    padding:9px 18px;font-size:13.5px;font-family:inherit;color:#1f2937;outline:none;
+  }
+  .mx_toolbar input:focus{border-color:#1d5bbf;box-shadow:0 0 0 3px rgba(29,91,191,.12)}
+  .mx_toolbar button{
+    border:1.5px solid #c7d8f8;background:#fff;color:#1d5bbf;font-size:13px;
+    padding:9px 18px;border-radius:999px;cursor:pointer;transition:all .2s;font-family:inherit;
+  }
+  .mx_toolbar button:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(29,91,191,.18)}
+  .mx_toolbar button.mx_on{background:linear-gradient(135deg,#0f2b5b,#1d5bbf);color:#fff;border-color:transparent}
+
+  /* mx_ 状态提示条：加载中 / 成功 / 失败（任务一 catch 分支） */
+  .mx_status{text-align:center;margin-bottom:22px}
+  .mx_status span{display:inline-block;font-size:13px;padding:6px 18px;border-radius:999px}
+  .mx_status--loading{color:#92600a;background:#fffbea;border:1px solid #fde68a}
+  .mx_status--ok{color:#2e7d4f;background:#f0fdf4;border:1px solid #bbe5c8}
+  .mx_status--err{color:#c0392b;background:#fff6f6;border:1px solid #f6d5d5}
+
+  /* mx_ 上图下文卡片列表 */
+  .mx_list{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
+  .mx_poem_card{
+    background:#fff;border:1px solid #e3eaf6;border-radius:14px;overflow:hidden;
+    box-shadow:0 6px 18px rgba(31,41,55,.07);
+    transition:transform .2s,box-shadow .2s;
+  }
+  .mx_poem_card:hover{transform:translateY(-4px);box-shadow:0 12px 26px rgba(31,41,55,.13)}
+  .mx_poem_card img{width:100%;height:180px;object-fit:cover;display:block;background:#eef3ff}
+  .mx_poem_body{padding:14px 16px 18px}
+  .mx_poem_body h2{font-size:16.5px;color:#0f2b5b;font-weight:bold;letter-spacing:1px}
+  .mx_poem_body .mx_line{width:34px;height:3px;background:#e8890c;border-radius:2px;margin:8px 0 10px}
+  .mx_poem_body p{font-size:13.5px;color:#4b5a72;line-height:2}
+  .mx_empty{text-align:center;color:#9aa3af;font-size:13.5px;padding:30px 0;grid-column:1/-1}
+
+  @media (max-width:560px){.mx_list{grid-template-columns:1fr 1fr;gap:12px}.mx_poem_card img{height:130px}}
+</style>
+</head>
+<body>
+  <div class="mx_wrap">
+    <div class="mx_head">
+      <h1>诗词卡片</h1>
+      <p>数据来源：<code>http://localhost:3004/api/poems</code> 与 <code>http://localhost:3004/api/authors</code>（Promise.all 同时取回两份）</p>
+    </div>
+
+    <!-- mx_ 作者名录：来自第二个接口 /api/authors -->
+    <div class="mx_authors" id="mxAuthors">作者名录加载中…</div>
+
+    <!-- mx_ 任务三：搜索框 + 按标题长度排序按钮 -->
+    <div class="mx_toolbar">
+      <input type="text" id="mxSearch" placeholder="输入关键字，按标题或内容筛选…">
+      <button id="mxSortBtn" type="button">按标题长度排序</button>
+      <button id="mxResetBtn" type="button">恢复原顺序</button>
+    </div>
+
+    <!-- mx_ 状态条：服务器没启动时在这里给出提示（任务一 catch 分支） -->
+    <div class="mx_status"><span class="mx_status--loading" id="mxStatus">正在连接数据服务器…</span></div>
+
+    <!-- mx_ 卡片容器：上图下文 -->
+    <ul class="mx_list" id="mxPoemList"></ul>
+  </div>
+
+<script>
+  var mx_api_poems = 'http://localhost:3004/api/poems';
+  var mx_api_authors = 'http://localhost:3004/api/authors';
+  var mx_poems = [];   /* mx_ 缓存原始数据，搜索排序都在这份缓存上做 */
+  var mx_sorted = false;
+
+  /**
+   * mx_ 主要功能：把一条诗词数据拼成「上图下文」卡片 HTML 字符串（与课程写法一致）
+   */
+  function mx_renderPoems(mx_list) {
+    var mx_html = '';
+    for (var mx_i = 0; mx_i < mx_list.length; mx_i++) {
+      mx_html += '<li class="mx_poem_card">'
+        + '<img src="' + mx_list[mx_i].pic + '" alt="' + mx_list[mx_i].title + '" referrerpolicy="no-referrer">'
+        + '<div class="mx_poem_body">'
+        + '<h2>' + mx_list[mx_i].title + '</h2>'
+        + '<div class="mx_line"></div>'
+        + '<p>' + mx_list[mx_i].content + '</p>'
+        + '</div></li>';
+    }
+    if (!mx_list.length) {
+      mx_html = '<li class="mx_empty">没有匹配的诗词，换个关键字试试～</li>';
+    }
+    document.getElementById('mxPoemList').innerHTML = mx_html;
+  }
+
+  /**
+   * mx_ 主要功能：按当前关键字过滤 + 是否已排序，重新渲染列表（任务三核心逻辑）
+   */
+  function mx_applyView() {
+    var mx_kw = document.getElementById('mxSearch').value.trim();
+    var mx_view = mx_poems;
+    if (mx_kw) {
+      mx_view = mx_poems.filter(function (mx_p) {
+        return mx_p.title.indexOf(mx_kw) > -1 || mx_p.content.indexOf(mx_kw) > -1;
+      });
+    }
+    if (mx_sorted) {
+      mx_view = mx_view.slice().sort(function (mx_a, mx_b) {
+        return mx_a.title.length - mx_b.title.length;
+      });
+    }
+    mx_renderPoems(mx_view);
+  }
+
+  /**
+   * mx_ 主要功能：Promise.all 同时请求 poems 与 authors 两个接口，全部成功后渲染；
+   *             任一失败走 catch 给出友好提示而不是白屏（任务一验收点）
+   */
+  function mx_loadPoems() {
+    var mx_status = document.getElementById('mxStatus');
+    Promise.all([
+      fetch(mx_api_poems).then(function (mx_res) { return mx_res.json(); }),
+      fetch(mx_api_authors).then(function (mx_res) { return mx_res.json(); })
+    ])
+      .then(function (mx_arr) {
+        mx_poems = mx_arr[0];
+        var mx_authorHtml = mx_arr[1].map(function (mx_a) {
+          return '<b>' + mx_a.dynasty + '·' + mx_a.name + '</b>《' + mx_a.work + '》';
+        }).join('　');
+        document.getElementById('mxAuthors').innerHTML = '作者名录（来自 /api/authors）：' + mx_authorHtml;
+        mx_status.textContent = '加载成功 · 共 ' + mx_poems.length + ' 条诗词';
+        mx_status.className = 'mx_status mx_status--ok';
+        mx_applyView();
+      })
+      .catch(function () {
+        mx_status.textContent = '数据获取失败！请先在 db 文件夹运行 node server.js（端口 3004）';
+        mx_status.className = 'mx_status mx_status--err';
+      });
+  }
+
+  /**
+   * mx_ 主要功能：搜索框输入时实时过滤列表（不重新请求服务器）
+   */
+  document.getElementById('mxSearch').addEventListener('input', mx_applyView);
+
+  /**
+   * mx_ 主要功能：点击按钮切换「按标题长度排序」，再点恢复原顺序，并同步按钮高亮
+   */
+  document.getElementById('mxSortBtn').addEventListener('click', function () {
+    mx_sorted = !mx_sorted;
+    this.classList.toggle('mx_on', mx_sorted);
+    this.textContent = mx_sorted ? '已按标题长度排序' : '按标题长度排序';
+    mx_applyView();
+  });
+
+  /**
+   * mx_ 主要功能：恢复原顺序——清空关键字、取消排序、还原按钮状态
+   */
+  document.getElementById('mxResetBtn').addEventListener('click', function () {
+    mx_sorted = false;
+    document.getElementById('mxSearch').value = '';
+    var mx_btn = document.getElementById('mxSortBtn');
+    mx_btn.classList.remove('mx_on');
+    mx_btn.textContent = '按标题长度排序';
+    mx_applyView();
+  });
+
+  mx_loadPoems();
+</script>
+</body>
+</html>
