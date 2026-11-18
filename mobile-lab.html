@@ -184,6 +184,15 @@
     font-size:12.5px;padding:7px 16px;border-radius:999px;font-family:inherit;cursor:pointer;
   }
   .mx_reset3:active{background:#eaf3fd}
+  /* mx_ 任务三演示视频 */
+  .mx_video-wrap{
+    margin-top:16px;background:#fff;border:1px solid #d9e9f8;border-radius:14px;
+    padding:10px;box-shadow:0 6px 16px rgba(59,143,212,.08);
+  }
+  .mx_video{width:100%;display:block;border-radius:9px;background:#000}
+  .mx_video-cap{
+    text-align:center;font-size:11.5px;color:#6b8aa3;letter-spacing:1px;margin-top:8px;
+  }
 
   /* ============ 任务四 摇一摇 ============ */
   .mx_sensor{text-align:center}
@@ -355,6 +364,12 @@
         <button class="mx_reset3" id="mx_zReset" type="button">还原</button>
       </div>
 
+      <!-- mx_ 缩放操作演示视频（用户录制） -->
+      <div class="mx_video-wrap">
+        <video class="mx_video" src="cdn/videos/zoom-demo.mp4" controls playsinline preload="metadata"></video>
+        <div class="mx_video-cap">缩放操作演示视频</div>
+      </div>
+
       <div class="mx_qa">
         <h3>为什么「缩放不跳」</h3>
         <ul>
@@ -410,6 +425,12 @@
         </div>
 
         <button class="mx_fallback" id="mx_sFallback" type="button">点我抽一次</button>
+      </div>
+
+      <!-- mx_ 摇一摇操作演示视频（用户录制） -->
+      <div class="mx_video-wrap">
+        <video class="mx_video" src="cdn/videos/shake-demo.mp4" controls playsinline preload="metadata"></video>
+        <div class="mx_video-cap">摇一摇操作演示视频</div>
       </div>
 
       <div class="mx_qa">
